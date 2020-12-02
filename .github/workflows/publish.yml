@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - main
 
 jobs:
   build-deploy:
@@ -17,12 +16,19 @@ jobs:
         with:
           node-version: '12.x'
 
-      - run: yarn
+      - name: Yarn install with caching
+        uses: bahmutov/npm-install@v1.1.0
 
-      - run: yarn build
+      - name: Build assets
+        run: yarn build
 
-      - name: Deploy
+      - name: Deploy website
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build
+
+      - name: Semantic release
+        run: yarn release
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
