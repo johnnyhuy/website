@@ -18,7 +18,8 @@
   "scripts": {
     "start": "snowpack dev",
     "build": "snowpack build",
-    "test": "web-test-runner \"src/**/*.test.ts\""
+    "test": "web-test-runner \"src/**/*.test.ts\"",
+    "format": "prettier --write src/*"
   },
   "dependencies": {
     "svelte": "^3.24.0"
@@ -33,8 +34,11 @@
     "@types/snowpack-env": "^2.3.2",
     "@web/test-runner": "^0.10.0",
     "chai": "^4.2.0",
+    "prettier": "^2.2.1",
+    "prettier-plugin-svelte": "^1.4.1",
     "snowpack": "^2.17.1",
     "svelte-preprocess": "^4.0.8",
+    "tailwindcss": "^2.0.1",
     "typescript": "^4.0.0"
   },
   "gitHead": "a01616bb0787d56cd782f94cecf2daa12c7594e4"
