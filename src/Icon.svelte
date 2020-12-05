@@ -11,9 +11,6 @@
 
   .icon {
     display: inline-block;
-    /* icon primary color */
-    height: 1em;
-    width: 1em;
   }
 
   .icon use {
@@ -138,4 +135,4 @@
     transform: translateX(0.5px) translateY(0.5px);
   }
 </style>
-<svg class={$$props.class + " icon"}><use href="icons.svg#icon-{name}" xlink:href="icons.svg#icon-{name}"/></svg>
+<svg class={"icon " + $$props.class}><use href="icons.svg#icon-{name}" xlink:href="icons.svg#icon-{name}"/></svg>
