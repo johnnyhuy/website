@@ -135,4 +135,4 @@
     transform: translateX(0.5px) translateY(0.5px);
   }
 </style>
-<svg class={"icon " + $$props.class}><use href="icons.svg#icon-{name}" xlink:href="icons.svg#icon-{name}"/></svg>
+<svg class={"icon " + $$props.class}><use xlink:href="icons.svg#icon-{name}"/></svg>
