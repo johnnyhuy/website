@@ -3,9 +3,8 @@
   import "./Tailwind.svelte";
   import Icon from "./Icon.svelte";
   import { Router, Link, Route } from "svelte-navigator";
-  import Home from "./routes/Blog.svelte";
-  import About from "./routes/About.svelte";
-  import Blog from "./routes/Blog.svelte";
+  import "./routes/stuff/Show.svelte";
+  import "./routes/about/Show.svelte";
 
   let count: number = 0;
   onMount(() => {

@@ -7,7 +7,7 @@ module.exports = {
   plugins: [
     '@snowpack/plugin-svelte',
     '@snowpack/plugin-dotenv',
-    '@snowpack/plugin-typescript',
+    '@snowpack/plugin-typescript'
   ],
   installOptions: {
     sourceMap: true
