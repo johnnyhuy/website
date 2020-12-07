@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" href="/static/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png" />
+    <link rel="manifest" href="/static/favicon/site.webmanifest" />
+    <link rel="mask-icon" href="/static/favicon/safari-pinned-tab.svg" color="#ff8d00" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Web site created using create-snowpack-app" />
+    <title>Johnny</title>
+  </head>
+  <body>  
+    <header class="container mx-auto flex flex-row py-8">
+      <a href="/" class="flex-none">
+        <img src="/static/images/logos/final-logo.svg" alt="logo" class="h-14" />
+      </a>
+      <nav
+        class="flex-grow justify-end flex items-center text-heading font-semibold">
+        <a
+          href="/projects"
+          class="hover:text-gray-500 px-6">
+          <span class="align-middle">Projects</span>
+        </a>
+        <a
+          href="/stuff"
+          class="hover:text-gray-500 px-6">
+          <span class="align-middle">Stuff</span>
+        </a>
+        <a href="mailto:info@johnnyhuy.com," class="hover:text-gray-500 px-6">
+          <Icon name="email-outline" class="align-middle w-4 h-4 mr-1" />
+          <span class="align-middle">info@johnnyhuy.com</span>
+        </a>
+        <a
+          target="_blank"
+          href="https://ko-fi.com/johnnyhuy"
+          class="text-amber-600 hover:text-amber-400 px-4">
+          <Icon name="heart-outline" class="align-middle w-4 h-4 mr-1" />
+          <span class="align-middle">Buy me a coffee</span>
+        </a>
+      </nav>
+    </header>
+
+    {{ content | safe }}
+  </body>
+</html>

@@ -1,16 +1,5 @@
-import App from "./App.svelte";
+/**
+ * This file is just a silly example to show everything working in the browser.
+ * When you're ready to start on your site, clear the file. Happy hacking!
+ **/
 
-var app = new App({
-  target: document.body,
-});
-
-export default app;
-
-// Hot Module Replacement (HMR) - Remove this snippet to remove HMR.
-// Learn more: https://www.snowpack.dev/concepts/hot-module-replacement
-if (import.meta.hot) {
-  import.meta.hot.accept();
-  import.meta.hot.dispose(() => {
-    app.$destroy();
-  });
-}
