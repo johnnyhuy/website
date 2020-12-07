@@ -16,6 +16,9 @@ module.exports = {
   devOptions: {
     // Eleventy updates multiple files at once, so add a 300ms delay before we trigger a browser update
     hmrDelay: 300,
+    port: 3000,
+    bundle: false,
+    out: "build"
   },
   buildOptions: {
     sourceMaps: true,
