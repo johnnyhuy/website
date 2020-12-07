@@ -22,5 +22,6 @@ module.exports = {
   },
   buildOptions: {
     sourceMaps: true,
+    clean: true
   },
 };
