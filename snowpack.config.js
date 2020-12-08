@@ -6,16 +6,14 @@ module.exports = {
   },
   plugins: [
     '@snowpack/plugin-postcss',
-    '@snowpack/plugin-svelte',
-    '@snowpack/plugin-typescript',
     ['@snowpack/plugin-run-script', { cmd: 'eleventy', watch: '$1 --watch' }],
   ],
   installOptions: {
     sourceMap: true,
   },
   devOptions: {
-    // Eleventy updates multiple files at once, so add a 300ms delay before we trigger a browser update
-    hmrDelay: 300,
+    // Wait for 11ty to start
+    hmrDelay: 1000,
     port: 3000,
     bundle: false,
     out: "build"

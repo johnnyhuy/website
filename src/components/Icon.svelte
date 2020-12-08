@@ -1,7 +1,7 @@
 <script lang="typescript">
   export let name: string;
 </script>
-<style global>
+<style>
   /* Generated using nucleoapp.com */
   /* --------------------------------
 
