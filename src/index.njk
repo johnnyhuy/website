@@ -1,15 +1,8 @@
-<script lang="typescript" context="module">
-  export const data = () => {
-    return {
-      layout: 'base.njk',
-      title: 'Johnny',
-    }
-  }
-</script>
+---
+layout: base.njk
+title: Johnny
+---
 
-<script lang="typescript">
-  import Nav from './components/Nav.svelte'
-</script>
 <link rel="stylesheet" href="/_dist_/styles/home.css" />
 <Nav />
 <div class="landing flex relative container mx-auto font-semibold">

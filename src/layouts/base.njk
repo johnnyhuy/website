@@ -12,16 +12,9 @@
     <meta name="description" content="Welcome to John's portfolio blog or whatever 🤓" />
     <title>{{ title }}</title>
     <link rel="stylesheet" href="/_dist_/styles/main.css" />
+    <script type="module" src="/_dist_/main.js" defer></script>
   </head>
   <body>
-    <div id="app">
-      {{ content | safe }}
-    </div>
-    <script>
-      // Provides the data used on the client side (dataFn is a function defining the used data)
-      {{ dataFn | svelteData | safe }}
-    </script>
-    {% svelteClient 'app' %}
-    {% svelteClientLegacy 'app' %}
+    {{ content | safe }}
   </body>
 </html>
