@@ -11,7 +11,7 @@ const defaultOptions = {
   rollupSSRPlugins: [],
 }
 
-const svelteComponentRegex = new RegExp(/11ty.svelte$/);
+const svelteComponentRegex = new RegExp(/11ty.svelte$/)
 
 module.exports = function (eleventyConfig, configOptions = {}) {
   const options = { ...eleventyConfig, ...defaultOptions, ...configOptions }
@@ -21,14 +21,18 @@ module.exports = function (eleventyConfig, configOptions = {}) {
   eleventyConfig.addTemplateFormats('11ty.svelte')
 
   eleventyConfig.addFilter('svelteData', function (dataFn) {
-    return `window.__DATA__ = ${typeof dataFn === 'function' ? JSON.stringify(dataFn(this.ctx)) : '{}'}`
+    return `window.__DATA__ = ${
+      typeof dataFn === 'function' ? JSON.stringify(dataFn(this.ctx)) : '{}'
+    }`
   })
 
   eleventyConfig.addShortcode('svelteClient', function (id) {
-    if (!svelteComponentRegex.test(id)) {
-      return '';
+    if (!svelteComponentRegex.test(this.page.inputPath)) {
+      return ''
     }
-    const component = eleventySvelte.getComponent(path.normalize(this.page.inputPath))
+    const component = eleventySvelte.getComponent(
+      path.normalize(this.page.inputPath),
+    )
     return `
     <script type="module">
       import Component from '${url.format(component.client)}';
@@ -36,16 +40,18 @@ module.exports = function (eleventyConfig, configOptions = {}) {
         target: document.getElementById('${id}'),
         props: window.__DATA__,
         hydrate: true
-      })
+      });
     </script>
     `
   })
 
   eleventyConfig.addShortcode('svelteClientLegacy', function (id) {
-    if (!svelteComponentRegex.test(id)) {
-      return '';
+    if (!svelteComponentRegex.test(this.page.inputPath)) {
+      return ''
     }
-    const component = eleventySvelte.getComponent(path.normalize(this.page.inputPath))
+    const component = eleventySvelte.getComponent(
+      path.normalize(this.page.inputPath),
+    )
     return `
     <script nomodule>
       System.import('/${component.clientLegacy}')
@@ -75,7 +81,9 @@ module.exports = function (eleventyConfig, configOptions = {}) {
           // When str has a value, it's being used for permalinks in data
           return typeof str === 'function' ? str(data) : str
         }
-        return eleventySvelte.getComponent(path.normalize(inputPath)).ssr.render(data).html
+        return eleventySvelte
+          .getComponent(path.normalize(inputPath))
+          .ssr.render(data).html
       }
     },
   })

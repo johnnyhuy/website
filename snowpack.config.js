@@ -22,4 +22,13 @@ module.exports = {
     sourceMaps: true,
     clean: true
   },
+  exclude: [
+    '**/manifest.json',
+    '**/robots.txt',
+    '**/plugins/**',
+    '**/layouts/**',
+    '**/components/**',
+    '**/*.svelte',
+    '**/*.md'
+  ],
 };

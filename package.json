@@ -1,14 +1,16 @@
 {
   "scripts": {
-    "start": "env ELEVENTY_EXPERIMENTAL=true snowpack dev",
-    "build": "env ELEVENTY_EXPERIMENTAL=true snowpack build",
+    "start": "NODE_ENV=development ELEVENTY_EXPERIMENTAL=true snowpack dev",
+    "build": "NODE_ENV=development ELEVENTY_EXPERIMENTAL=true snowpack build",
+    "production": "NODE_ENV=production ELEVENTY_EXPERIMENTAL=true snowpack build",
     "test": "echo \"This template does not include a test runner by default.\" && exit 1",
-    "format": "prettier --write \"src/**/*\"",
-    "lint": "prettier --check \"src/**/*\""
+    "format": "prettier --write src/**/*.js src/**/*.svelte src/**/*.css",
+    "lint": "prettier --check src/**/*.js src/**/*.svelte src/**/*.css"
   },
   "dependencies": {},
   "devDependencies": {
     "@11ty/eleventy": "^0.11.0",
+    "@rollup/plugin-typescript": "^8.0.0",
     "@snowpack/plugin-postcss": "^1.0.8",
     "@snowpack/plugin-run-script": "^2.2.1",
     "@snowpack/plugin-svelte": "^3.3.1",
@@ -23,6 +25,8 @@
     "postcss-import": "^13.0.0",
     "postcss-nested": "^5.0.2",
     "prettier": "^2.2.1",
+    "prettier-plugin-svelte": "^1.4.2",
+    "rollup-plugin-terser": "^7.0.2",
     "snowpack": "^2.18.0",
     "svelte": "^3.31.0",
     "tailwindcss": "^2.0.1",

@@ -31,12 +31,17 @@ class EleventySvelte {
   }
 
   async build(outputDir, pathPrefix = '') {
-    const inputs = await globby('**/*.11ty.svelte', { gitignore: this.useGitIgnore })
+    const inputs = await globby('**/*.11ty.svelte', {
+      gitignore: this.useGitIgnore,
+    })
 
     const ssrOutputs = await this.buildSSR(inputs)
     let clientOutput, clientLegacyOutput
     if (this.outputClient) {
-      ;[clientOutput, clientLegacyOutput] = await this.buildClient(inputs, outputDir)
+      ;[clientOutput, clientLegacyOutput] = await this.buildClient(
+        inputs,
+        outputDir,
+      )
     }
 
     for (let {
@@ -44,10 +49,16 @@ class EleventySvelte {
     } of ssrOutputs) {
       if (!!entry.facadeModuleId) {
         const ssrModule = requireFromString(entry.code, entry.facadeModuleId)
-        this.components[path.relative(this.workingDir, entry.facadeModuleId)] = {
+        this.components[
+          path.relative(this.workingDir, entry.facadeModuleId)
+        ] = {
           ssr: ssrModule.default,
-          client: clientOutput && path.join(pathPrefix, this.clientDir, entry.fileName),
-          clientLegacy: clientLegacyOutput && path.join(this.clientLegacyDir, entry.fileName),
+          client:
+            clientOutput &&
+            path.join(pathPrefix, this.clientDir, entry.fileName),
+          clientLegacy:
+            clientLegacyOutput &&
+            path.join(this.clientLegacyDir, entry.fileName),
           data: ssrModule.data,
         }
       }
@@ -75,9 +86,9 @@ class EleventySvelte {
             build.generate({
               format: 'cjs',
               exports: 'named',
-            })
-          )
-      )
+            }),
+          ),
+      ),
     )
   }
 
@@ -110,8 +121,8 @@ class EleventySvelte {
               format: 'system',
               exports: 'named',
             },
-          ].map((outputOptions) => build.write(outputOptions))
-        )
+          ].map((outputOptions) => build.write(outputOptions)),
+        ),
       )
   }
 
