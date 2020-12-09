@@ -4,7 +4,7 @@
 
 <header class="container mx-auto flex flex-row py-8">
   <a href="/" class="flex-none">
-    <img src="/_dist_/images/logos/final-logo.svg" alt="logo" class="h-14" />
+    <img src="/images/logos/final-logo.svg" alt="logo" class="h-14" />
   </a>
   <nav
     class="flex-grow justify-end flex items-center text-heading font-semibold">

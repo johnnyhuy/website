@@ -4,12 +4,14 @@ import resolve from '@rollup/plugin-node-resolve'
 import commonjs from '@rollup/plugin-commonjs'
 import livereload from 'rollup-plugin-livereload'
 import { terser } from 'rollup-plugin-terser'
-import sveltePreprocess from 'svelte-preprocess'
 import typescript from '@rollup/plugin-typescript'
 import { copySync, removeSync } from 'fs-extra'
 import { spassr } from 'spassr'
 import getConfig from '@roxi/routify/lib/utils/config'
-import autoPreprocess from 'svelte-preprocess'
+import sveltePreprocess from 'svelte-preprocess'
+import tailwindCss from 'tailwindcss'
+import postCssNested from 'postcss-nested'
+import autoprefixer from 'autoprefixer'
 import postcssImport from 'postcss-import'
 import { injectManifest } from 'rollup-plugin-workbox'
 
@@ -60,11 +62,17 @@ export default {
       dev: !production, // run-time checks
       // Extract component CSS — better performance
       css: (css) => css.write(`bundle.css`),
-      preprocess: sveltePreprocess(),
       hot: isNollup,
       preprocess: [
-        autoPreprocess({
-          postcss: { plugins: [postcssImport()] },
+        sveltePreprocess({
+          postcss: {
+            plugins: [
+              postcssImport(),
+              postCssNested(),
+              autoprefixer(),
+              tailwindCss(),
+            ],
+          },
           defaults: { style: 'postcss' },
         }),
       ],
