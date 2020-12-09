@@ -1,10 +1,10 @@
-<script lang="ts">
-  import { Router } from "@roxi/routify";
-  import { routes } from "../.routify/routes";
-</script>
-
-<style  global>
-  @import "../assets/global.css";
+<style lang="postcss" global>
+@import './styles/main.css';
 </style>
 
-<Router {routes} />
+<script lang="ts">
+import { Router } from '@roxi/routify'
+import { routes } from '../.routify/routes'
+</script>
+
+<Router routes="{routes}" />

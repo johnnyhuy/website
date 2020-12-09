@@ -1,4 +1,96 @@
+<style lang="postcss">
+.icon {
+  display: inline-block;
+}
+
+.icon use {
+  /* icon secondary color - fill */
+  fill: inherit;
+}
+
+.icon.icon-outline use {
+  /* icon secondary color - stroke */
+  stroke: inherit;
+}
+
+.icon-xs {
+  height: 0.5em;
+  width: 0.5em;
+}
+
+.icon-sm {
+  height: 0.8em;
+  width: 0.8em;
+}
+
+.icon-lg {
+  height: 1.6em;
+  width: 1.6em;
+}
+
+.icon-xl {
+  height: 2em;
+  width: 2em;
+}
+
+/* -------------------------------- 
+  Align icon and text 
+  -------------------------------- */
+
+.icon-text-aligner {
+  /* add this class to parent element that contains icon + text */
+  display: flex;
+  align-items: center;
+}
+
+.icon-text-aligner .icon use {
+  color: inherit;
+  fill: currentColor;
+}
+
+.icon-text-aligner .icon.icon-outline use {
+  stroke: currentColor;
+}
+
+.icon {
+  fill: currentColor;
+  stroke: none;
+}
+
+.icon.icon-outline {
+  stroke: currentColor;
+}
+
+.icon use {
+  stroke: none;
+}
+
+.icon-outline.icon-stroke-1 {
+  stroke-width: 1px;
+}
+
+.icon-outline.icon-stroke-2 {
+  stroke-width: 2px;
+}
+
+.icon-outline.icon-stroke-3 {
+  stroke-width: 3px;
+}
+
+.icon-outline.icon-stroke-4 {
+  stroke-width: 4px;
+}
+
+.icon-outline.icon-stroke-1 use,
+.icon-outline.icon-stroke-3 use {
+  transform: translateX(0.5px) translateY(0.5px);
+}
+</style>
+
 <script lang="ts">
-  export let name: string
+export let name: string
 </script>
-<svg class={"icon " + $$props.class}><use xlink:href="/_dist_/images/icons.svg#icon-{name}"/></svg>
+
+<svg class="{'icon ' + $$props.class}"><use
+    xlink:href="/_dist_/images/icons.svg#icon-{name}"
+  ></use></svg>
