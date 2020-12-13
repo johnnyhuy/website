@@ -92,5 +92,5 @@ export let name: string
 </script>
 
 <svg class="{'icon ' + $$props.class}"><use
-    xlink:href="/_dist_/images/icons.svg#icon-{name}"
+    xlink:href="/images/icons.svg#icon-{name}"
   ></use></svg>

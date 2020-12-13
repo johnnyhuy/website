@@ -1,12 +1,126 @@
 <style lang="postcss">
-@import '../styles/home.css';
+.github {
+  color: #4e5a68;
+}
+
+.linkedin {
+  color: #006699;
+}
+
+.dark-cloud-pair {
+  @apply relative;
+
+  left: 50%;
+  top: 60px;
+}
+
+.me {
+  @apply w-48 rounded-full absolute shadow-lg;
+}
+
+.dark-cloud {
+  @apply absolute;
+
+  height: 290px;
+}
+
+.cloud {
+  @apply absolute;
+
+  right: 20px;
+  bottom: 0;
+  width: 250px;
+  animation: shrink 1s infinite alternate;
+  animation-delay: 1s;
+}
+
+.light-left-cloud {
+  @apply absolute;
+
+  left: 15%;
+  bottom: 0;
+  animation: shrink 1s infinite alternate;
+}
+
+.light-right-cloud {
+  @apply absolute;
+
+  right: 40px;
+  top: 0;
+  animation: shrink 1s infinite alternate;
+  animation-delay: 0.5s;
+}
+
+.lighter-cloud {
+  @apply absolute;
+
+  left: 30%;
+  top: 0;
+  animation: shrink 1s infinite alternate;
+  animation-delay: 1.5s;
+}
+
+.landing {
+  height: 390px;
+}
+
+.special {
+  @apply container mx-auto mt-24 flex;
+}
+
+.green-underscore {
+  @apply absolute;
+
+  left: 60px;
+  top: 64px;
+  animation: underscore 1s steps(5, start) infinite;
+}
+
+.docker {
+  @apply absolute;
+
+  left: 228px;
+  top: 135px;
+  animation: docker 1s infinite alternate;
+}
+
+.docker-shadow {
+  @apply absolute;
+
+  left: 240px;
+  top: 240px;
+  animation: docker-shadow 1s infinite alternate;
+}
+
+@keyframes shrink {
+  to {
+    transform: scaleX(0.9) scaleY(0.9);
+  }
+}
+
+@keyframes docker-shadow {
+  to {
+    transform: scaleX(0.7);
+  }
+}
+
+@keyframes underscore {
+  to {
+    visibility: hidden;
+  }
+}
+
+@keyframes docker {
+  to {
+    transform: translateY(-10px);
+  }
+}
 </style>
 
 <script lang="ts">
-import Nav from '../components/Nav.svelte'
+import Icon from '../components/Icon.svelte'
 </script>
 
-<Nav />
 <div class="landing flex relative container mx-auto font-semibold">
   <div class="absolute w-full h-full">
     <div class="dark-cloud-pair">
@@ -87,13 +201,13 @@ import Nav from '../components/Nav.svelte'
       target="_blank"
       href="https://github.com/johnnyhuy"
       class="github text-xl mr-4"
-    ><icon name="github-outline" class="w-6 h-6 align-middle mr-2"></icon>
+    ><Icon name="github-outline" class="w-6 h-6 align-middle mr-2" />
       <span class="align-middle">GitHub</span></a>
     <a
       target="_blank"
       href="https://www.linkedin.com/in/johnnyhuy/"
       class="linkedin text-xl"
-    ><icon name="linkedin-outline" class="w-6 h-6 align-middle mr-2"></icon>
+    ><Icon name="linkedin-outline" class="w-6 h-6 align-middle mr-2" />
       <span class="align-middle">LinkedIn</span></a>
   </div>
 </div>
@@ -103,7 +217,6 @@ import Nav from '../components/Nav.svelte'
       src="/images/windows.svg"
       alt="windows"
       style="left: 0; top: 0"
-      class="absolute"
     />
     <img
       src="/images/green-underscore.svg"
@@ -112,5 +225,8 @@ import Nav from '../components/Nav.svelte'
     />
     <img src="/images/docker-shadow.svg" alt="shadow" class="docker-shadow" />
     <img src="/images/docker.svg" alt="docker" class="docker" />
+  </div>
+  <div class="pl-5">
+    <h2 class="font-medium text-xl">Specialised in <span class="text-blue-500">cloud</span> and <span class="text-red-500">web</span> development</h2>
   </div>
 </div>
