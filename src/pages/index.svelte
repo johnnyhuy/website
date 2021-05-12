@@ -220,10 +220,19 @@ import Icon from '../components/Icon.svelte'
       Specialised in <span class="text-blue-500">cloud</span> and
       <span class="text-red-500">web</span> development
     </h2>
-    <p class="text-lg pb-4">
+    <p class="text-lg leading-7 text-gray-400 pb-4">
       Striving to become the most useful person in the term to provide impactful
       software engineering solutions.
     </p>
-    <p class="text-lg pb-4">I’m a curious guy, always keen to build awesome software 🤙</p>
+    <p class="text-lg leading-7 text-gray-400 pb-4">
+      I’m a curious guy, always keen to build awesome software 🤙
+    </p>
   </div>
+</div>
+<div class="container mx-auto text-center">
+  <h2 class="font-semibold text-2xl pt-12 pb-6">Projects</h2>
+  <p class="w-64 mx-auto text-lg leading-7 text-gray-400 pb-12">
+    Here’s my side-projects including many other things I’ve collaborated to
+    build on the Internet 🤓
+  </p>
 </div>
