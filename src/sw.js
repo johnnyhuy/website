@@ -1,13 +1,19 @@
 // @ts-check
 
-import { registerRoute, setDefaultHandler, setCatchHandler } from 'workbox-routing';
-import { CacheFirst, NetworkFirst, StaleWhileRevalidate } from 'workbox-strategies';
-import { skipWaiting, clientsClaim } from 'workbox-core';
-import { precacheAndRoute, matchPrecache } from 'workbox-precaching';
-import { ExpirationPlugin } from 'workbox-expiration';
+import {
+  registerRoute,
+  setDefaultHandler,
+  setCatchHandler,
+} from 'workbox-routing'
+import {
+  CacheFirst,
+  NetworkFirst,
+  StaleWhileRevalidate,
+} from 'workbox-strategies'
+import { skipWaiting, clientsClaim } from 'workbox-core'
+import { precacheAndRoute, matchPrecache } from 'workbox-precaching'
+import { ExpirationPlugin } from 'workbox-expiration'
 import { RoutifyPlugin, freshCacheData } from '@roxi/routify/workbox-plugin'
-
-
 
 /**********
  * CONFIG *
@@ -21,16 +27,14 @@ const externalAssetsConfig = () => ({
   cacheName: 'external',
   plugins: [
     RoutifyPlugin({
-      validFor: 60 // cache is considered fresh for n seconds.
+      validFor: 60, // cache is considered fresh for n seconds.
     }),
     new ExpirationPlugin({
       maxEntries: 50, // last used entries will be purged when we hit this limit
-      purgeOnQuotaError: true // purge external assets on quota error
-    })]
+      purgeOnQuotaError: true, // purge external assets on quota error
+    }),
+  ],
 })
-
-
-
 
 /**************
  * INITIALIZE *
@@ -51,13 +55,11 @@ precacheAndRoute(files)
 skipWaiting() // auto update service workers across all tabs when new release is available
 clientsClaim() // take control of client without having to wait for refresh
 
-/** 
+/**
  * manually upgrade service worker by sending a SKIP_WAITING message.
  * (remember to disable skipWaiting() above)
  */
 // addEventListener('message', event => { if (event.data && event.data.type === 'SKIP_WAITING') skipWaiting(); });
-
-
 
 /**********
  * ROUTES *
@@ -73,7 +75,7 @@ registerRoute(isLocalAsset, new CacheFirst())
 registerRoute(hasFreshCache, new CacheFirst(externalAssetsConfig()))
 
 // serve external pages and assets
-setDefaultHandler(new NetworkFirst(externalAssetsConfig()));
+setDefaultHandler(new NetworkFirst(externalAssetsConfig()))
 
 // serve a fallback for 404s if possible or respond with an error
 setCatchHandler(async ({ event }) => {
@@ -83,19 +85,23 @@ setCatchHandler(async ({ event }) => {
     case 'image':
       return await matchPrecache(fallbackImage)
     default:
-      return Response.error();
+      return Response.error()
   }
 })
-
-
 
 /**********
  * CONDITIONS *
  **********/
 
-function isLocalAsset({ url, request }) { return url.host === self.location.host && request.destination != 'document' }
-function isLocalPage({ url, request }) { return url.host === self.location.host && request.destination === 'document' }
-function hasFreshCache(event) { return !!freshCacheData(event) }
+function isLocalAsset({ url, request }) {
+  return url.host === self.location.host && request.destination != 'document'
+}
+function isLocalPage({ url, request }) {
+  return url.host === self.location.host && request.destination === 'document'
+}
+function hasFreshCache(event) {
+  return !!freshCacheData(event)
+}
 
 /** Example condition */
 function hasWitheringCache(event) {
