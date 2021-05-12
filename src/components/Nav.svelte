@@ -1,3 +1,9 @@
+<style lang="postcss">
+a {
+  @apply text-lg;
+}
+</style>
+
 <script lang="typescript">
   import Icon from './Icon.svelte'
 </script>
