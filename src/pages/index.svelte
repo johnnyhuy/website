@@ -229,10 +229,32 @@ import Icon from '../components/Icon.svelte'
     </p>
   </div>
 </div>
-<div class="container mx-auto text-center">
+<div class="relative w-64 mx-auto text-center pb-44">
+  <img src="/images/logos/php.svg" alt="php" class="absolute opacity-40 h-10" style="left: -2rem; transform: rotate(-10deg);">
+  <img src="/images/logos/illustrator.svg" alt="illustrator" class="absolute opacity-40 h-10" style="right: -1rem; transform: rotate(10deg);">
+  <img src="/images/logos/gopher.svg" alt="gopher" class="absolute opacity-40 h-16" style="left: -8rem; top: 7rem; transform: rotate(10deg);">
+  <img src="/images/logos/docker.svg" alt="docker" class="absolute opacity-40 h-16" style="right: -9rem; top: 7rem; transform: rotate(-10deg);">
+  <img src="/images/logos/javascript.svg" alt="javascript" class="absolute opacity-40 h-12" style="left: 0rem; top: 16rem; transform: rotate(-10deg);">
+  <img src="/images/logos/c-sharp.svg" alt="c-sharp" class="absolute opacity-40 h-12" style="right: 0rem; top: 16rem; transform: rotate(10deg);">
   <h2 class="font-semibold text-2xl pt-12 pb-6">Projects</h2>
-  <p class="w-64 mx-auto text-lg leading-7 text-gray-400 pb-12">
+  <p class="text-lg leading-7 text-gray-400">
     Here’s my side-projects including many other things I’ve collaborated to
     build on the Internet 🤓
   </p>
 </div>
+<section class="container mx-auto flex">
+  <div class="w-full">
+    <div class="w-2/3">
+      <div class="rounded-lg bg-gray-900 text-white p-6">
+        <img src="/images/logos/ggs.svg" alt="ggs" class="h-12 mb-4">
+        <h2 class="text-2xl font-semibold">Gentlemen's Gaming Society</h2>
+      </div>
+    </div>
+    <div class="w-1/3">
+      <div class="rounded-lg bg-gray-900 text-white p-6">
+        <img src="/images/logos/ggs.svg" alt="ggs" class="h-12 mb-4">
+        <h2 class="text-2xl font-semibold">Gentlemen's Gaming Society</h2>
+      </div>
+    </div>
+  </div>
+</section>
