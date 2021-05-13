@@ -18,6 +18,14 @@ module.exports = {
       'md': {'min': '768px', 'max': '1023px'},
       'lg': {'min': '1024px', 'max': '1279px'},
       'xl': {'min': '1164px'},
+    },
+    container: {
+      screens: {
+         sm: "900px",
+         md: "900px",
+         lg: "900px",
+         xl: "1280px"
+      }
     }
   },
   variants: {},

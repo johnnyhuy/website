@@ -14,6 +14,7 @@ import postCssNested from 'postcss-nested'
 import autoprefixer from 'autoprefixer'
 import postcssImport from 'postcss-import'
 import { injectManifest } from 'rollup-plugin-workbox'
+import css from 'rollup-plugin-css-only'
 
 const { distDir } = getConfig() // use Routify's distDir for SSOT
 const assetsDir = 'assets'
@@ -59,9 +60,9 @@ export default {
   },
   plugins: [
     svelte({
-      dev: !production, // run-time checks
-      // Extract component CSS — better performance
-      css: (css) => css.write(`bundle.css`),
+      compilerOptions: {
+				dev: !production
+			},
       hot: isNollup,
       preprocess: [
         sveltePreprocess({
@@ -78,6 +79,7 @@ export default {
       ],
     }),
 
+    css({ output: `bundle.css` }),
     // resolve matching modules from current working directory
     resolve({
       browser: true,
