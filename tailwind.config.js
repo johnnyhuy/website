@@ -21,10 +21,10 @@ module.exports = {
     },
     container: {
       screens: {
-         sm: "900px",
-         md: "900px",
-         lg: "900px",
-         xl: "1280px"
+         sm: "560px",
+         md: "620px",
+         lg: "870px",
+         xl: "900px"
       }
     }
   },

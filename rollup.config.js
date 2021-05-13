@@ -78,7 +78,7 @@ export default {
         }),
       ],
     }),
-
+ 
     css({ output: `bundle.css` }),
     // resolve matching modules from current working directory
     resolve({
