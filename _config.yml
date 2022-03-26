@@ -23,6 +23,7 @@ projects:
     archived: false
     forks: true
     projects:
+      - website
       - dotfiles
       - homebrew-repo
 
