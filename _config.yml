@@ -9,25 +9,22 @@ plugins:
 permalink: /:year/:month/:day/:title/
 
 defaults:
-  -
-    scope:
-      path: "" # an empty string here means all files in the project
+  - scope:
+      path: ""
       type: "posts"
     values:
       layout: "post"
 
 projects:
+  forks: false
   sort_by: pushed
-  # sort_by options:
-  #   - pushed
-  #   - stars
   limit: 9
   exclude:
     archived: false
     forks: true
     projects:
-    - dotfiles
-    - homebrew-repo
+      - dotfiles
+      - homebrew-repo
 
 social_media:
   linkedin: johnnyhuy
@@ -39,6 +36,3 @@ topics:
     web_url: https://github.com/topics/kubernetes
     image_url: https://raw.githubusercontent.com/kubernetes/kubernetes/master/logo/logo.svg
 
-  - name: Cloud Engineering
-
-  - name: Full-stack development
