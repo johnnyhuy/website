@@ -74,7 +74,7 @@ const siteMetadata = {
       // theme example: light, dark, dark_dimmed, dark_high_contrast
       // transparent_dark, preferred_color_scheme, custom
       theme: 'light',
-      // theme when dark mode
+      // theme when dark mode (this is ignored by Pliny when theme is 'preferred_color_scheme')
       darkTheme: 'transparent_dark',
       // If the theme option above is set to 'custom`
       // please provide a link below to your custom theme css file.

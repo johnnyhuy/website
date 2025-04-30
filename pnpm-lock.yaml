@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  next-themes: 0.4.6
+
 importers:
 
   .:
@@ -153,7 +156,7 @@ importers:
         specifier: ^0.5.7
         version: 0.5.7(acorn@8.14.1)(contentlayer2@0.5.7(acorn@8.14.1)(esbuild@0.25.3))(esbuild@0.25.3)(next@15.2.4(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next-themes:
-        specifier: latest
+        specifier: 0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       pliny:
         specifier: ^0.4.1
@@ -3239,12 +3242,6 @@ packages:
       next: '>=12.0.0'
       react: ^18 || ^19 || ^19.0.0-rc
       react-dom: ^18 || ^19 || ^19.0.0-rc
-
-  next-themes@0.3.0:
-    resolution: {integrity: sha512-/QHIrsYpd6Kfk7xakK4svpDI5mmXP0gfvCoJdGpZQ2TOrQZmsW0QxjaiLn8wbIKjtm4BTSqLoix4lxYYOnLJ/w==}
-    peerDependencies:
-      react: ^16.8 || ^17 || ^18
-      react-dom: ^16.8 || ^17 || ^18
 
   next-themes@0.4.6:
     resolution: {integrity: sha512-pZvgD5L0IEvX5/9GWyHMf3m8BKiVQwsCMHfoFosXtXBMnaS0ZnIJ9ST4b4NqLVKDEm8QBxoNNGNaBv2JNF6XNA==}
@@ -7509,11 +7506,6 @@ snapshots:
       - markdown-wasm
       - supports-color
 
-  next-themes@0.3.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
-    dependencies:
-      react: 19.1.0
-      react-dom: 19.1.0(react@19.1.0)
-
   next-themes@0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0):
     dependencies:
       react: 19.1.0
@@ -7626,7 +7618,7 @@ snapshots:
       kbar: 0.1.0-beta.45(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next: 15.2.4(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       next-contentlayer2: 0.5.7(acorn@8.14.1)(contentlayer2@0.5.7(acorn@8.14.1)(esbuild@0.25.3))(esbuild@0.25.3)(next@15.2.4(@opentelemetry/api@1.9.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      next-themes: 0.3.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      next-themes: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       probe-image-size: 7.2.3
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
