@@ -183,14 +183,14 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
           {/* TLDR Section (always visible if not in TLDR mode) */}
           {post.tldr && !showTldr && (
             <div className="border-accent/20 bg-secondary/50 mb-6 rounded-lg border p-4 md:mb-8 md:p-6">
-              <div className="mb-4 flex flex-wrap items-center justify-between">
+              <div className="mb-4 flex-col items-start sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                 <h2 className="mb-2 flex items-center text-xl font-bold sm:mb-0">
                   <span className="text-accent mr-2">TLDR;</span> Summary
                 </h2>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="hover:text-accent flex w-full items-center text-sm sm:w-auto"
+                  className="hover:text-accent flex w-full items-center text-sm sm:w-auto mt-3 self-end sm:mt-0 sm:self-auto"
                   onClick={() => handleTldrToggle(true)}
                 >
                   <span className="mr-1">Show only TLDR</span>

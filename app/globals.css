@@ -1,4 +1,130 @@
 @import 'tailwindcss';
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  a,
+  button {
+    outline-color: var(--color-primary-500);
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid;
+    border-radius: var(--radius-sm);
+    outline-color: var(--color-primary-500);
+  }
+
+  body {
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
+
+  html {
+    background-color: var(--color-background);
+    color: oklch(0.2 0 0);
+  }
+
+  /* Apply dark mode overrides using the custom variant */
+  html.dark {
+    --color-background: oklch(0.13 0 0); /* much darker background */
+    --color-foreground: oklch(0.98 0 0); /* white text */
+    color: var(--color-foreground);
+    --color-card: oklch(0.15 0 0); /* dark card */
+    --color-card-foreground: oklch(0.98 0 0);
+    --color-popover: oklch(0.15 0 0);
+    --color-popover-foreground: oklch(0.98 0 0);
+    --color-primary: oklch(0.98 0 0);
+    --color-primary-foreground: oklch(0.13 0 0);
+    --color-secondary: oklch(0.18 0.01 260); /* dark secondary */
+    --color-secondary-foreground: oklch(0.98 0 0);
+    --color-accent: oklch(0.87 0.18 91.11);
+    --color-accent-foreground: oklch(0.13 0 0);
+    --color-muted: oklch(0.18 0.01 260);
+    --color-muted-foreground: oklch(0.7 0.02 260);
+    --color-destructive: oklch(0.55 0.18 29);
+    --color-destructive-foreground: oklch(0.98 0 0);
+    --color-border: oklch(0.18 0.01 260);
+    --color-input: oklch(0.18 0.01 260);
+    --color-ring: oklch(0.98 0 0);
+    --color-grey-50: oklch(0.18 0.01 260);
+    --color-grey-100: oklch(0.2 0.01 260);
+    --color-grey-200: oklch(0.22 0.01 260);
+    --color-grey-300: oklch(0.24 0.01 260);
+    --color-grey-400: oklch(0.26 0.01 260);
+    --color-grey-500: oklch(0.28 0.01 260);
+    --color-grey-600: oklch(0.3 0.01 260);
+    --color-grey-700: oklch(0.32 0.01 260);
+    --color-grey-800: oklch(0.34 0.01 260);
+    --color-grey-900: oklch(0.36 0.01 260);
+    --color-yellow-50: oklch(0.99 0.05 100);
+    --color-yellow-100: oklch(0.97 0.1 100);
+    --color-yellow-200: oklch(0.95 0.15 100);
+    --color-yellow-300: oklch(0.93 0.2 100);
+    --color-yellow-400: oklch(0.91 0.25 100);
+    --color-yellow-500: oklch(0.89 0.3 100);
+    --color-yellow-600: oklch(0.87 0.35 100);
+    --color-yellow-700: oklch(0.85 0.4 100);
+    --color-yellow-800: oklch(0.83 0.45 100);
+    --color-yellow-900: oklch(0.81 0.5 100);
+    --color-green-50: oklch(0.97 0.05 140);
+    --color-green-100: oklch(0.95 0.1 140);
+    --color-green-200: oklch(0.93 0.15 140);
+    --color-green-300: oklch(0.91 0.2 140);
+    --color-green-400: oklch(0.89 0.25 140);
+    --color-green-500: oklch(0.87 0.3 140);
+    --color-green-600: oklch(0.85 0.35 140);
+    --color-green-700: oklch(0.83 0.4 140);
+    --color-green-800: oklch(0.81 0.45 140);
+    --color-green-900: oklch(0.79 0.5 140);
+    --color-blue-50: oklch(0.18 0.05 260);
+    --color-blue-100: oklch(0.2 0.1 260);
+    --color-blue-200: oklch(0.22 0.15 260);
+    --color-blue-300: oklch(0.24 0.2 260);
+    --color-blue-400: oklch(0.26 0.25 260);
+    --color-blue-500: oklch(0.28 0.3 260);
+    --color-blue-600: oklch(0.3 0.35 260);
+    --color-blue-700: oklch(0.32 0.4 260);
+    --color-blue-800: oklch(0.34 0.45 260);
+    --color-blue-900: oklch(0.36 0.5 260);
+    --color-red-50: oklch(0.18 0.05 29);
+    --color-red-100: oklch(0.2 0.1 29);
+    --color-red-200: oklch(0.22 0.15 29);
+    --color-red-300: oklch(0.24 0.2 29);
+    --color-red-400: oklch(0.26 0.25 29);
+    --color-red-500: oklch(0.28 0.3 29);
+    --color-red-600: oklch(0.3 0.35 29);
+    --color-red-700: oklch(0.32 0.4 29);
+    --color-red-800: oklch(0.34 0.45 29);
+    --color-red-900: oklch(0.36 0.5 29);
+  }
+
+  a,
+  button {
+    outline-color: var(--color-primary-500);
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid;
+    border-radius: var(--radius-sm);
+    outline-color: var(--color-primary-500);
+  }
+
+  body {
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
+}
+
 @source '../node_modules/pliny';
 @custom-variant dark (&:where(.dark, .dark *));
 
@@ -101,108 +227,6 @@
   --z-60: 60;
   --z-70: 70;
   --z-80: 80;
-}
-
-@theme .dark {
-  --color-background: oklch(0.13 0 0); /* much darker background */
-  --color-foreground: oklch(0.98 0 0); /* white text */
-  --color-card: oklch(0.15 0 0); /* dark card */
-  --color-card-foreground: oklch(0.98 0 0);
-  --color-popover: oklch(0.15 0 0);
-  --color-popover-foreground: oklch(0.98 0 0);
-  --color-primary: oklch(0.98 0 0);
-  --color-primary-foreground: oklch(0.13 0 0);
-  --color-secondary: oklch(0.18 0.01 260); /* dark secondary */
-  --color-secondary-foreground: oklch(0.98 0 0);
-  --color-accent: oklch(0.87 0.18 91.11);
-  --color-accent-foreground: oklch(0.13 0 0);
-  --color-muted: oklch(0.18 0.01 260);
-  --color-muted-foreground: oklch(0.7 0.02 260);
-  --color-destructive: oklch(0.55 0.18 29);
-  --color-destructive-foreground: oklch(0.98 0 0);
-  --color-border: oklch(0.18 0.01 260);
-  --color-input: oklch(0.18 0.01 260);
-  --color-ring: oklch(0.98 0 0);
-  --color-grey-50: oklch(0.18 0.01 260);
-  --color-grey-100: oklch(0.2 0.01 260);
-  --color-grey-200: oklch(0.22 0.01 260);
-  --color-grey-300: oklch(0.24 0.01 260);
-  --color-grey-400: oklch(0.26 0.01 260);
-  --color-grey-500: oklch(0.28 0.01 260);
-  --color-grey-600: oklch(0.3 0.01 260);
-  --color-grey-700: oklch(0.32 0.01 260);
-  --color-grey-800: oklch(0.34 0.01 260);
-  --color-grey-900: oklch(0.36 0.01 260);
-  --color-yellow-50: oklch(0.99 0.05 100);
-  --color-yellow-100: oklch(0.97 0.1 100);
-  --color-yellow-200: oklch(0.95 0.15 100);
-  --color-yellow-300: oklch(0.93 0.2 100);
-  --color-yellow-400: oklch(0.91 0.25 100);
-  --color-yellow-500: oklch(0.89 0.3 100);
-  --color-yellow-600: oklch(0.87 0.35 100);
-  --color-yellow-700: oklch(0.85 0.4 100);
-  --color-yellow-800: oklch(0.83 0.45 100);
-  --color-yellow-900: oklch(0.81 0.5 100);
-  --color-green-50: oklch(0.97 0.05 140);
-  --color-green-100: oklch(0.95 0.1 140);
-  --color-green-200: oklch(0.93 0.15 140);
-  --color-green-300: oklch(0.91 0.2 140);
-  --color-green-400: oklch(0.89 0.25 140);
-  --color-green-500: oklch(0.87 0.3 140);
-  --color-green-600: oklch(0.85 0.35 140);
-  --color-green-700: oklch(0.83 0.4 140);
-  --color-green-800: oklch(0.81 0.45 140);
-  --color-green-900: oklch(0.79 0.5 140);
-  --color-blue-50: oklch(0.18 0.05 260);
-  --color-blue-100: oklch(0.2 0.1 260);
-  --color-blue-200: oklch(0.22 0.15 260);
-  --color-blue-300: oklch(0.24 0.2 260);
-  --color-blue-400: oklch(0.26 0.25 260);
-  --color-blue-500: oklch(0.28 0.3 260);
-  --color-blue-600: oklch(0.3 0.35 260);
-  --color-blue-700: oklch(0.32 0.4 260);
-  --color-blue-800: oklch(0.34 0.45 260);
-  --color-blue-900: oklch(0.36 0.5 260);
-  --color-red-50: oklch(0.18 0.05 29);
-  --color-red-100: oklch(0.2 0.1 29);
-  --color-red-200: oklch(0.22 0.15 29);
-  --color-red-300: oklch(0.24 0.2 29);
-  --color-red-400: oklch(0.26 0.25 29);
-  --color-red-500: oklch(0.28 0.3 29);
-  --color-red-600: oklch(0.3 0.35 29);
-  --color-red-700: oklch(0.32 0.4 29);
-  --color-red-800: oklch(0.34 0.45 29);
-  --color-red-900: oklch(0.36 0.5 29);
-}
-
-@layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
-  }
-
-  a,
-  button {
-    outline-color: var(--color-primary-500);
-  }
-
-  a:focus-visible,
-  button:focus-visible {
-    outline: 2px solid;
-    border-radius: var(--radius-sm);
-    outline-color: var(--color-primary-500);
-  }
-
-  body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    font-feature-settings:
-      'rlig' 1,
-      'calt' 1;
-  }
 }
 
 @layer utilities {
@@ -591,15 +615,6 @@ html.light {
 
   .prose pre code {
     font-size: 0.8rem;
-  }
-
-  /* TLDR mobile optimizations */
-  .tldr-header {
-    @apply flex-col items-start;
-  }
-
-  .tldr-header > div:last-child {
-    @apply mt-3 self-end;
   }
 }
 
