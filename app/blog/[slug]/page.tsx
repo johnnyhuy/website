@@ -9,17 +9,14 @@ import {
   Calendar,
   Clock,
   Share2,
-  MessageSquare,
   Bookmark,
   Heart,
-  Twitter,
-  Facebook,
-  Linkedin,
   ChevronDown,
   Copy,
   Check,
   Code,
 } from 'lucide-react'
+import { SiX, SiLinkedin } from 'react-icons/si'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
@@ -30,11 +27,11 @@ import TechStack from '@/components/tech-stack'
 import { FloatingThemeToggle } from '@/components/floating-theme-toggle'
 import { copyToClipboard, generateShareableUrl, generateSocialShareText } from '@/lib/copy-utils'
 import { allBlogs, allAuthors } from 'contentlayer/generated'
-import { components } from '@/components/mdx-components'
 import { MDXLayoutRenderer } from 'pliny/mdx-components.js'
 import { coreContent } from 'pliny/utils/contentlayer.js'
-import { Giscus, GiscusProps } from 'pliny/comments/Giscus.js'
 import siteMetadata from '@/data/siteMetadata'
+import { Comments, CommentsConfig } from 'pliny/comments/index.js'
+import { components } from '@/components/mdx-components'
 
 export default function BlogPostPage({ params }: { params: Promise<{ slug: string | string[] }> }) {
   const { slug } = use(params)
@@ -255,7 +252,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                               {copied === 'twitter' ? (
                                 <Check className="h-3 w-3" />
                               ) : (
-                                <Twitter className="h-3 w-3" />
+                                <SiX className="h-3 w-3" />
                               )}
                             </Button>
                           </TooltipTrigger>
@@ -277,7 +274,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                               {copied === 'linkedin' ? (
                                 <Check className="h-3 w-3" />
                               ) : (
-                                <Linkedin className="h-3 w-3" />
+                                <SiLinkedin className="h-3 w-3" />
                               )}
                             </Button>
                           </TooltipTrigger>
@@ -396,38 +393,12 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                     variant="outline"
                     size="icon"
                     className="rounded-full"
-                    onClick={() => handleCopy('twitter')}
-                  >
-                    {copied === 'twitter' ? (
-                      <Check className="h-4 w-4" />
-                    ) : (
-                      <Twitter className="h-4 w-4" />
-                    )}
-                    <span className="sr-only">Share on Twitter</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full"
-                    onClick={() => handleCopy('facebook')}
-                  >
-                    {copied === 'facebook' ? (
-                      <Check className="h-4 w-4" />
-                    ) : (
-                      <Facebook className="h-4 w-4" />
-                    )}
-                    <span className="sr-only">Share on Facebook</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full"
                     onClick={() => handleCopy('linkedin')}
                   >
                     {copied === 'linkedin' ? (
                       <Check className="h-4 w-4" />
                     ) : (
-                      <Linkedin className="h-4 w-4" />
+                      <SiLinkedin className="h-4 w-4" />
                     )}
                     <span className="sr-only">Share on LinkedIn</span>
                   </Button>
@@ -475,7 +446,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             <div className="mb-4 flex flex-wrap items-center justify-between md:mb-6">
               <h2 className="mb-2 text-2xl font-bold sm:mb-0">Comments</h2>
             </div>
-            <Giscus {...(post.comments as GiscusProps)} />
+            <Comments commentsConfig={siteMetadata.comments as CommentsConfig} slug={slugStr} />
           </div>
         )}
       </div>
