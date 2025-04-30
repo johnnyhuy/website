@@ -1,4 +1,4 @@
-import { isTechDoc } from "./techdocs"
+import { isTechDoc } from './techdocs'
 
 // This is a mock implementation. In a real application, you would fetch this data from a CMS or database.
 
@@ -25,21 +25,21 @@ const allPosts: BlogPost[] = [
   // Your existing blog posts...
   {
     id: 1,
-    slug: "migrating-from-jenkins-to-github-actions",
-    title: "Migrating from Jenkins to GitHub Actions",
+    slug: 'migrating-from-jenkins-to-github-actions',
+    title: 'Migrating from Jenkins to GitHub Actions',
     excerpt:
-      "A comprehensive guide on how to migrate your CI/CD pipelines from Jenkins to GitHub Actions with real-world examples.",
-    content: "Full content here...",
-    date: "2023-10-15",
-    readTime: "8 min read",
+      'A comprehensive guide on how to migrate your CI/CD pipelines from Jenkins to GitHub Actions with real-world examples.',
+    content: 'Full content here...',
+    date: '2023-10-15',
+    readTime: '8 min read',
     author: {
-      name: "Johnny Huynh",
-      avatar: "/me.jpg",
-      title: "Principal Engineer",
+      name: 'Johnny Huynh',
+      avatar: '/images/me.jpg',
+      title: 'Principal Engineer',
     },
-    tags: ["DevOps", "CI/CD", "GitHub"],
-    image: "/placeholder.svg?height=600&width=1200",
-    type: "blog",
+    tags: ['DevOps', 'CI/CD', 'GitHub'],
+    image: '/placeholder.svg?height=600&width=1200',
+    type: 'blog',
   },
   // Add more blog posts...
 ]

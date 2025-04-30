@@ -150,7 +150,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             </div>
 
             {/* Tech Stack Tags */}
-            <div className="mb-6 overflow-x-auto pb-2 md:mb-8">
+            <div className="mb-6 pb-2 md:mb-8">
               <TechStack technologies={post.tags} size="md" />
             </div>
           </header>

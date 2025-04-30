@@ -15,7 +15,7 @@ const Footer = () => {
           <div className="md:col-span-5 lg:col-span-4">
             <div className="mb-4 flex items-center gap-3">
               <div className="border-primary/10 relative h-12 w-12 overflow-hidden rounded-full border-2">
-                <Image src="/me.jpg" alt="Johnny Huynh" fill className="object-cover" />
+                <Image src="/images/me.jpg" alt="Johnny Huynh" fill className="object-cover" />
               </div>
               <div>
                 <h3 className="text-xl font-bold">Johnny Huynh</h3>

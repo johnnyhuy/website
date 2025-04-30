@@ -9,7 +9,8 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart'
 import { Skeleton } from '@/components/ui/skeleton'
-import { getLanguageIcon } from '@/components/language-icons'
+import { getTagIcon } from '@/components/tag-icons'
+import { WAKATIME_ENDPOINT } from '@/lib/constants'
 
 interface Language {
   name: string
@@ -55,15 +56,16 @@ const WakatimeGraph = ({ omitLanguages = [] }: Props) => {
   }, [])
 
   const CustomYAxisTick = ({ x, y, payload }: any) => {
-    const icon = getLanguageIcon(payload.value.toLowerCase())
+    const IconComponent = getTagIcon(payload.value.toLowerCase()) // Get the component type
     return (
       <g transform={`translate(${x},${y})`}>
         <title>{payload.value}</title>
         <circle cx="-18" cy="0" r="14" fill="#1A1A1A" />
         <foreignObject width={16} height={16} x={-26} y={-8}>
-          {icon ? React.cloneElement(icon, { size: 16, color: 'white' }) : null}
+          {/* Render the component directly if it exists */}
+          {IconComponent ? <IconComponent size={16} color="white" /> : null}
         </foreignObject>
-        {!icon && (
+        {!IconComponent && (
           <text
             x={-18}
             y={4}

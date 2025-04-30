@@ -46,7 +46,7 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link href="/" className="text-xl font-bold">
           <Image
-            src="/johnny.svg"
+            src="/images/johnny.svg"
             alt="Johnny Huynh"
             width={32}
             height={32}

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "contentlayer2 build && next dev --turbopack",
     "build": "contentlayer2 build && next build",
+    "contentlayer": "contentlayer2 build",
     "start": "next start",
     "lint": "next lint"
   },
