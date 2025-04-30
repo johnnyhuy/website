@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { CalendarIcon, Clock, ArrowRight } from 'lucide-react'
 import TechIcon from './tech-icon'
-import { formatDistanceToNow, parseISO, differenceInYears } from 'date-fns'
+import { format, formatDistanceToNow, parseISO } from 'date-fns'
 import type { CoreContent } from 'pliny/utils/contentlayer.js'
 import type { Blog } from 'contentlayer/generated'
 
@@ -10,24 +10,16 @@ interface BlogPostItemProps {
 }
 
 export default function BlogPostItem({ post }: BlogPostItemProps) {
-  // Format the date as "time ago" with special handling for older posts
-  const formatTimeAgo = (dateString: string) => {
-    const date = parseISO(dateString)
-    const now = new Date()
-
-    // If the date is more than a year old or in the future
-    if (differenceInYears(now, date) >= 1 || date > now) {
-      return 'a while ago'
-    }
-
-    return formatDistanceToNow(date, { addSuffix: true })
-  }
+  const postDate = parseISO(post.date)
+  const formattedShortDate = format(postDate, 'MMM d')
+  const formattedRelativeDate = formatDistanceToNow(postDate, { addSuffix: true })
 
   return (
     <div className="py-4 first:pt-0 last:pb-0">
       <div className="mb-2 flex items-center text-sm text-muted-foreground">
         <CalendarIcon className="mr-1 h-3 w-3" />
-        <span>{formatTimeAgo(post.date)}</span>
+        {/* Display both short and relative dates */}
+        <span>{`${formattedShortDate} (${formattedRelativeDate})`}</span>
         {post.readingTime?.text && (
           <>
             <span className="mx-2">•</span>

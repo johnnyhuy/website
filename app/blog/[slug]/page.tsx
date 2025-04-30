@@ -32,6 +32,7 @@ import { coreContent } from 'pliny/utils/contentlayer.js'
 import siteMetadata from '@/data/siteMetadata'
 import { Comments, CommentsConfig } from 'pliny/comments/index.js'
 import { components } from '@/components/mdx-components'
+import { format, formatDistanceToNow } from 'date-fns'
 
 export default function BlogPostPage({ params }: { params: Promise<{ slug: string | string[] }> }) {
   const { slug } = use(params)
@@ -105,6 +106,10 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
     ? allAuthors.find((a) => a.slug === authorId || a.name === authorId)
     : null
 
+  const postDate = new Date(post.date)
+  const formattedShortDate = format(postDate, 'MMM d')
+  const formattedRelativeDate = formatDistanceToNow(postDate, { addSuffix: true })
+
   return (
     <div className="pt-20 pb-16 md:pt-24">
       <div className="container mx-auto px-4">
@@ -126,7 +131,8 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
               <div className="mb-2 flex items-center space-x-4 sm:mb-0">
                 <div className="flex items-center">
                   <Calendar className="mr-1 h-3 w-3" />
-                  <span>{post.date}</span>
+                  {/* Display both short and relative dates */}
+                  <span>{`${formattedShortDate} (${formattedRelativeDate})`}</span>
                 </div>
                 <div className="flex items-center">
                   <Clock className="mr-1 h-3 w-3" />
@@ -140,24 +146,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                   TLDR Mode
                 </Label>
                 <Switch id="tldr-mode" checked={showTldr} onCheckedChange={handleTldrToggle} />
-              </div>
-            </div>
-
-            <div className="mb-4 flex items-center md:mb-6">
-              <div className="relative mr-3 h-10 w-10 overflow-hidden rounded-full">
-                <Image
-                  src={author?.avatar || '/placeholder.svg'}
-                  alt={author?.name || 'Author'}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <div>
-                <div className="font-medium">{author?.name}</div>
-                <div className="text-muted-foreground text-sm">
-                  {author?.occupation}
-                  {author?.company ? `, ${author.company}` : ''}
-                </div>
               </div>
             </div>
 
@@ -190,7 +178,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="hover:text-accent flex w-full items-center text-sm sm:w-auto mt-3 self-end sm:mt-0 sm:self-auto"
+                  className="hover:text-accent mt-3 flex w-full items-center self-end text-sm sm:mt-0 sm:w-auto sm:self-auto"
                   onClick={() => handleTldrToggle(true)}
                 >
                   <span className="mr-1">Show only TLDR</span>
@@ -357,107 +345,57 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             </div>
           )}
 
-          {/* Article footer - only show in full content mode */}
-          {!showTldr && (
-            <footer className="border-border mb-8 border-t pt-6 md:mb-12 md:pt-8">
-              <div className="flex flex-wrap items-center justify-between">
-                <div className="mb-4 flex w-full flex-wrap gap-2 sm:w-auto md:mb-0">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex flex-1 items-center sm:flex-auto"
-                  >
-                    <Heart className="mr-1 h-4 w-4" />
-                    <span>Like</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex flex-1 items-center sm:flex-auto"
-                  >
-                    <Bookmark className="mr-1 h-4 w-4" />
-                    <span>Save</span>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="flex flex-1 items-center sm:flex-auto"
-                  >
-                    <Share2 className="mr-1 h-4 w-4" />
-                    <span>Share</span>
-                  </Button>
-                </div>
-
-                <div className="flex space-x-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="rounded-full"
-                    onClick={() => handleCopy('linkedin')}
-                  >
-                    {copied === 'linkedin' ? (
-                      <Check className="h-4 w-4" />
-                    ) : (
-                      <SiLinkedin className="h-4 w-4" />
-                    )}
-                    <span className="sr-only">Share on LinkedIn</span>
-                  </Button>
-                </div>
+          {/* Related posts - only show in full content mode */}
+          {!showTldr && Array.isArray(post.relatedPosts) && post.relatedPosts.length > 0 && (
+            <div className="mx-auto mb-8 max-w-4xl md:mb-12">
+              <h2 className="mb-4 text-2xl font-bold md:mb-6">Related Posts</h2>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
+                {post.relatedPosts.map((relatedPost: any) => (
+                  <Card key={relatedPost.id} className="overflow-hidden">
+                    <CardContent className="p-4 md:p-6">
+                      <div className="text-muted-foreground mb-2 flex items-center text-sm">
+                        <Calendar className="mr-1 h-3 w-3" />
+                        <span>{relatedPost.date}</span>
+                        <span className="mx-2">•</span>
+                        <Clock className="mr-1 h-3 w-3" />
+                        <span>{relatedPost.readingTime?.text}</span>
+                      </div>
+                      <h3 className="mb-2 text-lg font-bold md:text-xl">
+                        <Link
+                          href={`/blog/${relatedPost.id}`}
+                          className="hover:text-accent transition-colors"
+                        >
+                          {relatedPost.title}
+                        </Link>
+                      </h3>
+                      <p className="text-muted-foreground mb-4">{relatedPost.excerpt}</p>
+                      <TechStack technologies={relatedPost.tags} size="sm" />
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            </footer>
+            </div>
+          )}
+
+          {/* Comments section - only show in full content mode */}
+          {!showTldr && (
+            <div className="mx-auto max-w-4xl">
+              <div className="mb-4 flex flex-wrap items-center justify-between md:mb-6">
+                <h2 className="mb-2 text-2xl font-bold sm:mb-0">Comments</h2>
+              </div>
+              <Comments commentsConfig={siteMetadata.comments as CommentsConfig} slug={slugStr} />
+            </div>
           )}
         </article>
 
-        {/* Related posts - only show in full content mode */}
-        {!showTldr && Array.isArray(post.relatedPosts) && post.relatedPosts.length > 0 && (
-          <div className="mx-auto mb-8 max-w-4xl md:mb-12">
-            <h2 className="mb-4 text-2xl font-bold md:mb-6">Related Posts</h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
-              {post.relatedPosts.map((relatedPost: any) => (
-                <Card key={relatedPost.id} className="overflow-hidden">
-                  <CardContent className="p-4 md:p-6">
-                    <div className="text-muted-foreground mb-2 flex items-center text-sm">
-                      <Calendar className="mr-1 h-3 w-3" />
-                      <span>{relatedPost.date}</span>
-                      <span className="mx-2">•</span>
-                      <Clock className="mr-1 h-3 w-3" />
-                      <span>{relatedPost.readingTime?.text}</span>
-                    </div>
-                    <h3 className="mb-2 text-lg font-bold md:text-xl">
-                      <Link
-                        href={`/blog/${relatedPost.id}`}
-                        className="hover:text-accent transition-colors"
-                      >
-                        {relatedPost.title}
-                      </Link>
-                    </h3>
-                    <p className="text-muted-foreground mb-4">{relatedPost.excerpt}</p>
-                    <TechStack technologies={relatedPost.tags} size="sm" />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Background wavy line */}
+        <div className="pointer-events-none fixed inset-0 z-[-1]">
+          <WavyLine className="absolute inset-0 opacity-5" animated={false} />
+        </div>
 
-        {/* Comments section - only show in full content mode */}
-        {!showTldr && (
-          <div className="mx-auto max-w-4xl">
-            <div className="mb-4 flex flex-wrap items-center justify-between md:mb-6">
-              <h2 className="mb-2 text-2xl font-bold sm:mb-0">Comments</h2>
-            </div>
-            <Comments commentsConfig={siteMetadata.comments as CommentsConfig} slug={slugStr} />
-          </div>
-        )}
+        {/* Floating Theme Toggle */}
+        <FloatingThemeToggle position="bottom-right" />
       </div>
-
-      {/* Background wavy line */}
-      <div className="pointer-events-none fixed inset-0 z-[-1]">
-        <WavyLine className="absolute inset-0 opacity-5" animated={false} />
-      </div>
-
-      {/* Floating Theme Toggle */}
-      <FloatingThemeToggle position="bottom-right" />
     </div>
   )
 }
