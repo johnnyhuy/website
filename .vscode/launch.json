@@ -20,8 +20,18 @@
             "sourceMaps": true
         },
         {
-            "name": "Next.js: debug client-side",
+            "name": "Next.js: debug client-side (Chrome)",
             "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}",
+            "sourceMapPathOverrides": {
+                "webpack://_N_E/*": "${webRoot}/*"
+            }
+        },
+        {
+            "name": "Next.js: debug client-side (Edge)",
+            "type": "msedge",
             "request": "launch",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}",
@@ -58,7 +68,8 @@
             "name": "Next.js: Full",
             "configurations": [
                 "Next.js: debug server-side",
-                "Next.js: debug client-side"
+                "Next.js: debug client-side (Chrome)",
+                "Next.js: debug client-side (Edge)"
             ]
         }
     ]
