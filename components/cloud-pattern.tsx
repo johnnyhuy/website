@@ -9,17 +9,22 @@ interface CloudPatternProps {
 
 export default function CloudPattern({ className = '' }: CloudPatternProps) {
   const { resolvedTheme } = useTheme()
+  if (!resolvedTheme || resolvedTheme === 'system') return null
   const fillColor = resolvedTheme === 'dark' ? 'var(--color-white)' : 'var(--color-gray-900)'
   const patternId = useId()
   const [offset, setOffset] = useState(0)
   const rafRef = useRef<number>(0)
+  const startTimeRef = useRef<number | null>(null)
 
   useEffect(() => {
-    let last = performance.now()
     function animate(now: number) {
-      const delta = now - last
-      last = now
-      setOffset((prev) => (prev + (delta * 8) / 1000) % 56)
+      if (startTimeRef.current === null) {
+        startTimeRef.current = now
+      }
+      const elapsed = now - startTimeRef.current
+      // 8 px per second, loop every 56 px
+      const offsetValue = ((elapsed * 8) / 1000) % 56
+      setOffset(offsetValue)
       rafRef.current = requestAnimationFrame(animate)
     }
     rafRef.current = requestAnimationFrame(animate)
@@ -27,10 +32,10 @@ export default function CloudPattern({ className = '' }: CloudPatternProps) {
       if (rafRef.current !== undefined) {
         cancelAnimationFrame(rafRef.current)
       }
+      startTimeRef.current = null
     }
   }, [])
 
-  // Compose the pattern transform: translate first, then rotate
   const patternTransform = `translate(${offset},${offset}) rotate(-30)`
 
   return (
