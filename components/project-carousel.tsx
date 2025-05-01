@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { ArrowRight, Github, ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { projects } from "@/data/projects"
 
 type Project = {
   id: number
@@ -12,30 +13,6 @@ type Project = {
   githubUrl: string
   techStack: string[]
 }
-
-const projects: Project[] = [
-  {
-    id: 1,
-    title: "AI Transcription Tooling",
-    description: "Open-source AI-powered transcription tools for converting audio to text with high accuracy.",
-    githubUrl: "https://github.com/johnnyhuy/ai-transcription",
-    techStack: ["TypeScript", "React", "Node.js", "AI"],
-  },
-  {
-    id: 2,
-    title: "Cloud Infrastructure as Code",
-    description: "Terraform modules for deploying scalable and secure infrastructure on AWS, Azure, and GCP.",
-    githubUrl: "https://github.com/johnnyhuy/cloud-iac",
-    techStack: ["Terraform", "AWS", "Azure", "GCP", "Python"],
-  },
-  {
-    id: 3,
-    title: "Kubernetes Operator Framework",
-    description: "A framework for building Kubernetes operators to automate application lifecycle management.",
-    githubUrl: "https://github.com/johnnyhuy/k8s-operator",
-    techStack: ["Go", "Kubernetes", "Docker", "Helm"],
-  },
-]
 
 export default function ProjectCarousel() {
   const [activeIndex, setActiveIndex] = useState(0)
