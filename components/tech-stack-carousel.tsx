@@ -3,18 +3,14 @@
 import React from 'react'
 import { useEffect, useRef, useState } from 'react'
 import { useTheme } from 'next-themes'
-
-interface TechStackItemProp {
-  name: string
-  iconElement: JSX.Element | null
-}
+import { getTagIcon } from '@/components/tag-icons'
 
 export default function TechStackCarousel({
   direction = 'ltr',
   techStack,
 }: {
   direction?: 'ltr' | 'rtl'
-  techStack?: TechStackItemProp[]
+  techStack?: { name: string }[]
 }) {
   const stack = techStack || []
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -77,18 +73,21 @@ export default function TechStackCarousel({
         className="scrollbar-hide flex w-[400px] space-x-4 overflow-x-auto md:space-x-6"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {[...stack, ...stack].map((tech, index) => (
-          <div
-            key={`${tech.name}-${index}`}
-            className="bg-secondary/50 hover:bg-secondary flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-lg transition-colors md:h-16 md:w-16"
-            title={tech.name}
-          >
-            {tech.iconElement ? tech.iconElement : <span className="text-xs text-gray-500">?</span>}
-            <span className="text-muted-foreground mt-1 max-w-full truncate px-1 text-[10px] md:text-xs">
-              {tech.name}
-            </span>
-          </div>
-        ))}
+        {[...stack, ...stack].map((item, index) => {
+          const IconComponent = getTagIcon(item.name)
+          if (!IconComponent) {
+            return null
+          }
+          return (
+            <div
+              key={`${item.name}-${index}`}
+              className={`tech-icon-item flex h-10 w-10 items-center justify-center rounded-lg p-2 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition-colors duration-200`}
+              title={item.name}
+            >
+              <IconComponent className="h-full w-full object-contain" />
+            </div>
+          )
+        })}
       </div>
 
       <div className="from-background absolute top-0 left-0 z-10 h-full w-8 bg-linear-to-r to-transparent"></div>
