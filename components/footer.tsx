@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Github, Linkedin, RssIcon, Code, BookOpen, Laptop } from 'lucide-react'
+import { LuLinkedin, LuRss, LuCode, LuBookOpen, LuLaptop, LuGithub } from 'react-icons/lu'
 import WavyLine from '@/components/wavy-line'
 
 const Footer = () => {
@@ -33,7 +33,8 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 aria-label="GitHub"
               >
-                <Github className="hover:text-primary h-5 w-5 transition-colors" />
+                <LuGithub className="hover:text-primary h-5 w-5 transition-colors" />
+                <span className="sr-only">Github</span>
               </Link>
               <Link
                 href="https://linkedin.com/in/johnnyhuy"
@@ -41,7 +42,8 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
               >
-                <Linkedin className="hover:text-primary h-5 w-5 transition-colors" />
+                <LuLinkedin className="hover:text-primary h-5 w-5 transition-colors" />
+                <span className="sr-only">LinkedIn</span>
               </Link>
             </div>
             <p className="text-muted-foreground text-sm">
@@ -59,7 +61,7 @@ const Footer = () => {
             </p>
             <Link href="/rss.xml">
               <div className="bg-secondary hover:bg-secondary/80 inline-flex items-center gap-2 rounded-md px-4 py-2 transition-colors">
-                <RssIcon className="h-4 w-4" />
+                <LuRss className="h-4 w-4" />
                 <span>Subscribe to RSS Feed</span>
               </div>
             </Link>
@@ -73,28 +75,28 @@ const Footer = () => {
                 href="/blog?tag=DevOps"
                 className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
               >
-                <Code className="h-4 w-4" />
+                <LuCode className="h-4 w-4" />
                 <span className="text-sm">DevOps</span>
               </Link>
               <Link
                 href="/blog?tag=Kubernetes"
                 className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
               >
-                <Laptop className="h-4 w-4" />
+                <LuLaptop className="h-4 w-4" />
                 <span className="text-sm">Kubernetes</span>
               </Link>
               <Link
                 href="/blog?tag=Cloud"
                 className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
               >
-                <BookOpen className="h-4 w-4" />
+                <LuBookOpen className="h-4 w-4" />
                 <span className="text-sm">Cloud</span>
               </Link>
               <Link
                 href="/blog?tag=Architecture"
                 className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
               >
-                <Code className="h-4 w-4" />
+                <LuCode className="h-4 w-4" />
                 <span className="text-sm">Architecture</span>
               </Link>
             </div>

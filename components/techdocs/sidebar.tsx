@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { Search, Book, ChevronDown, ChevronRight, Menu, X } from 'lucide-react'
+import { LuSearch, LuBook, LuChevronDown, LuChevronRight, LuMenu, LuX } from 'react-icons/lu'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 
@@ -84,7 +84,7 @@ export default function TechDocsSidebar({ categories }: TechDocsSidebarProps) {
           aria-label="Toggle documentation menu"
           className="bg-background/80 backdrop-blur-xs"
         >
-          {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          {isMobileMenuOpen ? <LuX className="h-5 w-5" /> : <LuMenu className="h-5 w-5" />}
         </Button>
       </div>
 
@@ -97,11 +97,11 @@ export default function TechDocsSidebar({ categories }: TechDocsSidebarProps) {
       >
         <div className="bg-background border-border sticky top-0 z-10 border-b p-4">
           <Link href="/techdocs" className="mb-4 flex items-center gap-2 text-lg font-bold">
-            <Book className="h-5 w-5" />
+            <LuBook className="h-5 w-5" />
             <span>Tech Docs</span>
           </Link>
           <div className="relative">
-            <Search className="text-muted-foreground absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 transform" />
+            <LuSearch className="text-muted-foreground absolute top-1/2 left-2 h-4 w-4 -translate-y-1/2 transform" />
             <Input
               type="search"
               placeholder="Search docs..."
@@ -142,9 +142,9 @@ export default function TechDocsSidebar({ categories }: TechDocsSidebarProps) {
                     <span className="text-muted-foreground ml-1 text-xs">({category.count})</span>
                   </Link>
                   {expandedCategories[category.slug] ? (
-                    <ChevronDown className="h-4 w-4" />
+                    <LuChevronDown className="h-4 w-4" />
                   ) : (
-                    <ChevronRight className="h-4 w-4" />
+                    <LuChevronRight className="h-4 w-4" />
                   )}
                 </div>
 

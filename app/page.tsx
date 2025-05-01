@@ -1,16 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import {
-  ArrowRight,
-  Github,
-  Linkedin,
-  Search,
-  Laptop,
-  Briefcase,
-  BookOpen,
-  ExternalLink,
-  LucideCode2,
-} from 'lucide-react'
+import { LuArrowRight, LuLinkedin, LuSearch, LuLaptop, LuBookOpen } from 'react-icons/lu'
+import { LuGithub } from 'react-icons/lu'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import GithubCalendar from '@/components/github-calendar'
@@ -87,7 +78,7 @@ export default function Home() {
                     rel="noopener noreferrer"
                   >
                     <Button size="sm" variant="outline">
-                      <Github className="mr-2 h-4 w-4" />
+                      <LuGithub className="mr-2 h-4 w-4" />
                       GitHub
                     </Button>
                   </Link>
@@ -97,14 +88,14 @@ export default function Home() {
                     rel="noopener noreferrer"
                   >
                     <Button size="sm" variant="outline">
-                      <Linkedin className="mr-2 h-4 w-4" />
+                      <LuLinkedin className="mr-2 h-4 w-4" />
                       LinkedIn
                     </Button>
                   </Link>
                   <Link href="/projects">
                     <Button size="sm">
                       <span className="mr-1">Projects</span>
-                      <ArrowRight className="h-3 w-3" />
+                      <LuArrowRight className="h-3 w-3" />
                     </Button>
                   </Link>
                 </div>
@@ -127,27 +118,14 @@ export default function Home() {
               </h3>
               <div className="space-y-4">
                 <GithubCalendar username="johnnyhuy" />
-                <div className="text-center">
-                  <a
-                    href="https://github.com/johnnyhuy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block"
-                  >
-                    <Button variant="outline" size="sm" className="text-xs">
-                      View all activity
-                      <ExternalLink className="ml-1 h-3 w-3" />
-                    </Button>
-                  </a>
-                </div>
               </div>
             </CardContent>
           </Card>
           <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-6">
             <CardContent className="p-4">
               <h3 className="mb-3 flex items-center text-lg font-medium">
-                <Laptop className="mr-2 h-4 w-4" />
-                Current Projects
+                <LuLaptop className="mr-2 h-8 w-8" />
+                What I'm working on
               </h3>
               <ProjectCarousel />
             </CardContent>
@@ -162,7 +140,7 @@ export default function Home() {
           <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-4">
             <CardContent className="flex h-full flex-row items-start gap-4 p-4">
               <TechStackCarousel direction="ltr" techStack={sortedTechs} />
-              <LucideCode2 className="h-8 w-8" />
+              {/* <LucideCode2 className="h-8 w-8" /> */}
             </CardContent>
           </Card>
           <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-4">
@@ -182,11 +160,11 @@ export default function Home() {
                     className="text-primary mt-2 inline-flex items-center text-xs"
                   >
                     View resume
-                    <ArrowRight className="ml-1 h-3 w-3" />
+                    <LuArrowRight className="ml-1 h-3 w-3" />
                   </Link>
                 </div>
               </div>
-              <Briefcase className="h-8 w-8" />
+              {/* <Briefcase className="h-8 w-8" /> */}
             </CardContent>
           </Card>
 
@@ -206,14 +184,14 @@ export default function Home() {
             <CardContent className="p-4">
               <div className="mb-4 flex flex-wrap items-center justify-between">
                 <h3 className="mb-2 flex items-center text-lg font-medium sm:mb-0">
-                  <BookOpen className="mr-2 h-4 w-4" />
+                  <LuBookOpen className="mr-2 h-4 w-4" />
                   Read Blogs
                 </h3>
                 <div className="flex w-full items-center gap-2 sm:w-auto">
                   <Link href="/blog" className="flex-1 sm:flex-auto">
                     <Button variant="ghost" size="sm" className="w-full gap-1 sm:w-auto">
                       View all
-                      <ArrowRight className="h-3 w-3" />
+                      <LuArrowRight className="h-3 w-3" />
                     </Button>
                   </Link>
                   <Link href="/blog/random" className="flex-1 sm:flex-auto">
@@ -227,7 +205,7 @@ export default function Home() {
               {/* Search Bar */}
               <div className="relative mb-6">
                 <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-                  <Search className="text-muted-foreground h-4 w-4" />
+                  <LuSearch className="text-muted-foreground h-4 w-4" />
                 </div>
                 <Link href="/blog" className="block">
                   <div className="border-input bg-background hover:bg-secondary/50 flex h-10 w-full cursor-pointer items-center rounded-md border px-3 py-2 pl-10 text-sm transition-colors">
@@ -250,7 +228,7 @@ export default function Home() {
         {/* Experience Section */}
         <section className="border-border mt-8 border-t pt-8 md:mt-12 md:pt-12">
           <h2 className="mb-6 flex items-center text-2xl font-bold md:mb-8 md:text-3xl">
-            <Briefcase className="mr-2 h-5 w-5 md:mr-3 md:h-6 md:w-6" />
+            {/* <Briefcase className="mr-2 h-5 w-5 md:mr-3 md:h-6 md:w-6" /> */}
             Experience
           </h2>
           <ExperienceTimeline />
