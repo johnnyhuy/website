@@ -82,7 +82,7 @@ export default function TechStackCarousel({
           return (
             <div
               key={`${item.name}-${index}`}
-              className={`flex items-center justify-center rounded-lg p-2 text-gray-500 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition-colors duration-200`}
+              className={`flex items-center justify-center rounded-lg p-2 text-white ${theme === 'dark' ? 'bg-gray-400 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition-colors duration-200`}
               title={item.name}
             >
               <IconComponent className="h-10 w-10 object-contain" />

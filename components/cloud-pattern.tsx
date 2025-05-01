@@ -9,7 +9,7 @@ interface CloudPatternProps {
 
 export default function CloudPattern({ className = '' }: CloudPatternProps) {
   const { resolvedTheme } = useTheme()
-  const fillColor = resolvedTheme === 'dark' ? 'var(--color-gray-100)' : 'var(--color-gray-900)'
+  const fillColor = resolvedTheme === 'dark' ? 'var(--color-white)' : 'var(--color-gray-900)'
   const patternId = useId()
   const [offset, setOffset] = useState(0)
   const rafRef = useRef<number>(0)
