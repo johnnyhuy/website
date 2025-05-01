@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { LuLinkedin, LuRss, LuCode, LuBookOpen, LuLaptop, LuGithub } from 'react-icons/lu'
 import WavyLine from '@/components/wavy-line'
+import { profile } from '@/data/profile'
 
 const Footer = () => {
   return (
@@ -15,36 +16,39 @@ const Footer = () => {
           <div className="md:col-span-5 lg:col-span-4">
             <div className="mb-4 flex items-center gap-3">
               <div className="border-primary/10 relative h-12 w-12 overflow-hidden rounded-full border-2">
-                <Image src="/images/me.jpg" alt="Johnny Huynh" fill className="object-cover" />
+                <Image src={profile.avatar} alt={profile.name} fill className="object-cover" />
               </div>
               <div>
-                <h3 className="text-xl font-bold">Johnny Huynh</h3>
-                <p className="text-muted-foreground text-sm">Principal Engineer</p>
+                <h3 className="text-xl font-bold">{profile.name}</h3>
+                <p className="text-muted-foreground text-sm">{profile.jobTitle}</p>
               </div>
             </div>
             <p className="text-muted-foreground mb-6 max-w-md">
-              Dynamic and skilled Principal Software Engineer with over 6 years of experience in
-              platform engineering.
+              {profile.bio}
             </p>
             <div className="mb-6 flex space-x-4">
-              <Link
-                href="https://github.com/johnnyhuy"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub"
-              >
-                <LuGithub className="hover:text-primary h-5 w-5 transition-colors" />
-                <span className="sr-only">Github</span>
-              </Link>
-              <Link
-                href="https://linkedin.com/in/johnnyhuy"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn"
-              >
-                <LuLinkedin className="hover:text-primary h-5 w-5 transition-colors" />
-                <span className="sr-only">LinkedIn</span>
-              </Link>
+              {profile.github && (
+                <Link
+                  href={profile.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="GitHub"
+                >
+                  <LuGithub className="hover:text-primary h-5 w-5 transition-colors" />
+                  <span className="sr-only">Github</span>
+                </Link>
+              )}
+              {profile.linkedin && (
+                <Link
+                  href={profile.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="LinkedIn"
+                >
+                  <LuLinkedin className="hover:text-primary h-5 w-5 transition-colors" />
+                  <span className="sr-only">LinkedIn</span>
+                </Link>
+              )}
             </div>
             <p className="text-muted-foreground text-sm">
               For recruitment and job opportunities, please contact me via LinkedIn only. I don't
@@ -105,7 +109,7 @@ const Footer = () => {
 
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
           <p className="text-muted-foreground text-sm">
-            &copy; {new Date().getFullYear()} Johnny Huynh. All rights reserved.
+            &copy; {new Date().getFullYear()} {profile.name}. All rights reserved.
           </p>
           <div className="flex items-center gap-4 text-sm">
             <Link

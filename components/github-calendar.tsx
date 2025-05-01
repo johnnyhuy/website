@@ -5,14 +5,13 @@ import { type FunctionComponent, useCallback, useEffect, useState } from 'react'
 import Calendar, { type Props as ActivityCalendarProps } from 'react-activity-calendar'
 import { SiDiscord } from 'react-icons/si'
 import { useTheme } from 'next-themes'
+import { profile } from '@/data/profile'
 
 // Adopted from https://github.com/grubersjoe/react-github-calendar & https://github.com/jktrn/enscribe.dev
 // All credit to the original authors
 // All legal rights reserved to the original authors
 
-interface Props extends Omit<ActivityCalendarProps, 'data' | 'theme'> {
-  username: string
-}
+interface Props extends Omit<ActivityCalendarProps, 'data' | 'theme'> {}
 
 async function fetchCalendarData(username: string): Promise<ApiResponse> {
   const response = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=all`)
@@ -29,7 +28,7 @@ async function fetchCalendarData(username: string): Promise<ApiResponse> {
   return data as ApiResponse
 }
 
-const GithubCalendar: FunctionComponent<Props> = ({ username, ...props }) => {
+const GithubCalendar: FunctionComponent<Props> = (props) => {
   const { resolvedTheme } = useTheme()
   const [data, setData] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
@@ -55,11 +54,11 @@ const GithubCalendar: FunctionComponent<Props> = ({ username, ...props }) => {
   const fetchData = useCallback(() => {
     setLoading(true)
     setError(null)
-    fetchCalendarData(username)
+    fetchCalendarData(profile.githubUsername)
       .then(setData)
       .catch(setError)
       .finally(() => setLoading(false))
-  }, [username])
+  }, [])
 
   useEffect(fetchData, [fetchData])
 
@@ -70,7 +69,7 @@ const GithubCalendar: FunctionComponent<Props> = ({ username, ...props }) => {
         <p className="text-muted-foreground w-48 text-center text-sm sm:w-64">
           This component is down. Please DM me on{' '}
           <a
-            href="https://discord.com/users/183829779810615297"
+            href={profile.discord.link}
             target="_blank"
             rel="noopener noreferrer"
             className="text-primary underline"

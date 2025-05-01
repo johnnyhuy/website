@@ -19,4 +19,26 @@ export const profile = {
   medium: '',
   bluesky: '',
   locale: 'en-US',
+  jobTitle: 'Principal Engineer',
+  bio: 'Dynamic and skilled Principal Software Engineer with over 6 years of industry experience in platform engineering. Eager to leverage expertise in high-impact, cutting-edge technology projects.',
+  title: 'Principal Engineer',
+  discord: {
+    username: 'johnnyhuy',
+    userId: '183829779810615297',
+    link: 'https://discord.com/users/183829779810615297',
+  },
+  links: [
+    {
+      label: 'GitHub',
+      href: 'https://github.com/johnnyhuy',
+      icon: 'github', // Use icon string for mapping or dynamic import
+    },
+    {
+      label: 'LinkedIn',
+      href: 'https://linkedin.com/in/johnnyhuy',
+      icon: 'linkedin',
+    },
+  ],
+  contactNote: 'For recruitment and job opportunities, please contact me via LinkedIn only.',
+  githubUsername: 'johnnyhuy',
 };

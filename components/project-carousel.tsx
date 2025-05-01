@@ -1,18 +1,10 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { ArrowRight, Github, ChevronLeft, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { projects } from "@/data/projects"
-
-type Project = {
-  id: number
-  title: string
-  description: string
-  githubUrl: string
-  techStack: string[]
-}
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import { ArrowRight, Github, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { projects } from '@/data/projects'
 
 export default function ProjectCarousel() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -57,20 +49,22 @@ export default function ProjectCarousel() {
           <div className="flex">
             {projects.map((project) => (
               <div key={project.id} className="w-full shrink-0">
-                <div className="rounded-xl bg-secondary/50 p-4">
-                  <div className="flex items-center justify-between mb-2">
+                <div className="bg-secondary/50 rounded-xl p-4">
+                  <div className="mb-2 flex items-center justify-between">
                     <h4 className="font-medium">{project.title}</h4>
-                    <Link href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0 rounded-full">
-                        <Github className="h-4 w-4" />
-                        <span className="sr-only">GitHub</span>
-                      </Button>
-                    </Link>
+                    {project.githubUrl && (
+                      <Link href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                        <Button size="sm" variant="ghost" className="h-8 w-8 rounded-full p-0">
+                          <Github className="h-4 w-4" />
+                          <span className="sr-only">GitHub</span>
+                        </Button>
+                      </Link>
+                    )}
                   </div>
-                  <p className="text-sm text-muted-foreground mb-3">{project.description}</p>
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    {project.techStack.map((tech) => (
-                      <span key={tech} className="text-xs px-2 py-1 bg-primary/10 rounded-full">
+                  <p className="text-muted-foreground mb-3 text-sm">{project.description}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {project.techStack.map((tech: string) => (
+                      <span key={tech} className="bg-primary/10 rounded-full px-2 py-1 text-xs">
                         {tech}
                       </span>
                     ))}
@@ -83,8 +77,13 @@ export default function ProjectCarousel() {
       </div>
 
       {/* Navigation controls */}
-      <div className="flex items-center justify-between mt-3">
-        <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" onClick={goToPrevious}>
+      <div className="mt-3 flex items-center justify-between">
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-8 w-8 rounded-full"
+          onClick={goToPrevious}
+        >
           <ChevronLeft className="h-4 w-4" />
           <span className="sr-only">Previous project</span>
         </Button>
@@ -94,7 +93,7 @@ export default function ProjectCarousel() {
             <button
               key={index}
               className={`h-2 rounded-full transition-all ${
-                index === activeIndex ? "w-4 bg-accent" : "w-2 bg-muted hover:bg-muted-foreground"
+                index === activeIndex ? 'bg-accent w-4' : 'bg-muted hover:bg-muted-foreground w-2'
               }`}
               onClick={() => {
                 setActiveIndex(index)
@@ -110,15 +109,6 @@ export default function ProjectCarousel() {
           <ChevronRight className="h-4 w-4" />
           <span className="sr-only">Next project</span>
         </Button>
-      </div>
-
-      <div className="text-center mt-3">
-        <Link href="/projects">
-          <Button variant="link" size="sm" className="rounded-full">
-            View all projects
-            <ArrowRight className="ml-1 h-3 w-3" />
-          </Button>
-        </Link>
       </div>
     </div>
   )

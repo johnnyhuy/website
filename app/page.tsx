@@ -16,6 +16,11 @@ import { SiDiscord, SiGithub, SiWakatime } from 'react-icons/si'
 import { allBlogs } from 'contentlayer/generated'
 import type { Blog } from 'contentlayer/generated'
 import { CoreContent, allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
+import { profile } from '@/data/profile'
+import { projects } from '@/data/projects'
+import { experiences } from '@/data/experience'
+import headerNavLinks from '@/data/headerNavLinks'
+import { navbar } from '@/data/navbar'
 
 // Get the full data for the latest 3 posts from Contentlayer
 const sortedPosts = sortPosts(allBlogs)
@@ -52,8 +57,8 @@ export default function Home() {
             <CardContent className="flex flex-col items-center gap-4 p-4 md:flex-row md:items-start md:gap-6 md:p-6">
               <div className="relative h-24 w-24 shrink-0 md:h-32 md:w-32 lg:h-40 lg:w-40">
                 <Image
-                  src="/images/me.jpg"
-                  alt="Johnny Huynh"
+                  src={profile.avatar}
+                  alt={profile.name}
                   fill
                   className="rounded-2xl object-cover"
                   priority
@@ -61,37 +66,26 @@ export default function Home() {
               </div>
               <div className="text-center md:text-left">
                 <h1 className="mb-1 text-2xl font-bold md:mb-2 md:text-3xl lg:text-4xl">
-                  Johnny Huynh
+                  {profile.name}
                 </h1>
                 <h2 className="text-muted-foreground mb-2 text-lg md:mb-4 md:text-xl lg:text-2xl">
-                  Principal Engineer
+                  {profile.title}
                 </h2>
-                <p className="mb-3 max-w-xl text-sm md:mb-4 md:text-base">
-                  Dynamic and skilled Principal Software Engineer with over 6 years of industry
-                  experience in platform engineering. Eager to leverage expertise in high-impact,
-                  cutting-edge technology projects.
-                </p>
+                <p className="mb-3 max-w-xl text-sm md:mb-4 md:text-base">{profile.bio}</p>
                 <div className="flex flex-wrap justify-center gap-2 md:justify-start">
-                  <Link
-                    href="https://github.com/johnnyhuy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button size="sm" variant="outline">
-                      <LuGithub className="mr-2 h-4 w-4" />
-                      GitHub
-                    </Button>
-                  </Link>
-                  <Link
-                    href="https://linkedin.com/in/johnnyhuy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Button size="sm" variant="outline">
-                      <LuLinkedin className="mr-2 h-4 w-4" />
-                      LinkedIn
-                    </Button>
-                  </Link>
+                  {profile.links.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Button size="sm" variant="outline">
+                        {link.icon}
+                        {link.label}
+                      </Button>
+                    </Link>
+                  ))}
                   <Link href="/projects">
                     <Button size="sm">
                       <span className="mr-1">Projects</span>
@@ -99,9 +93,7 @@ export default function Home() {
                     </Button>
                   </Link>
                 </div>
-                <p className="text-muted-foreground mt-3 text-xs md:mt-4">
-                  For recruitment and job opportunities, please contact me via LinkedIn only.
-                </p>
+                <p className="text-muted-foreground mt-3 text-xs md:mt-4">{profile.contactNote}</p>
               </div>
             </CardContent>
           </Card>
@@ -117,7 +109,7 @@ export default function Home() {
                 <SiGithub className="mr-2 h-8 w-8" />
               </h3>
               <div className="space-y-4">
-                <GithubCalendar username="johnnyhuy" />
+                <GithubCalendar />
               </div>
             </CardContent>
           </Card>
@@ -150,10 +142,11 @@ export default function Home() {
                   <div className="text-xl font-bold">S</div>
                 </div>
                 <div>
-                  <h4 className="font-medium">Lead Engineer</h4>
-                  <p className="text-muted-foreground text-sm">Sportsbet</p>
+                  <h4 className="font-medium">{experiences[0].title}</h4>
+                  <p className="text-muted-foreground text-sm">{experiences[0].company}</p>
                   <p className="text-muted-foreground mt-1 text-xs">
-                    Dec 2021 - Present &middot; &gt; 2 yrs
+                    {experiences[0].startDate} - {experiences[0].endDate} &middot;{' '}
+                    {experiences[0].duration}
                   </p>
                   <Link
                     href="/resume"

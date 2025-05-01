@@ -9,13 +9,12 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import { EnhancedGlassEffect } from './enhanced-glass-effect'
+import { navbar } from '@/data/navbar'
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
-
-  const { theme, resolvedTheme } = useTheme()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,14 +25,7 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Removed Home from navLinks as requested
-  const navLinks = [
-    { name: 'Projects', path: '/projects' },
-    { name: 'Uses', path: '/uses' },
-    { name: 'Blog', path: '/blog' },
-    { name: 'TechDocs', path: '/techdocs' },
-    { name: 'Guestbook', path: '/guestbook' },
-  ]
+  const navLinks = navbar.navLinks
 
   return (
     <header
@@ -41,7 +33,6 @@ const Navbar = () => {
         isScrolled ? 'glass-nav py-2' : 'bg-transparent py-4'
       }`}
     >
-      {/* Add the EnhancedGlassEffect component inside the header, right after the opening tag */}
       <EnhancedGlassEffect isActive={isScrolled} />
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link href="/" className="text-xl font-bold">
@@ -66,7 +57,7 @@ const Navbar = () => {
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              {link.name}
+              <span className="text-lg">{link.name}</span>
             </Link>
           ))}
           <Link href="https://linkedin.com/in/johnnyhuy" target="_blank" rel="noopener noreferrer">
