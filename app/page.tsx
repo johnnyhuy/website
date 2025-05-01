@@ -26,7 +26,6 @@ import { allBlogs } from 'contentlayer/generated'
 import type { Blog } from 'contentlayer/generated'
 import { allTeches } from 'contentlayer/generated'
 import type { Tech } from 'contentlayer/generated'
-import { getTagIcon } from '@/components/tag-icons'
 import { CoreContent, allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 
 // Get the full data for the latest 3 posts from Contentlayer
@@ -36,13 +35,6 @@ const featuredPostsData: CoreContent<Blog>[] = corePosts.slice(0, 3)
 
 // Fetch and sort tech stack data from Contentlayer
 const sortedTechs = allTeches.sort((a: Tech, b: Tech) => a.name.localeCompare(b.name))
-const techStackWithIcons = sortedTechs.map((tech: Tech) => ({
-  name: tech.name,
-  iconElement: getTagIcon(tech.name),
-}))
-
-// Split tech stack for carousels
-const techStack = techStackWithIcons.slice(0, techStackWithIcons.length)
 
 export default function Home() {
   return (
@@ -155,7 +147,7 @@ export default function Home() {
           </Card>
           <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-4">
             <CardContent className="flex h-full flex-row items-start gap-4 p-4">
-              <TechStackCarousel direction="ltr" techStack={techStack} />
+              <TechStackCarousel direction="ltr" techStack={sortedTechs} />
               <LucideCode2 className="h-8 w-8" />
             </CardContent>
           </Card>

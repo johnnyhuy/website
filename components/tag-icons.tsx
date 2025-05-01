@@ -1,5 +1,14 @@
-import { JSX } from 'react'
+'use client'
 import { type IconType } from 'react-icons/lib'
+import {
+  FaBook,
+  FaBookmark,
+  FaCalculator,
+  FaCode,
+  FaImage,
+  FaPenSquare,
+  FaStar,
+} from 'react-icons/fa'
 import {
   SiAstro,
   SiAmazon,
@@ -9,6 +18,7 @@ import {
   SiCss3,
   SiDocker,
   SiFigma,
+  SiGithub,
   SiGit,
   SiGraphql,
   SiHtml5,
@@ -31,7 +41,7 @@ import {
   SiYaml,
 } from 'react-icons/si'
 
-export const languageIcons: { [key: string]: IconType } = {
+export const tagIconsMap: { [key: string]: IconType } = {
   astro: SiAstro,
   html: SiHtml5,
   css: SiCss3,
@@ -63,15 +73,24 @@ export const languageIcons: { [key: string]: IconType } = {
   terraform: SiTerraform,
   graphql: SiGraphql,
   mongodb: SiMongodb,
+  github: SiGithub,
+  guide: FaBookmark,
+  feature: FaStar,
+  features: FaStar,
+  code: FaCode,
+  math: FaCalculator,
+  images: FaImage,
+  book: FaBook,
+  writings: FaPenSquare,
 }
 
-export const getTagIcon = (language: string): IconType | null => {
-  // Normalize the language string: lowercase and handle common variations
-  const normalizedLanguage = language.toLowerCase().replace(/ /g, '').replace('dot', '.')
+export const getTagIcon = (tag: string): IconType | null => {
+  // Normalize the tag string: lowercase and handle common variations
+  const normalizedTag = tag.toLowerCase().replace(/ /g, '').replace('dot', '.')
   const Icon =
-    languageIcons[normalizedLanguage] ||
+    tagIconsMap[normalizedTag] ||
     // Attempt lookup with original lowercase if normalized fails (e.g., 'c++')
-    languageIcons[language.toLowerCase()]
+    tagIconsMap[tag.toLowerCase()]
 
   return Icon ? Icon : null
 }
