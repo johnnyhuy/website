@@ -75,16 +75,17 @@ export default function TechStackCarousel({
       >
         {[...stack, ...stack].map((item, index) => {
           const IconComponent = getTagIcon(item.name)
+
           if (!IconComponent) {
             return null
           }
           return (
             <div
               key={`${item.name}-${index}`}
-              className={`tech-icon-item flex h-10 w-10 items-center justify-center rounded-lg p-2 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition-colors duration-200`}
+              className={`flex items-center justify-center rounded-lg p-2 text-gray-500 ${theme === 'dark' ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition-colors duration-200`}
               title={item.name}
             >
-              <IconComponent className="h-full w-full object-contain" />
+              <IconComponent className="h-10 w-10 object-contain" />
             </div>
           )
         })}

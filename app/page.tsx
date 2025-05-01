@@ -24,8 +24,6 @@ import ProjectCarousel from '@/components/project-carousel'
 import { SiDiscord, SiGithub, SiWakatime } from 'react-icons/si'
 import { allBlogs } from 'contentlayer/generated'
 import type { Blog } from 'contentlayer/generated'
-import { allTeches } from 'contentlayer/generated'
-import type { Tech } from 'contentlayer/generated'
 import { CoreContent, allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 
 // Get the full data for the latest 3 posts from Contentlayer
@@ -33,8 +31,25 @@ const sortedPosts = sortPosts(allBlogs)
 const corePosts = allCoreContent(sortedPosts)
 const featuredPostsData: CoreContent<Blog>[] = corePosts.slice(0, 3)
 
-// Fetch and sort tech stack data from Contentlayer
-const sortedTechs = allTeches.sort((a: Tech, b: Tech) => a.name.localeCompare(b.name))
+const techStackList = [
+  { name: 'React' },
+  { name: 'TypeScript' },
+  { name: 'Next.js' },
+  { name: 'Node.js' },
+  { name: 'Python' },
+  { name: 'Docker' },
+  { name: 'Figma' },
+  { name: 'Git' },
+  { name: 'Vercel' },
+  { name: 'AWS' },
+  { name: 'Kubernetes' },
+  { name: 'Terraform' },
+]
+
+// Use the imported techStackList and sort it
+const sortedTechs = techStackList.sort((a: { name: string }, b: { name: string }) =>
+  a.name.localeCompare(b.name)
+)
 
 export default function Home() {
   return (
@@ -138,7 +153,6 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          {/* Third Row: Discord Status, Tech Stack, Current Position */}
           <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-4">
             <CardContent className="flex h-full flex-row items-start gap-4 p-4">
               <DiscordPresence />

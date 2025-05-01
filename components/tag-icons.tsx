@@ -85,12 +85,10 @@ export const tagIconsMap: { [key: string]: IconType } = {
 }
 
 export const getTagIcon = (tag: string): IconType | null => {
-  // Normalize the tag string: lowercase and handle common variations
-  const normalizedTag = tag.toLowerCase().replace(/ /g, '').replace('dot', '.')
-  const Icon =
-    tagIconsMap[normalizedTag] ||
-    // Attempt lookup with original lowercase if normalized fails (e.g., 'c++')
-    tagIconsMap[tag.toLowerCase()]
+  const lowerCaseTag = tag.toLowerCase()
+  const normalizedTag = lowerCaseTag.replace(/ /g, '').replace('dot', '.')
 
-  return Icon ? Icon : null
+  const Icon = tagIconsMap[normalizedTag] ?? tagIconsMap[lowerCaseTag]
+
+  return Icon ?? null
 }

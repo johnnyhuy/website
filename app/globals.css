@@ -16,7 +16,6 @@
 
   a:focus-visible,
   button:focus-visible {
-    outline: 2px solid;
     border-radius: var(--radius-sm);
     outline-color: var(--color-primary-500);
   }
@@ -74,16 +73,16 @@
     --color-yellow-700: oklch(0.85 0.4 100);
     --color-yellow-800: oklch(0.83 0.45 100);
     --color-yellow-900: oklch(0.81 0.5 100);
-    --color-green-50: oklch(0.97 0.05 140);
-    --color-green-100: oklch(0.95 0.1 140);
-    --color-green-200: oklch(0.93 0.15 140);
-    --color-green-300: oklch(0.91 0.2 140);
-    --color-green-400: oklch(0.89 0.25 140);
-    --color-green-500: oklch(0.87 0.3 140);
-    --color-green-600: oklch(0.85 0.35 140);
-    --color-green-700: oklch(0.83 0.4 140);
-    --color-green-800: oklch(0.81 0.45 140);
-    --color-green-900: oklch(0.79 0.5 140);
+    --color-green-50: oklch(0.4 0.1 140);
+    --color-green-100: oklch(0.45 0.15 140);
+    --color-green-200: oklch(0.5 0.2 140);
+    --color-green-300: oklch(0.55 0.25 140);
+    --color-green-400: oklch(0.6 0.3 140);
+    --color-green-500: oklch(0.65 0.35 140);
+    --color-green-600: oklch(0.7 0.4 140);
+    --color-green-700: oklch(0.75 0.45 140);
+    --color-green-800: oklch(0.80 0.5 140);
+    --color-green-900: oklch(0.85 0.55 140);
     --color-blue-50: oklch(0.18 0.05 260);
     --color-blue-100: oklch(0.2 0.1 260);
     --color-blue-200: oklch(0.22 0.15 260);
@@ -108,13 +107,6 @@
 
   a,
   button {
-    outline-color: var(--color-primary-500);
-  }
-
-  a:focus-visible,
-  button:focus-visible {
-    outline: 2px solid;
-    border-radius: var(--radius-sm);
     outline-color: var(--color-primary-500);
   }
 

@@ -2,11 +2,9 @@
 
 import { Skeleton } from '@/components/ui/skeleton'
 import { type FunctionComponent, useCallback, useEffect, useState } from 'react'
-import Calendar, {
-  type Props as ActivityCalendarProps,
-} from 'react-activity-calendar'
+import Calendar, { type Props as ActivityCalendarProps } from 'react-activity-calendar'
 import { SiDiscord } from 'react-icons/si'
-import { useTheme } from "next-themes"
+import { useTheme } from 'next-themes'
 
 // Adopted from https://github.com/grubersjoe/react-github-calendar & https://github.com/jktrn/enscribe.dev
 // All credit to the original authors
@@ -17,16 +15,14 @@ interface Props extends Omit<ActivityCalendarProps, 'data' | 'theme'> {
 }
 
 async function fetchCalendarData(username: string): Promise<ApiResponse> {
-  const response = await fetch(
-    `https://github-contributions-api.jogruber.de/v4/${username}?y=last`,
-  )
+  const response = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=all`)
   const data: ApiResponse | ApiErrorResponse = await response.json()
 
   if (!response.ok) {
     throw Error(
       `Fetching GitHub contribution data for "${username}" failed: ${
         (data as ApiErrorResponse).error
-      }`,
+      }`
     )
   }
 
@@ -34,27 +30,27 @@ async function fetchCalendarData(username: string): Promise<ApiResponse> {
 }
 
 const GithubCalendar: FunctionComponent<Props> = ({ username, ...props }) => {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme } = useTheme()
   const [data, setData] = useState<ApiResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
   const calendarTheme = {
     dark: [
-      'hsl(var(--background))',
-      'hsl(var(--yellow-100))',
-      'hsl(var(--yellow-200))',
-      'hsl(var(--yellow-300))',
-      'hsl(var(--yellow-400))',
+      'var(--color-background)',
+      'var(--color-green-100)',
+      'var(--color-green-200)',
+      'var(--color-green-400)',
+      'var(--color-green-800)',
     ],
     light: [
-      'hsl(var(--background))',
-      'hsl(var(--yellow-100))',
-      'hsl(var(--yellow-200))',
-      'hsl(var(--yellow-300))',
-      'hsl(var(--yellow-400))',
+      'var(--color-background)',
+      'var(--color-green-100)',
+      'var(--color-green-300)',
+      'var(--color-green-500)',
+      'var(--color-green-700)',
     ],
-  };
+  }
 
   const fetchData = useCallback(() => {
     setLoading(true)
@@ -70,14 +66,14 @@ const GithubCalendar: FunctionComponent<Props> = ({ username, ...props }) => {
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center gap-4">
-        <SiDiscord className="w-24 h-auto sm:w-48 text-[#5865F2]" />
-        <p className="w-48 text-center text-sm text-muted-foreground sm:w-64">
+        <SiDiscord className="h-auto w-24 text-[#5865F2] sm:w-48" />
+        <p className="text-muted-foreground w-48 text-center text-sm sm:w-64">
           This component is down. Please DM me on{' '}
           <a
             href="https://discord.com/users/183829779810615297"
             target="_blank"
             rel="noopener noreferrer"
-            className="underline text-primary"
+            className="text-primary underline"
           >
             Discord
           </a>
@@ -97,21 +93,19 @@ const GithubCalendar: FunctionComponent<Props> = ({ username, ...props }) => {
         <Calendar
           data={selectLastNDays(data.contributions, 133)}
           theme={calendarTheme}
-          colorScheme={resolvedTheme === "dark" ? "dark" : "light"}
-          blockSize={20}
+          colorScheme={resolvedTheme === 'dark' ? 'dark' : 'light'}
+          blockSize={16}
           blockMargin={6}
-          blockRadius={7}
+          blockRadius={4}
           {...props}
           maxLevel={4}
-          hideTotalCount
-          hideColorLegend
         />
       </div>
       <div className="m-4 scale-110 sm:hidden">
         <Calendar
           data={selectLastNDays(data.contributions, 60)}
           theme={calendarTheme}
-          colorScheme={resolvedTheme === "dark" ? "dark" : "light"}
+          colorScheme={resolvedTheme === 'dark' ? 'dark' : 'light'}
           blockSize={20}
           blockMargin={6}
           blockRadius={7}

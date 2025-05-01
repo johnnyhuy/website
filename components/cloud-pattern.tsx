@@ -1,15 +1,15 @@
-"use client"
+'use client'
 
-import { useTheme } from "next-themes"
-import { useId, useEffect, useRef, useState } from "react"
+import { useTheme } from 'next-themes'
+import { useId, useEffect, useRef, useState } from 'react'
 
 interface CloudPatternProps {
   className?: string
 }
 
-export default function CloudPattern({ className = "" }: CloudPatternProps) {
-  const { theme } = useTheme()
-  const fillColor = theme === "dark" ? "#fff" : "#000"
+export default function CloudPattern({ className = '' }: CloudPatternProps) {
+  const { resolvedTheme } = useTheme()
+  const fillColor = resolvedTheme === 'dark' ? 'var(--color-gray-100)' : 'var(--color-gray-900)'
   const patternId = useId()
   const [offset, setOffset] = useState(0)
   const rafRef = useRef<number>(0)
@@ -19,7 +19,7 @@ export default function CloudPattern({ className = "" }: CloudPatternProps) {
     function animate(now: number) {
       const delta = now - last
       last = now
-      setOffset(prev => ((prev + (delta * 8) / 1000) % 56))
+      setOffset((prev) => (prev + (delta * 8) / 1000) % 56)
       rafRef.current = requestAnimationFrame(animate)
     }
     rafRef.current = requestAnimationFrame(animate)

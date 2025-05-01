@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/chart'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getTagIcon } from '@/components/tag-icons'
-import { WAKATIME_ENDPOINT } from '@/lib/constants'
 
 interface Language {
   name: string
@@ -84,7 +83,7 @@ const WakatimeGraph = ({ omitLanguages = [] }: Props) => {
   if (isLoading)
     return (
       <div className="size-full rounded-3xl p-4">
-        <div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        <div className="text-muted-foreground mb-2 text-xs font-medium tracking-wide uppercase">
           languages all time spent
         </div>
         <div className="space-y-1.5">
@@ -141,7 +140,7 @@ const WakatimeGraph = ({ omitLanguages = [] }: Props) => {
           </Bar>
         </BarChart>
       </ChartContainer>
-      <div className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+      <div className="text-muted-foreground mb-2 text-xs font-medium tracking-wide uppercase">
         languages all time spent
       </div>
     </div>

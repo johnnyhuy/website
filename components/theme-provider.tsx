@@ -1,16 +1,16 @@
-"use client"
+'use client'
 
-import * as React from "react"
-import { ThemeProvider as NextThemesProvider } from "next-themes"
-import type { ThemeProviderProps } from "next-themes"
+import * as React from 'react'
+import { ThemeProvider as NextThemesProvider } from 'next-themes'
+import type { ThemeProviderProps } from 'next-themes'
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   // Force a re-render on the client side to prevent hydration issues
-  const [mounted, setMounted] = React.useState(false)
+  // const [mounted, setMounted] = React.useState(false)
 
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
+  // React.useEffect(() => {
+  //   setMounted(true)
+  // }, [])
 
   return (
     <NextThemesProvider
@@ -20,7 +20,8 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
       attribute="class"
       storageKey="johnny-theme-preference"
     >
-      {mounted ? children : null}
+      {/* {mounted ? children : null} */}
+      {children}
     </NextThemesProvider>
   )
 }
