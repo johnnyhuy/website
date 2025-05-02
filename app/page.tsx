@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import type { StaticImageData } from 'next/image'
 import { LuArrowRight, LuLinkedin, LuSearch, LuLaptop, LuBookOpen } from 'react-icons/lu'
 import { Card, CardContent } from '@/components/ui/card'
 import GithubCalendar from '@/components/github-calendar'
@@ -19,7 +20,6 @@ import { getTagIcon } from '@/components/tag-icons'
 import CloudPattern from '../components/cloud-pattern'
 import Me from '@/data/images/me.jpg'
 
-// Get the full data for the latest 3 posts from Contentlayer
 const sortedPosts = sortPosts(allBlogs)
 const corePosts = allCoreContent(sortedPosts)
 const featuredPostsData: CoreContent<Blog>[] = corePosts.slice(0, 3)
@@ -136,8 +136,7 @@ export default function Home() {
                   <h4 className="font-medium">{experiences[0].title}</h4>
                   <p className="text-muted-foreground text-sm">{experiences[0].company}</p>
                   <p className="text-muted-foreground mt-1 text-xs">
-                    {experiences[0].startDate} - {experiences[0].endDate} &middot;{' '}
-                    {experiences[0].duration}
+                    {experiences[0].startDate} - {experiences[0].endDate}
                   </p>
                   <Link
                     href="/resume"
@@ -185,7 +184,6 @@ export default function Home() {
         {/* Experience Section */}
         <section className="border-border mt-8 border-t pt-8 md:mt-12 md:pt-12">
           <h2 className="mb-6 flex items-center text-2xl font-bold md:mb-8 md:text-3xl">
-            {/* <Briefcase className="mr-2 h-5 w-5 md:mr-3 md:h-6 md:w-6" /> */}
             Experience
           </h2>
           <ExperienceTimeline />

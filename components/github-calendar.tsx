@@ -141,6 +141,13 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
           blockMargin={6}
           blockRadius={4}
           maxLevel={4}
+          labels={{
+            totalCount:
+              '{{count}} activities in ' +
+              (new Date().getFullYear() - 1) +
+              ' & ' +
+              new Date().getFullYear(),
+          }}
         />
       </div>
       <div

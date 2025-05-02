@@ -54,7 +54,6 @@ export default function CloudPattern({ className = '' }: CloudPatternProps) {
       <svg
         suppressHydrationWarning
         className={`${className} cloud-fade-in${visible ? 'cloud-fade-in-visible' : ''}`}
-        style={{ transition: 'opacity 1s', opacity: visible ? 1 : 0 }}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 600 200"
         width="100%"

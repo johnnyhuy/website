@@ -59,6 +59,35 @@ export const profile = {
   githubUsername: 'johnnyhuy',
 }
 
+// Utility to normalize and format dates
+function normalizeDate(input: string): string | undefined {
+  if (!input) return undefined
+  // Try to parse common formats: 'Dec 2021', '2021', 'Present', etc.
+  if (/present/i.test(input)) return 'Present'
+  // Try month-year (e.g. Dec 2021)
+  const monthYearMatch = input.match(
+    /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*[ .-]*(\d{4})$/i
+  )
+  if (monthYearMatch) {
+    const date = new Date(`${monthYearMatch[1]} 1, ${monthYearMatch[2]}`)
+    return date.toLocaleString('en-US', { month: 'short', year: 'numeric' })
+  }
+  // Try year only
+  const yearMatch = input.match(/^\d{4}$/)
+  if (yearMatch) return input
+  // Fallback: return as-is
+  return input
+}
+
+function formatDateRange(start: string, end: string): string {
+  const normStart = normalizeDate(start)
+  const normEnd = normalizeDate(end)
+  if (normStart && normEnd) return `${normStart} - ${normEnd}`
+  if (normStart) return normStart
+  if (normEnd) return normEnd
+  return ''
+}
+
 // Projects
 export const projects: Project[] = [
   {
@@ -69,7 +98,7 @@ export const projects: Project[] = [
     techStack: ['TypeScript', 'React', 'Node.js', 'AI'],
     githubUrl: 'https://github.com/johnnyhuy',
     demo: null,
-    date: '2023 - Present',
+    date: normalizeDate('2023 - Present'),
   },
   {
     title: 'Markdown Extensions',
@@ -79,7 +108,7 @@ export const projects: Project[] = [
     techStack: ['JavaScript', 'Markdown', 'Node.js'],
     githubUrl: 'https://github.com/johnnyhuy',
     demo: null,
-    date: '2022 - 2023',
+    date: normalizeDate('2022 - 2023'),
   },
   {
     title: 'Game Server Data Warehousing',
@@ -89,7 +118,7 @@ export const projects: Project[] = [
     techStack: ['Python', 'SQL', 'AWS', 'Data Engineering'],
     githubUrl: 'https://github.com/johnnyhuy',
     demo: null,
-    date: '2021 - 2022',
+    date: normalizeDate('2021 - 2022'),
   },
   {
     title: 'Melbourne Corporate Coffee',
@@ -98,7 +127,7 @@ export const projects: Project[] = [
     techStack: ['Next.js', 'Tailwind CSS', 'JAM Stack'],
     githubUrl: null,
     demo: 'https://melbournecorporatecoffee.com.au',
-    date: '2021',
+    date: normalizeDate('2021'),
   },
   {
     title: 'Fun Flicks',
@@ -107,7 +136,7 @@ export const projects: Project[] = [
     techStack: ['Next.js', 'Tailwind CSS', 'JAM Stack'],
     githubUrl: null,
     demo: 'https://funflicks.com.au',
-    date: '2020',
+    date: normalizeDate('2020'),
   },
   {
     title: 'Portfolio Website',
@@ -116,7 +145,7 @@ export const projects: Project[] = [
     techStack: ['Next.js', 'Tailwind CSS', 'TypeScript'],
     githubUrl: 'https://github.com/johnnyhuy',
     demo: 'https://johnnyhuy.com',
-    date: '2020 - Present',
+    date: normalizeDate('2020 - Present'),
   },
   {
     title: 'A Search Engine',
@@ -138,13 +167,11 @@ export const projects: Project[] = [
 export const experiences = [
   {
     company: 'Sportsbet',
-    logo: '/placeholder.svg?height=48&width=48',
     position: 'Lead Cloud Engineer',
     title: 'Lead Cloud Engineer',
-    period: 'Dec 2021 - Present · > 2 yrs',
     startDate: 'Dec 2021',
     endDate: 'Present',
-    duration: '> 2 yrs',
+    period: formatDateRange('Dec 2021', 'Present'),
     technologies: ['AWS', 'Kubernetes', 'Terraform', 'GitHub', 'CI/CD', 'Docker'],
     responsibilities: [
       'Collaborated with various application development teams as a key member of the Customer Platforms team at Sportsbet, providing robust cloud technology solutions.',
@@ -157,13 +184,11 @@ export const experiences = [
   },
   {
     company: 'Afterpay',
-    logo: '/placeholder.svg?height=48&width=48',
     position: 'Senior Cloud Engineer',
     title: 'Senior Cloud Engineer',
-    period: 'Dec 2020 - Dec 2021 · 1 yr 1 mo',
     startDate: 'Dec 2020',
     endDate: 'Dec 2021',
-    duration: '1 yr 1 mo',
+    period: formatDateRange('Dec 2020', 'Dec 2021'),
     technologies: ['AWS', 'Kubernetes', 'Docker', 'Terraform', 'CI/CD', 'PCI Compliance'],
     responsibilities: [
       'Worked on enterprise cloud services to provide payment solutions to telecommunication and health services as a member of the PayNow Touchcorp project team.',
@@ -173,14 +198,12 @@ export const experiences = [
     ],
   },
   {
-    company: 'eNett International',
-    logo: '/placeholder.svg?height=48&width=48',
+    company: 'eNett',
     position: 'DevOps Engineer',
     title: 'DevOps Engineer',
-    period: 'Oct 2020 - Dec 2020 · 3 mos',
     startDate: 'Oct 2020',
     endDate: 'Dec 2020',
-    duration: '3 mos',
+    period: formatDateRange('Oct 2020', 'Dec 2020'),
     technologies: ['Azure', 'Kubernetes', 'CI/CD', 'DevOps'],
     responsibilities: [
       'Contributed to the development of scalable cloud and DevOps engineering solutions as a member of the container platform team.',
@@ -188,14 +211,12 @@ export const experiences = [
     ],
   },
   {
-    company: 'eNett International',
-    logo: '/placeholder.svg?height=48&width=48',
+    company: 'eNett',
     position: 'Developer',
     title: 'Developer',
-    period: 'Oct 2019 - Oct 2020 · 1 yr 1 mo',
     startDate: 'Oct 2019',
     endDate: 'Oct 2020',
-    duration: '1 yr 1 mo',
+    period: formatDateRange('Oct 2019', 'Oct 2020'),
     technologies: ['Azure', 'Kubernetes', 'DevOps', 'CI/CD', 'Grafana', 'Prometheus'],
     responsibilities: [
       'Contributed as a permanent member of the internal DevOps team.',
@@ -205,14 +226,12 @@ export const experiences = [
     ],
   },
   {
-    company: 'eNett International',
-    logo: '/placeholder.svg?height=48&width=48',
+    company: 'eNett',
     position: 'Associate Developer',
     title: 'Associate Developer',
-    period: 'Jan 2019 - Sep 2019 · 9 mos',
     startDate: 'Jan 2019',
     endDate: 'Sep 2019',
-    duration: '9 mos',
+    period: formatDateRange('Jan 2019', 'Sep 2019'),
     technologies: ['Azure', 'Terraform', 'Infrastructure as Code'],
     responsibilities: [
       'Ensured the internal DevOps team had the necessary support to provide efficient and effective solutions.',
