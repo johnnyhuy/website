@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { ArrowRight, Github, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Github, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { projects } from '@/data/projects'
+import { projects } from '@/data/siteData'
 
 export default function ProjectCarousel() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -68,7 +68,10 @@ export default function ProjectCarousel() {
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {project.techStack.map((tech: string) => (
-                      <span key={tech} className="bg-primary/10 rounded-full px-2 py-1 text-xs">
+                      <span
+                        key={`${project.id}-${tech}`}
+                        className="bg-primary/10 rounded-full px-2 py-1 text-xs"
+                      >
                         {tech}
                       </span>
                     ))}
@@ -88,9 +91,9 @@ export default function ProjectCarousel() {
         </Button>
 
         <div className="flex gap-1">
-          {projects.map((_, index) => (
+          {projects.map((project, index) => (
             <button
-              key={index}
+              key={project.id}
               className={`h-2 rounded-full transition-all ${
                 index === activeIndex ? 'bg-accent w-4' : 'bg-muted hover:bg-muted-foreground w-2'
               }`}

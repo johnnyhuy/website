@@ -5,7 +5,7 @@ import { type FunctionComponent, useCallback, useEffect, useState } from 'react'
 import Calendar, { type Props as ActivityCalendarProps } from 'react-activity-calendar'
 import { SiDiscord } from 'react-icons/si'
 import { useTheme } from 'next-themes'
-import { profile } from '@/data/profile'
+import { profile } from '@/data/siteData'
 
 // Adopted from https://github.com/grubersjoe/react-github-calendar & https://github.com/jktrn/enscribe.dev
 // All credit to the original authors
@@ -39,17 +39,17 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
   const calendarTheme = {
     dark: [
       'var(--color-background)',
-      'var(--color-green-100)',
-      'var(--color-green-200)',
-      'var(--color-green-400)',
-      'var(--color-green-800)',
+      'var(--color-yellow-100)',
+      'var(--color-yellow-200)',
+      'var(--color-yellow-400)',
+      'var(--color-yellow-800)',
     ],
     light: [
       'var(--color-background)',
-      'var(--color-green-100)',
-      'var(--color-green-300)',
-      'var(--color-green-500)',
-      'var(--color-green-700)',
+      'var(--color-yellow-100)',
+      'var(--color-yellow-300)',
+      'var(--color-yellow-500)',
+      'var(--color-yellow-700)',
     ],
   }
 

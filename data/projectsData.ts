@@ -1,3 +1,5 @@
+// This file is now redundant. Please use 'projects.ts' for all project data.
+
 interface Project {
   title: string
   description: string
@@ -24,4 +26,4 @@ const projectsData: Project[] = [
   },
 ]
 
-export default projectsData
+export {};

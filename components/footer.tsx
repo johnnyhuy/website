@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { LuLinkedin, LuRss, LuCode, LuBookOpen, LuLaptop, LuGithub } from 'react-icons/lu'
 import WavyLine from '@/components/wavy-line'
-import { profile } from '@/data/profile'
+import { profile } from '@/data/siteData'
 
 const Footer = () => {
   return (

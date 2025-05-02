@@ -3,7 +3,7 @@ import Image from "next/image"
 import { Github, ExternalLink, Calendar } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import TechStack from "@/components/tech-stack"
-import { projects } from "@/data/projects"
+import { projects } from '@/data/siteData'
 
 export default function ProjectsPage() {
   return (

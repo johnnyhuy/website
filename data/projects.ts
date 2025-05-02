@@ -1,5 +1,19 @@
-// Add id, githubUrl, and techStack fields for compatibility with ProjectCarousel
-export const projects = [
+// Unified project type combining all fields from both files
+export interface Project {
+  id?: number;
+  title: string;
+  description: string;
+  href?: string;
+  imgSrc?: string;
+  image?: string;
+  techStack?: string[];
+  githubUrl?: string | null;
+  demo?: string | null;
+  date?: string;
+}
+
+export const projects: Project[] = [
+  // Existing detailed projects
   {
     id: 1,
     title: "AI Transcription Tooling",
@@ -59,5 +73,18 @@ export const projects = [
     githubUrl: "https://github.com/johnnyhuy",
     demo: "https://johnnyhuy.com",
     date: "2020 - Present",
+  },
+  // Additional projects from projectsData.ts
+  {
+    title: 'A Search Engine',
+    description: `What if you could look up any information in the world? Webpages, images, videos\nand more. Google has many features to help you find exactly what you're looking\nfor.`,
+    imgSrc: '/static/images/google.png',
+    href: 'https://www.google.com',
+  },
+  {
+    title: 'The Time Machine',
+    description: `Imagine being able to travel back in time or to the future. Simple turn the knob\nto the desired date and press "Go". No more worrying about lost keys or\nforgotten headphones with this simple yet affordable solution.`,
+    imgSrc: '/static/images/time-machine.jpg',
+    href: '/blog/the-time-machine',
   },
 ];

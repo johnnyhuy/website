@@ -1,6 +1,6 @@
 import Image from "next/image"
 import TechStack from "./tech-stack"
-import { experiences } from "@/data/experience"
+import { experiences } from '@/data/siteData'
 
 export default function ExperienceTimeline() {
   return (
