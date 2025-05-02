@@ -177,34 +177,8 @@ export default function Home() {
             <CardContent className="p-4">
               <div className="mb-4 flex flex-wrap items-center justify-between">
                 <h3 className="mb-2 flex items-center text-lg font-medium sm:mb-0">
-                  <LuBookOpen className="mr-2 h-4 w-4" />
-                  Read Blogs
+                  <LuBookOpen className="mr-2 h-8 w-8" />
                 </h3>
-                <div className="flex w-full items-center gap-2 sm:w-auto">
-                  <Link href="/blog" className="flex-1 sm:flex-auto">
-                    <Button variant="ghost" size="sm" className="w-full gap-1 sm:w-auto">
-                      View all
-                      <LuArrowRight className="h-3 w-3" />
-                    </Button>
-                  </Link>
-                  <Link href="/blog/random" className="flex-1 sm:flex-auto">
-                    <Button variant="outline" size="sm" className="w-full sm:w-auto">
-                      Random Post
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-
-              {/* Search Bar */}
-              <div className="relative mb-6">
-                <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-                  <LuSearch className="text-muted-foreground h-4 w-4" />
-                </div>
-                <Link href="/blog" className="block">
-                  <div className="border-input bg-background hover:bg-secondary/50 flex h-10 w-full cursor-pointer items-center rounded-md border px-3 py-2 pl-10 text-sm transition-colors">
-                    Search posts or filter by tags...
-                  </div>
-                </Link>
               </div>
 
               <div className="divide-border mt-4 divide-y rounded-lg">

@@ -9,14 +9,16 @@ interface CloudPatternProps {
 
 export default function CloudPattern({ className = '' }: CloudPatternProps) {
   const { resolvedTheme } = useTheme()
-  if (!resolvedTheme || resolvedTheme === 'system') return null
-  const fillColor = resolvedTheme === 'dark' ? 'var(--color-white)' : 'var(--color-gray-900)'
+  const [mounted, setMounted] = useState(false)
   const patternId = useId()
   const [offset, setOffset] = useState(0)
   const rafRef = useRef<number>(0)
   const startTimeRef = useRef<number | null>(null)
 
+  useEffect(() => setMounted(true), [])
+
   useEffect(() => {
+    if (!mounted) return
     function animate(now: number) {
       if (startTimeRef.current === null) {
         startTimeRef.current = now
@@ -34,8 +36,11 @@ export default function CloudPattern({ className = '' }: CloudPatternProps) {
       }
       startTimeRef.current = null
     }
-  }, [])
+  }, [mounted])
 
+  if (!mounted || !resolvedTheme || resolvedTheme === 'system') return null
+
+  const fillColor = resolvedTheme === 'dark' ? 'var(--color-white)' : 'var(--color-gray-900)'
   const patternTransform = `translate(${offset},${offset}) rotate(-30)`
 
   return (
