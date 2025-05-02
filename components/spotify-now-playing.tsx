@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Music } from "lucide-react"
+import { FaReact } from 'react-icons/fa'
 
 interface SpotifyData {
   isPlaying: boolean
@@ -60,12 +61,16 @@ export default function SpotifyNowPlaying() {
       className="flex items-center p-2 rounded-md hover:bg-secondary transition-colors"
     >
       <div className="relative h-16 w-16 shrink-0">
-        <Image
-          src={data.albumImageUrl || "/placeholder.svg"}
-          alt={data.album}
-          fill
-          className="object-cover rounded-md"
-        />
+        {data.albumImageUrl ? (
+          <Image
+            src={data.albumImageUrl}
+            alt={data.album}
+            fill
+            className="object-cover rounded-md"
+          />
+        ) : (
+          <FaReact className="text-2xl text-gray-400" />
+        )}
       </div>
       <div className="ml-4 overflow-hidden">
         <p className="font-medium truncate">{data.title}</p>

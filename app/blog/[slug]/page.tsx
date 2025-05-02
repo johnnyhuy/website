@@ -4,19 +4,8 @@ import { useState, useEffect, use } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams, notFound } from 'next/navigation'
-import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  Share2,
-  Bookmark,
-  Heart,
-  ChevronDown,
-  Copy,
-  Check,
-  Code,
-} from 'lucide-react'
-import { SiX, SiLinkedin } from 'react-icons/si'
+import { ArrowLeft, Calendar, Clock, ChevronDown, Copy, Check, Code } from 'lucide-react'
+import { SiX, SiLinkedin, SiReact } from 'react-icons/si'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
@@ -158,13 +147,11 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
           {/* Featured image - only show in full content mode */}
           {!showTldr && (
             <div className="border-foreground shadow-custom relative mb-6 h-[200px] w-full overflow-hidden rounded-lg border-2 sm:h-[250px] md:mb-8 md:h-[300px] lg:h-[400px]">
-              <Image
-                src={post.image || '/placeholder.svg'}
-                alt={post.title}
-                fill
-                className="object-cover"
-                priority
-              />
+              {post.image ? (
+                <Image src={post.image} alt={post.title} fill className="object-cover" priority />
+              ) : (
+                <SiReact className="text-4xl text-gray-400" />
+              )}
             </div>
           )}
 

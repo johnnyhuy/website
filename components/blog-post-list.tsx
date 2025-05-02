@@ -2,6 +2,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { CalendarIcon, Clock } from "lucide-react"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { FaReact } from 'react-icons/fa'
 
 // Mock blog posts data for the homepage
 const featuredPosts = [
@@ -43,7 +44,11 @@ export default function BlogPostList() {
       {featuredPosts.map((post) => (
         <Card key={post.id} className="overflow-hidden flex flex-col h-full">
           <div className="relative h-48 w-full">
-            <Image src={post.image || "/placeholder.svg"} alt={post.title} fill className="object-cover" />
+            {post.image ? (
+              <Image src={post.image} alt={post.title} fill className="object-cover" />
+            ) : (
+              <FaReact className="text-2xl text-gray-400" />
+            )}
           </div>
           <CardHeader>
             <div className="flex items-center text-sm text-muted-foreground mb-2">

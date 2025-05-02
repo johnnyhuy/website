@@ -67,7 +67,7 @@ export default function ProjectCarousel() {
                     {project.description}
                   </p>
                   <div className="mt-3 flex flex-wrap gap-2">
-                    {project.techStack.map((tech: string) => (
+                    {project.tags.map((tech: string) => (
                       <span
                         key={`${project.id}-${tech}`}
                         className="bg-primary/10 rounded-full px-2 py-1 text-xs"

@@ -4,6 +4,9 @@ import { Github, ExternalLink, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import TechStack from '@/components/tech-stack'
 import { projects } from '@/data/siteData'
+import { FaReact, FaNodeJs, FaAws, FaDocker, FaPython } from 'react-icons/fa'
+import { SiTypescript, SiNextdotjs, SiKubernetes, SiTerraform, SiGraphql, SiPostgresql, SiMongodb, SiReact } from 'react-icons/si'
+import type { JSX } from 'react'
 
 export default function ProjectsPage() {
   return (
@@ -18,11 +21,26 @@ export default function ProjectsPage() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects.map((project, index) => {
             // Use githubUrl as the toggle for GitHub button
-            const image = project.image || project.imgSrc || '/placeholder.svg'
+            const image = project.image || project.imgSrc
             const github = project.githubUrl || null
             const demo = project.demo || project.href || null
             const tags = project.tags || []
             const date = project.date || ''
+            // Icon mapping for react-icons fallback
+            const techIcons: Record<string, JSX.Element> = {
+              React: <FaReact />,
+              'TypeScript': <SiTypescript />,
+              'Next.js': <SiNextdotjs />,
+              'Node.js': <FaNodeJs />,
+              AWS: <FaAws />,
+              Docker: <FaDocker />,
+              Kubernetes: <SiKubernetes />,
+              Terraform: <SiTerraform />,
+              Python: <FaPython />,
+              GraphQL: <SiGraphql />,
+              PostgreSQL: <SiPostgresql />,
+              MongoDB: <SiMongodb />,
+            }
             return (
               <div
                 key={index}
@@ -30,7 +48,13 @@ export default function ProjectsPage() {
               >
                 {/* Project image */}
                 <div className="relative h-48 w-full">
-                  <Image src={image} alt={project.title} fill className="object-cover" />
+                  {typeof image === 'string' ? (
+                    <Image src={image} alt={project.title} fill className="object-cover" />
+                  ) : (
+                    <div className="flex items-center justify-center h-full w-full bg-muted">
+                      <SiReact className="text-4xl text-gray-400" />
+                    </div>
+                  )}
                   {date && (
                     <div className="bg-background/80 absolute top-2 right-2 flex items-center rounded-md px-2 py-1 text-xs backdrop-blur-xs">
                       <Calendar className="mr-1 h-3 w-3" />

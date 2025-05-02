@@ -2,9 +2,12 @@ import Image from 'next/image'
 import TechStack from './tech-stack'
 import { experiences } from '@/data/siteData'
 import type { StaticImageData } from 'next/image'
+import type { JSX } from 'react'
 import sportsbet from '@/data/images/companies/sportsbet.png'
 import afterpay from '@/data/images/companies/afterpay.png'
 import enett from '@/data/images/companies/enett.png'
+import { FaReact } from 'react-icons/fa'
+import * as React from 'react'
 
 interface Experience {
   company: string
@@ -31,14 +34,15 @@ function getLogoForCompany(company: string): StaticImageData | undefined {
 }
 
 function groupConsecutiveByCompany(experiences: Experience[]) {
-  const groups: Array<{ company: string; logo: StaticImageData | string; roles: Experience[] }> = []
+  const groups: Array<{ company: string; logo: StaticImageData | React.ReactElement; roles: Experience[] }> = []
   let prevCompany = ''
   let currentGroup: any = null
   experiences.forEach((exp) => {
     if (exp.company !== prevCompany) {
+      const logo = getLogoForCompany(exp.company)
       currentGroup = {
         company: exp.company,
-        logo: getLogoForCompany(exp.company) || '/placeholder.svg',
+        logo: logo ? logo : <FaReact className="text-2xl text-gray-400" />,
         roles: [exp],
       }
       groups.push(currentGroup)
@@ -58,7 +62,11 @@ export default function ExperienceTimeline() {
         <div key={group.company + group.roles[0].period} className="timeline-item">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
             <div className="bg-secondary relative h-12 w-12 shrink-0 overflow-hidden rounded-md">
-              <Image src={group.logo} alt={group.company} fill className="object-cover" />
+              {React.isValidElement(group.logo) ? (
+                group.logo
+              ) : (
+                <Image src={group.logo} alt={group.company} fill className="object-cover" />
+              )}
             </div>
             <div className="flex-1">
               <h3 className="text-xl font-bold">{group.company}</h3>
