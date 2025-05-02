@@ -12,7 +12,6 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import WavyLine from '@/components/wavy-line'
-import TechStack from '@/components/tech-stack'
 import { FloatingThemeToggle } from '@/components/floating-theme-toggle'
 import { copyToClipboard, generateShareableUrl, generateSocialShareText } from '@/lib/copy-utils'
 import { allBlogs, allAuthors } from 'contentlayer/generated'
@@ -22,6 +21,8 @@ import siteMetadata from '@/data/siteMetadata'
 import { Comments, CommentsConfig } from 'pliny/comments/index.js'
 import { components } from '@/components/mdx-components'
 import { format, formatDistanceToNow } from 'date-fns'
+import { TagIcon } from '@/components/ui/tag-icon'
+import { getTagIcon } from '@/components/tag-icons'
 
 export default function BlogPostPage({ params }: { params: Promise<{ slug: string | string[] }> }) {
   const { slug } = use(params)
@@ -35,7 +36,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
   const [copied, setCopied] = useState<string | null>(null)
   const [showCodeSnippet, setShowCodeSnippet] = useState(false)
 
-  // Check URL parameter on initial load
   useEffect(() => {
     const tldrParam = searchParams.get('tldr')
     if (tldrParam === 'true') {
@@ -44,12 +44,10 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
     }
   }, [searchParams])
 
-  // Toggle TLDR mode
   const handleTldrToggle = (checked: boolean) => {
     setShowTldr(checked)
     setShowFullContent(!checked)
 
-    // Update URL with the new state
     const url = new URL(window.location.href)
     if (checked) {
       url.searchParams.set('tldr', 'true')
@@ -59,7 +57,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
     window.history.pushState({}, '', url)
   }
 
-  // Copy URL to clipboard
   const handleCopy = (type: string) => {
     let textToCopy = ''
 
@@ -83,13 +80,11 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
     })
   }
 
-  // Toggle code snippet visibility
   const toggleCodeSnippet = () => {
     setShowCodeSnippet(!showCodeSnippet)
   }
 
   const mainContent = coreContent(post)
-  // Get author details from allAuthors
   const authorId = post.authors && post.authors.length > 0 ? post.authors[0] : null
   const author = authorId
     ? allAuthors.find((a) => a.slug === authorId || a.name === authorId)
@@ -102,7 +97,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
   return (
     <div className="pt-20 pb-16 md:pt-24">
       <div className="container mx-auto px-4">
-        {/* Back button */}
         <Link
           href="/blog"
           className="hover:text-accent mb-6 inline-flex items-center text-sm transition-colors md:mb-8"
@@ -111,7 +105,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
           Back to all posts
         </Link>
 
-        {/* Article header */}
         <article className="mx-auto max-w-4xl">
           <header className="mb-6 md:mb-8">
             <h1 className="mb-4 text-3xl font-bold md:text-4xl lg:text-5xl">{post.title}</h1>
@@ -120,7 +113,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
               <div className="mb-2 flex items-center space-x-4 sm:mb-0">
                 <div className="flex items-center">
                   <Calendar className="mr-1 h-3 w-3" />
-                  {/* Display both short and relative dates */}
                   <span>{`${formattedShortDate} (${formattedRelativeDate})`}</span>
                 </div>
                 <div className="flex items-center">
@@ -129,7 +121,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                 </div>
               </div>
 
-              {/* TLDR Toggle */}
               <div className="flex w-full items-center space-x-2 sm:w-auto">
                 <Label htmlFor="tldr-mode" className="cursor-pointer text-sm">
                   TLDR Mode
@@ -138,13 +129,28 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
               </div>
             </div>
 
-            {/* Tech Stack Tags */}
-            <div className="mb-6 pb-2 md:mb-8">
-              <TechStack technologies={post.tags} size="md" />
+            <div className="mb-6 flex flex-wrap gap-2 pb-2 md:mb-8">
+              {post.tags.map((tag: string, index: number) => {
+                const IconComponent = getTagIcon(tag)
+                return (
+                  <Link
+                    href={`/blog?tag=${tag}`}
+                    key={index}
+                    className="hover:bg-accent/10 transition-colors"
+                  >
+                    <TagIcon
+                      icon={IconComponent ? <IconComponent className="mr-1 h-4 w-4" /> : undefined}
+                      label={tag}
+                      variant="solid"
+                      size="sm"
+                      className="bg-secondary/50 flex items-center rounded-md px-2 py-1 text-xs"
+                    />
+                  </Link>
+                )
+              })}
             </div>
           </header>
 
-          {/* Featured image - only show in full content mode */}
           {!showTldr && (
             <div className="border-foreground shadow-custom relative mb-6 h-[200px] w-full overflow-hidden rounded-lg border-2 sm:h-[250px] md:mb-8 md:h-[300px] lg:h-[400px]">
               {post.image ? (
@@ -155,7 +161,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             </div>
           )}
 
-          {/* TLDR Section (always visible if not in TLDR mode) */}
           {post.tldr && !showTldr && (
             <div className="border-accent/20 bg-secondary/50 mb-6 rounded-lg border p-4 md:mb-8 md:p-6">
               <div className="mb-4 flex-col items-start sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
@@ -176,13 +181,10 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             </div>
           )}
 
-          {/* Optimized TLDR View */}
           {showTldr && (
             <div className="mb-8 md:mb-12">
-              {/* TLDR Card with optimized layout */}
               <Card className="border-accent/20 overflow-hidden">
                 <CardContent className="p-0">
-                  {/* Simplified header with just the TLDR label and sharing options */}
                   <div className="border-accent/20 bg-secondary/50 flex items-center justify-between border-b p-3">
                     <div className="flex items-center">
                       <span className="text-accent mr-2 text-sm font-bold">TLDR;</span>
@@ -191,7 +193,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                       </h2>
                     </div>
 
-                    {/* Compact sharing options */}
                     <div className="flex items-center space-x-1">
                       <TooltipProvider>
                         <Tooltip>
@@ -261,17 +262,15 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                     </div>
                   </div>
 
-                  {/* TLDR Content - more compact */}
                   <div className="bg-background p-3 md:p-4">
                     <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
                       {post.tldr}
                     </div>
 
-                    {/* Code Snippet Toggle - more compact */}
                     {post.tldrCode && (
                       <div className="mt-3">
                         <Button
-                          variant="outline"
+                          variant="secondary"
                           size="sm"
                           onClick={toggleCodeSnippet}
                           className="flex h-7 items-center px-2 text-xs"
@@ -280,14 +279,13 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                           {showCodeSnippet ? 'Hide Code' : 'Show Code Example'}
                         </Button>
 
-                        {/* Code Snippet */}
                         {showCodeSnippet && (
                           <div className="relative mt-2">
                             <pre className="bg-secondary overflow-x-auto rounded-md p-2 font-mono text-xs">
                               <code>{post.tldrCode}</code>
                             </pre>
                             <Button
-                              variant="outline"
+                              variant="secondary"
                               size="icon"
                               className="bg-background/80 absolute top-1 right-1 h-6 w-6"
                               onClick={() => handleCopy('code')}
@@ -304,10 +302,9 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                     )}
                   </div>
 
-                  {/* Compact footer */}
                   <div className="border-accent/20 bg-secondary/50 flex justify-end border-t p-2">
                     <Button
-                      variant="outline"
+                      variant="secondary"
                       size="sm"
                       onClick={() => handleTldrToggle(false)}
                       className="flex h-7 items-center text-xs"
@@ -320,7 +317,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             </div>
           )}
 
-          {/* Article content - conditionally shown based on TLDR mode */}
           {!showTldr && (
             <div className="prose prose-sm md:prose-base lg:prose-lg dark:prose-invert mb-8 max-w-none overflow-x-auto md:mb-12">
               <MDXLayoutRenderer
@@ -332,7 +328,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             </div>
           )}
 
-          {/* Related posts - only show in full content mode */}
           {!showTldr && Array.isArray(post.relatedPosts) && post.relatedPosts.length > 0 && (
             <div className="mx-auto mb-8 max-w-4xl md:mb-12">
               <h2 className="mb-4 text-2xl font-bold md:mb-6">Related Posts</h2>
@@ -356,7 +351,30 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                         </Link>
                       </h3>
                       <p className="text-muted-foreground mb-4">{relatedPost.excerpt}</p>
-                      <TechStack technologies={relatedPost.tags} size="sm" />
+                      <div className="mb-6 flex flex-wrap gap-2 pb-2 md:mb-8">
+                        {relatedPost.tags.map((tag: string, index: number) => {
+                          const IconComponent = getTagIcon(tag)
+                          return (
+                            <Link
+                              href={`/blog?tag=${tag}`}
+                              key={index}
+                              className="hover:bg-accent/10 transition-colors"
+                            >
+                              <TagIcon
+                                icon={
+                                  IconComponent ? (
+                                    <IconComponent className="mr-1 h-4 w-4" />
+                                  ) : undefined
+                                }
+                                label={tag}
+                                variant="solid"
+                                size="sm"
+                                className="bg-secondary/50 flex items-center rounded-md px-2 py-1 text-xs"
+                              />
+                            </Link>
+                          )
+                        })}
+                      </div>
                     </CardContent>
                   </Card>
                 ))}
@@ -364,7 +382,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             </div>
           )}
 
-          {/* Comments section - only show in full content mode */}
           {!showTldr && (
             <div className="mx-auto max-w-4xl">
               <div className="mb-4 flex flex-wrap items-center justify-between md:mb-6">
@@ -375,12 +392,10 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
           )}
         </article>
 
-        {/* Background wavy line */}
         <div className="pointer-events-none fixed inset-0 z-[-1]">
           <WavyLine className="absolute inset-0 opacity-5" animated={false} />
         </div>
 
-        {/* Floating Theme Toggle */}
         <FloatingThemeToggle position="bottom-right" />
       </div>
     </div>

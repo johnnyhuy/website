@@ -383,7 +383,7 @@
 }
 
 .prose pre {
-  background-color: var(--color-gray-200);
+  background-color: var(--color-gray-900);
   @apply mb-4 overflow-x-auto rounded-md p-3 text-sm md:p-4;
 }
 
@@ -675,7 +675,7 @@ input:-webkit-autofill:focus {
 }
 
 .code-line {
-  @apply -mx-4 block border-l-4 border-transparent pr-4 pl-4;
+  @apply text-gray-100 -mx-4 block border-l-4 border-transparent pr-4 pl-4;
 }
 
 .code-line.inserted {
