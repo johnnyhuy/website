@@ -14,7 +14,9 @@ import { profile } from '@/data/profile'
 interface Props extends Omit<ActivityCalendarProps, 'data' | 'theme'> {}
 
 async function fetchCalendarData(username: string): Promise<ApiResponse> {
-  const response = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=all`)
+  const response = await fetch(
+    `https://github-contributions-api.jogruber.de/v4/${username}?y=${new Date().getFullYear()}`
+  )
   const data: ApiResponse | ApiErrorResponse = await response.json()
 
   if (!response.ok) {
