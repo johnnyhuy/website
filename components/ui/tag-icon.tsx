@@ -4,7 +4,7 @@ import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { getTagIcon } from '../tag-icons'
 
-const tagIconVariants = cva('inline-flex items-center justify-center rounded', {
+export const tagIconVariants = cva('inline-flex items-center justify-center rounded', {
   variants: {
     variant: {
       solid: 'text-[color:var(--color-gray-900)] dark:text-[color:var(--color-gray-100)]',
@@ -43,13 +43,6 @@ export interface TagIconProps
   label?: string
 }
 
-export interface TagIconGroupProps {
-  technologies: string[]
-  size?: 'sm' | 'md' | 'lg'
-  limit?: number
-  className?: string
-}
-
 export const TagIcon: React.FC<TagIconProps> = ({
   icon,
   label,
@@ -61,7 +54,7 @@ export const TagIcon: React.FC<TagIconProps> = ({
 }) => {
   return (
     <span
-      className={`flex items-center gap-1 rounded px-2 py-1 text-xs ${className ?? ''}`}
+      className={`flex items-center gap-1 rounded text-xs ${className ?? ''}`}
       role="img"
       aria-label={label}
       title={label}
@@ -72,66 +65,3 @@ export const TagIcon: React.FC<TagIconProps> = ({
     </span>
   )
 }
-
-export const TagIconGroup: React.FC<TagIconGroupProps> = ({
-  technologies,
-  size = 'md',
-  limit = 5,
-  className = '',
-}) => {
-  const visibleTechs = technologies.slice(0, limit)
-  return (
-    <div
-      className={`relative flex items-center group ${className}`}
-    >
-      <div
-        className="flex transition-all duration-300"
-      >
-        {visibleTechs.map((tech, index) => {
-          const IconComponent = getTagIcon(tech)
-          if (!IconComponent) return null
-          // Tailwind margin logic
-          let marginClass = ''
-          if (index !== 0) {
-            marginClass =
-              'group-hover:ml-2 -ml-2 transition-all duration-300'
-          }
-          // Tailwind z-index logic (z-10, z-20, ...)
-          // Only a few z-index values are available in Tailwind by default
-          const zIndexClass =
-            index === 0
-              ? 'z-10'
-              : index === 1
-              ? 'z-9'
-              : index === 2
-              ? 'z-8'
-              : index === 3
-              ? 'z-7'
-              : index === 4
-              ? 'z-6'
-              : 'z-0'
-          return (
-            <span
-              key={tech}
-              className={`border-border bg-secondary flex items-center justify-center rounded-full border p-1 hover:border-accent ${size === 'sm' ? 'h-6 w-6' : size === 'lg' ? 'h-10 w-10' : 'h-8 w-8'} ${marginClass} ${zIndexClass}`}
-              title={tech}
-            >
-              <TagIcon
-                icon={typeof IconComponent === 'function' ? <IconComponent /> : IconComponent}
-                label={tech}
-                variant="ghost"
-                size={size}
-                className="transition-all duration-200"
-              />
-            </span>
-          )
-        })}
-      </div>
-      {technologies.length > limit && (
-        <span className="text-muted-foreground ml-2 text-xs">+{technologies.length - limit}</span>
-      )}
-    </div>
-  )
-}
-
-export { tagIconVariants }

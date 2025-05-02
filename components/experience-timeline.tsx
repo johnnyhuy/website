@@ -1,9 +1,7 @@
 import Image from 'next/image'
-import { TagIconGroup } from '@/components/ui/tag-icon'
-import { getTagIcon } from '@/components/tag-icons'
+import { TagIconGroup } from '@/components/tag-icon-group'
 import { experiences, formatDateRange } from '@/data/siteData'
 import type { StaticImageData } from 'next/image'
-import type { JSX } from 'react'
 import sportsbet from '@/data/images/companies/sportsbet.png'
 import afterpay from '@/data/images/companies/afterpay.png'
 import enett from '@/data/images/companies/enett.png'
@@ -71,7 +69,12 @@ export default function ExperienceTimeline() {
           >
             {/* Timeline circle */}
             <div
-              className="absolute top-[1rem] left-[-0.56rem] flex items-center justify-center rounded-full bg-yellow-500"
+              className={
+                `absolute top-[1rem] left-[-0.56rem] flex items-center justify-center rounded-full ` +
+                (index === 0
+                  ? 'bg-yellow-500'
+                  : 'border-2 border-gray-100 bg-gray-100 dark:bg-gray-800')
+              }
               aria-hidden="true"
               style={{ width: 16, height: 16 }}
             ></div>
@@ -92,7 +95,11 @@ export default function ExperienceTimeline() {
                     {formatDateRange(group.roles[0].startDate, group.roles[0].endDate)}
                   </p>
                   <div className="mb-4 overflow-x-auto pb-2">
-                    <TagIconGroup technologies={group.roles[0].technologies} size="sm" />
+                    <TagIconGroup
+                      technologies={group.roles[0].technologies}
+                      size="md"
+                      variant="outline"
+                    />
                   </div>
                   <ul className="list-disc space-y-2 pl-5">
                     {group.roles[0].responsibilities.map((resp, index) => (
@@ -112,7 +119,11 @@ export default function ExperienceTimeline() {
                           {formatDateRange(role.startDate, role.endDate)}
                         </p>
                         <div className="mb-4 overflow-x-auto pb-2">
-                          <TagIconGroup technologies={role.technologies} size="sm" />
+                          <TagIconGroup
+                            technologies={role.technologies}
+                            size="md"
+                            variant="outline"
+                          />
                         </div>
                         <ul className="list-disc space-y-2 pl-5">
                           {role.responsibilities.map((resp, index) => (
