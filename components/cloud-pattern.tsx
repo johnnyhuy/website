@@ -46,7 +46,7 @@ export default function CloudPattern({ className = '' }: CloudPatternProps) {
   if (!mounted) return null
 
   const theme = resolvedTheme && resolvedTheme !== 'system' ? resolvedTheme : 'light'
-  const fillColor = theme === 'dark' ? 'var(--color-gray-100)' : 'var(--color-gray-800)'
+  const fillColor = theme === 'dark' ? 'var(--color-gray-200)' : 'var(--color-gray-800)'
   const patternTransform = `translate(${offset},${offset}) rotate(-30)`
 
   return (
@@ -76,15 +76,6 @@ export default function CloudPattern({ className = '' }: CloudPatternProps) {
         </defs>
         <rect width="100%" height="100%" fill={`url(#${patternId})`} />
       </svg>
-      <style jsx>{`
-        .cloud-fade-in {
-          opacity: 0;
-          transition: opacity 1s;
-        }
-        .cloud-fade-in.cloud-fade-in-visible {
-          opacity: 1;
-        }
-      `}</style>
     </>
   )
 }
