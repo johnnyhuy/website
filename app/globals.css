@@ -1,3 +1,4 @@
+
 @import 'tailwindcss';
 
 @layer base {
@@ -14,10 +15,14 @@
     outline-color: var(--color-gray-900);
   }
 
+  /* Removed border and outline for :focus-visible to avoid visible border on focus */
+  button:focus,
+  button:focus-visible,
   a:focus-visible,
   button:focus-visible {
     border-radius: var(--radius-sm);
-    outline-color: var(--color-gray-900);
+    outline: none;
+    border: none;
   }
 
   body {
@@ -26,16 +31,12 @@
       'calt' 1;
   }
 
-  html {
-    background-color: var(--color-gray-100);
-    color: oklch(0.2 0 0);
-  }
-
   /* Apply dark mode overrides using the custom variant */
   html.dark {
+    color: var(--color-white);
+    --color-white: oklch(0.98 0 0);
     --color-background: oklch(0.13 0 0); /* much darker background */
     --color-foreground: oklch(0.98 0 0); /* white text */
-    color: var(--color-foreground);
     --color-card: oklch(0.15 0 0); /* dark card */
     --color-card-foreground: oklch(0.98 0 0);
     --color-popover: oklch(0.15 0 0);
@@ -53,15 +54,15 @@
     --color-border: oklch(0.18 0.02 91.11);
     --color-input: oklch(0.18 0.02 91.11);
     --color-ring: oklch(0.98 0 0);
-    --color-gray-100: oklch(0.2 0.02 91.11);
-    --color-gray-200: oklch(0.22 0.02 91.11);
-    --color-gray-300: oklch(0.24 0.02 91.11);
-    --color-gray-400: oklch(0.26 0.02 91.11);
-    --color-gray-500: oklch(0.28 0.02 91.11);
-    --color-gray-600: oklch(0.3 0.02 91.11);
-    --color-gray-700: oklch(0.32 0.02 91.11);
-    --color-gray-800: oklch(0.34 0.02 91.11);
-    --color-gray-900: oklch(0.36 0.02 91.11);
+    --color-gray-100: oklch(0.95 0 0);
+    --color-gray-200: oklch(0.85 0 0);
+    --color-gray-300: oklch(0.75 0 0);
+    --color-gray-400: oklch(0.6 0 0);
+    --color-gray-500: oklch(0.5 0 0);
+    --color-gray-600: oklch(0.4 0 0);
+    --color-gray-700: oklch(0.3 0 0);
+    --color-gray-800: oklch(0.2 0 0);
+    --color-gray-900: oklch(0.1 0 0);
     --color-yellow-50:  oklch(0.18 0.05 91.11);
     --color-yellow-100: oklch(0.3 0.07 91.11);
     --color-yellow-200: oklch(0.42 0.09 91.11);
@@ -136,7 +137,7 @@
   --color-primary-foreground: var(--color-gray-100);
   --color-secondary: var(--color-gray-200);
   --color-secondary-foreground: var(--color-gray-900);
-  --color-accent: var(--color-gray-300);
+  --color-accent: var(--color-yellow-500);
   --color-accent-foreground: var(--color-gray-900);
   --color-muted: var(--color-gray-200);
   --color-muted-foreground: var(--color-gray-700);
@@ -146,14 +147,14 @@
   --color-input: var(--color-gray-200);
   --color-ring: var(--color-gray-900);
   --color-gray-100: oklch(0.95 0 0);
-  --color-gray-200: oklch(0.9 0 0);
-  --color-gray-300: oklch(0.8 0 0);
-  --color-gray-400: oklch(0.7 0 0);
-  --color-gray-500: oklch(0.6 0 0);
-  --color-gray-600: oklch(0.5 0 0);
-  --color-gray-700: oklch(0.4 0 0);
-  --color-gray-800: oklch(0.25 0 0);
-  --color-gray-900: oklch(0.15 0 0);
+  --color-gray-200: oklch(0.85 0 0);
+  --color-gray-300: oklch(0.75 0 0);
+  --color-gray-400: oklch(0.6 0 0);
+  --color-gray-500: oklch(0.5 0 0);
+  --color-gray-600: oklch(0.4 0 0);
+  --color-gray-700: oklch(0.3 0 0);
+  --color-gray-800: oklch(0.2 0 0);
+  --color-gray-900: oklch(0.1 0 0);
   --color-yellow-50:  oklch(0.99 0.05 100);
   --color-yellow-100: oklch(0.97 0.10 100);
   --color-yellow-200: oklch(0.95 0.15 100);
@@ -406,16 +407,10 @@
   border-bottom-style: solid;
 }
 
-.light .glass-nav {
-  background-color: rgb(from var(--color-gray-100) r g b / 0.7);
-  /* Use foreground color with low alpha for border */
-  border-bottom-color: rgb(from var(--color-gray-900) r g b / 0.05);
-}
-
 .dark .glass-nav {
-  background-color: rgb(from var(--color-gray-100) r g b / 0.7);
+  background-color: rgb(from var(--color-gray-900) r g b / 0.7);
   /* Use foreground color with low alpha for border */
-  border-bottom-color: rgb(from var(--color-gray-900) r g b / 0.05);
+  border-bottom-color: rgb(from var(--color-white) r g b / 0.05);
 }
 
 .grid-container {
@@ -520,11 +515,11 @@ html.light {
 
 /* Custom shadow for cards to match resume style with increased distance */
 .shadow-custom {
-  box-shadow: 6px 6px 0 0 var(--color-gray-800);
+  box-shadow: 6px 6px 0 0 var(--color-gray-100);
 }
 @media (min-width: 768px) {
   .shadow-custom {
-    box-shadow: 8px 8px 0 0 var(--color-gray-800);
+    box-shadow: 8px 8px 0 0 var(--color-gray-100);
   }
 }
 
@@ -535,23 +530,6 @@ html.light {
   .dark .shadow-custom {
     box-shadow: 8px 8px 0 0 var(--color-gray-100);
   }
-}
-
-/* Accent color utility classes */
-.text-accent {
-  color: var(--color-gray-300);
-}
-
-.bg-accent {
-  background-color: var(--color-gray-300);
-}
-
-.border-accent {
-  border-color: var(--color-gray-300);
-}
-
-.hover-accent:hover {
-  color: var(--color-gray-300);
 }
 
 .card {
@@ -819,4 +797,16 @@ input:-webkit-autofill:focus {
 .hide-scrollbar::-webkit-scrollbar,
 .hide-scrollbar *::-webkit-scrollbar {
   display: none; /* Chrome, Safari and Opera */
+}
+
+/* Globally override Tailwind focus-visible ring shadow and box-shadow */
+button:focus,
+button:focus-visible,
+a:focus-visible,
+input:focus,
+input:focus-visible,
+textarea:focus,
+textarea:focus-visible {
+  --tw-ring-shadow: 0 0 #0000 !important;
+  box-shadow: none !important;
 }

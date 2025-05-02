@@ -36,13 +36,13 @@ const Navbar = () => {
     >
       <EnhancedGlassEffect isActive={isScrolled} />
       <div className="container mx-auto flex items-center justify-between px-4">
-        <Link href="/" className="text-xl font-bold">
+        <Link href="/" className="font-bold">
           <Image
             src={Johnny}
             alt="Johnny Huynh"
             width={32}
             height={32}
-            className={`transition-all duration-300 ${isScrolled ? 'rounded-full' : 'rounded-md'}`}
+            className={`transition-all duration-300 ${isScrolled ? 'rounded-lg' : 'rounded-md'}`}
           />
         </Link>
 
@@ -52,13 +52,13 @@ const Navbar = () => {
             <Link
               key={link.path}
               href={link.path}
-              className={`flex items-center rounded-full px-3 py-2 transition-colors ${
+              className={`flex items-center rounded-lg px-3 py-2 transition-colors ${
                 pathname === link.path || pathname.startsWith(`${link.path}/`)
                   ? 'bg-secondary/70 font-medium'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              <span className="text-lg">{link.name}</span>
+              <span>{link.name}</span>
             </Link>
           ))}
           <Link href={profile.linkedin} target="_blank" rel="noopener noreferrer">
@@ -94,27 +94,27 @@ const Navbar = () => {
           <nav className="container mx-auto flex flex-col space-y-4 px-4 py-6">
             <Link
               href="/"
-              className={`flex items-center rounded-full px-4 py-3 transition-colors ${
+              className={`flex items-center rounded-lg px-4 py-3 transition-colors ${
                 pathname === '/'
                   ? 'bg-secondary/70 font-medium'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
               onClick={() => setIsMenuOpen(false)}
             >
-              <span className="text-lg">Home</span>
+              <span className="">Home</span>
             </Link>
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 href={link.path}
-                className={`flex items-center rounded-full px-4 py-3 transition-colors ${
+                className={`flex items-center rounded-lg px-4 py-3 transition-colors ${
                   pathname === link.path || pathname.startsWith(`${link.path}/`)
                     ? 'bg-secondary/70 font-medium'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
-                <span className="text-lg">{link.name}</span>
+                <span className="">{link.name}</span>
               </Link>
             ))}
             <Link
@@ -124,7 +124,10 @@ const Navbar = () => {
               className="mt-4"
               onClick={() => setIsMenuOpen(false)}
             >
-              <Button variant="default" className="bg-accent hover:bg-accent/80 w-full py-3">
+              <Button
+                variant="default"
+                className="bg-accent hover:bg-accent/80 w-full py-3 text-gray-900 dark:text-gray-100"
+              >
                 <Mail className="mr-2 h-5 w-5" />
                 Contact
               </Button>

@@ -1,16 +1,12 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { LuLinkedin, LuRss, LuCode, LuBookOpen, LuLaptop, LuGithub } from 'react-icons/lu'
-import WavyLine from '@/components/wavy-line'
+import { LuLinkedin, LuRss, LuGithub } from 'react-icons/lu'
 import { profile } from '@/data/siteData'
 import Me from '@/data/images/me.jpg'
 
 const Footer = () => {
   return (
     <footer className="relative overflow-hidden">
-      {/* Abstract wavy background */}
-      <WavyLine className="absolute inset-0 z-0 opacity-5" color="currentColor" animated={false} />
-
       <div className="relative z-10 container mx-auto px-4 pt-12 pb-6">
         <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-12">
           {/* Main info (left) */}
