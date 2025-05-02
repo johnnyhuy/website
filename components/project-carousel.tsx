@@ -51,7 +51,7 @@ export default function ProjectCarousel() {
           <div className="flex">
             {projects.map((project, index) => (
               <div key={index} className="w-full shrink-0">
-                <div className="rounded-xl bg-gray-800/50 p-4">
+                <div className="rounded-xl bg-gray-100 p-4">
                   <div className="mb-2 flex items-center justify-between">
                     <h4 className="font-medium">{project.title}</h4>
                     {project.githubUrl && (
@@ -63,9 +63,7 @@ export default function ProjectCarousel() {
                       </Link>
                     )}
                   </div>
-                  <p className="text-muted-foreground mb-3 min-h-[4rem] text-sm">
-                    {project.description}
-                  </p>
+                  <p className="mb-3 min-h-[4rem] text-sm text-gray-500">{project.description}</p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {project.tags.map((tech: string) => (
                       <span

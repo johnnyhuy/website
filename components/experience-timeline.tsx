@@ -64,7 +64,7 @@ export default function ExperienceTimeline() {
         {grouped.map((group, index) => (
           <li
             key={group.company + group.roles[0].startDate}
-            className="relative border-l-2 border-l-gray-100 pb-8 pl-8"
+            className="relative border-l-2 border-l-gray-900 pb-8 pl-8 dark:border-l-gray-800"
           >
             {/* Timeline circle */}
             <div
@@ -72,7 +72,7 @@ export default function ExperienceTimeline() {
                 `absolute top-[1rem] left-[-0.56rem] flex items-center justify-center rounded-full ` +
                 (index === 0
                   ? 'bg-yellow-500'
-                  : 'border-2 border-gray-100 bg-gray-100 dark:bg-gray-800')
+                  : 'border-2 border-gray-900 bg-white dark:border-gray-800 dark:bg-gray-800')
               }
               aria-hidden="true"
               style={{ width: 16, height: 16 }}
@@ -117,7 +117,7 @@ export default function ExperienceTimeline() {
                     {group.roles.slice(1).map((role, index) => (
                       <div key={index} className="">
                         <p className="text-lg font-medium">{role.position}</p>
-                        <p className="text-muted-foreground mb-4 text-sm">
+                        <p className="mb-4 text-sm text-gray-500">
                           {formatDateRange(role.startDate, role.endDate)}
                           {(() => {
                             const duration = formatDuration(role.startDate, role.endDate)

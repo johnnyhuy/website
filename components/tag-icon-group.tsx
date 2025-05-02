@@ -22,7 +22,7 @@ export const TagIconGroup: React.FC<TagIconGroupProps> = ({
           return (
             <span
               key={tech}
-              className="flex h-8 items-center justify-center rounded-full border bg-gray-900 px-2"
+              className="flex h-8 items-center justify-center rounded-full border bg-gray-100 px-2 dark:bg-gray-900"
               title={tech}
             >
               <TagIcon

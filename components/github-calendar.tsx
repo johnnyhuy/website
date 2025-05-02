@@ -56,9 +56,9 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
     light: [
       'var(--color-gray-100)',
       'var(--color-gray-200)',
+      'var(--color-yellow-300)',
+      'var(--color-yellow-400)',
       'var(--color-yellow-500)',
-      'var(--color-yellow-600)',
-      'var(--color-yellow-700)',
     ],
   }
 

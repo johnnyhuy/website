@@ -1,73 +1,44 @@
-"use client"
+'use client'
 
-import { useEffect, useRef } from "react"
-import { useTheme } from "next-themes"
+import { Parallax } from 'react-scroll-parallax'
+import { useTheme } from 'next-themes'
+import type { FC } from 'react'
 
-export default function BackgroundWavyLines() {
+// Use an interface for props if you want to extend in the future
+export interface BackgroundWavyLinesProps {}
+
+export const BackgroundWavyLines: FC<BackgroundWavyLinesProps> = () => {
   const { theme, resolvedTheme } = useTheme()
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const strokeColor =
+    (resolvedTheme || theme) === 'dark' ? 'var(--color-gray-100)' : 'var(--color-gray-900)'
 
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const ctx = canvas.getContext("2d")
-    if (!ctx) return
-
-    // Set canvas dimensions
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight * 3 // Make it taller than viewport to cover scrolling
-    }
-
-    resizeCanvas()
-    window.addEventListener("resize", resizeCanvas)
-
-    // Draw wavy lines
-    const drawWavyLines = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      // Set line style based on theme - white for dark mode
-      const currentTheme = resolvedTheme || theme
-      ctx.strokeStyle = currentTheme === "dark" ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.05)"
-      ctx.lineWidth = 1.5
-
-      // Create multiple wavy lines with different patterns
-      for (let i = 0; i < 3; i++) {
-        const y = canvas.height * (0.2 + i * 0.15)
-        const amplitude = 80 + i * 20
-        const frequency = 0.002 - i * 0.0003
-
-        ctx.beginPath()
-        ctx.moveTo(0, y)
-
-        // Create a smooth wave across the width
-        for (let x = 0; x <= canvas.width; x += 1) {
-          const yOffset = amplitude * Math.sin(frequency * x * Math.PI + (i * Math.PI) / 2)
-          ctx.lineTo(x, y + yOffset)
-        }
-
-        ctx.stroke()
-      }
-    }
-
-    drawWavyLines()
-
-    // Redraw when theme changes
-    const observer = new MutationObserver(() => {
-      drawWavyLines()
-    })
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["class"],
-    })
-
-    return () => {
-      window.removeEventListener("resize", resizeCanvas)
-      observer.disconnect()
-    }
-  }, [theme, resolvedTheme])
-
-  return <canvas ref={canvasRef} className="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1]" />
+  return (
+    <div
+      aria-hidden="true"
+      className="pointer-events-none fixed top-0 left-0 z-[-1] h-[60vh] w-full opacity-5"
+    >
+      <Parallax translateY={[-5, 5]}>
+        <svg
+          width="100%"
+          height="100%"
+          viewBox="0 0 595 232"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-full w-full"
+          role="presentation"
+          focusable="false"
+        >
+          <path
+            d="M-1.5 220.5C28.3333 206.833 91.5 185.7 91.5 218.5C91.5 259.5 322.928 176.884 403.5 144C686.5 28.5 633.5 42 711.5 2"
+            stroke={strokeColor}
+            strokeWidth="4"
+            fill="none"
+          />
+        </svg>
+      </Parallax>
+    </div>
+  )
 }
+
+// Named export for best practice
+export default BackgroundWavyLines

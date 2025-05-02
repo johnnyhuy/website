@@ -18,6 +18,9 @@
 - Use "dark:" for dark mode classes
 - Ensure high accessibility (a11y) standards using ARIA roles and native accessibility props.
 
+# Project
+- Use pnpm for package management
+
 # Cascade
 - Apply the fix without confirmation unless you need more information
 - Check package.json if you need to install a new package

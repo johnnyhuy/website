@@ -103,8 +103,8 @@ export default function TechStackCarousel({
         })}
       </div>
 
-      <div className="from-background absolute top-0 left-0 z-10 h-full w-8 bg-linear-to-r to-transparent"></div>
-      <div className="from-background absolute top-0 right-0 z-10 h-full w-8 bg-linear-to-l to-transparent"></div>
+      <div className="absolute top-0 left-0 z-10 h-full w-8 bg-linear-to-r from-white to-transparent dark:from-gray-900"></div>
+      <div className="absolute top-0 right-0 z-10 h-full w-8 bg-linear-to-l from-white to-transparent dark:from-gray-900"></div>
     </div>
   )
 }

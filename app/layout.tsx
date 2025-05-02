@@ -9,6 +9,7 @@ import { ThemeProvider } from '@/components/theme-provider'
 import BackgroundWavyLines from '@/components/background-wavy-lines'
 import { ThemeIndicator } from '@/components/theme-indicator'
 import siteMetadata from '@/data/siteMetadata'
+import ParallaxProviderWrapper from '@/components/parallax-provider'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
@@ -83,13 +84,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           enableSystem
           disableTransitionOnChange={false}
         >
-          <BackgroundWavyLines />
-          <div className="flex min-h-screen flex-col">
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-          <ThemeIndicator />
+          <ParallaxProviderWrapper>
+            <BackgroundWavyLines />
+            <div className="flex min-h-screen flex-col">
+              <Navbar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+            <ThemeIndicator />
+          </ParallaxProviderWrapper>
         </ThemeProvider>
       </body>
     </html>
