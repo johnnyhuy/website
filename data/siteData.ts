@@ -82,7 +82,25 @@ function normalizeDate(input: string): string | undefined {
 function formatDateRange(start: string, end: string): string {
   const normStart = normalizeDate(start)
   const normEnd = normalizeDate(end)
-  if (normStart && normEnd) return `${normStart} - ${normEnd}`
+  // If both are present and in the same year, show as "Jan–Mar 2021"
+  if (normStart && normEnd && normStart !== 'Present' && normEnd !== 'Present') {
+    // Try to extract years
+    const startYear = normStart.match(/\d{4}$/)?.[0]
+    const endYear = normEnd.match(/\d{4}$/)?.[0]
+    if (startYear && endYear && startYear === endYear) {
+      // Try to extract months
+      const startMonth = normStart.match(/^[A-Za-z]{3}/)?.[0]
+      const endMonth = normEnd.match(/^[A-Za-z]{3}/)?.[0]
+      if (startMonth && endMonth) {
+        return `${startMonth}–${endMonth} ${startYear}`
+      }
+    }
+    return `${normStart} – ${normEnd}`
+  }
+  if (normStart && normEnd && normEnd === 'Present') {
+    // "Jan 2021 – Present" or "2021 – Present"
+    return `${normStart} – Present`
+  }
   if (normStart) return normStart
   if (normEnd) return normEnd
   return ''
@@ -171,7 +189,6 @@ export const experiences = [
     title: 'Lead Cloud Engineer',
     startDate: 'Dec 2021',
     endDate: 'Present',
-    period: formatDateRange('Dec 2021', 'Present'),
     technologies: ['AWS', 'Kubernetes', 'Terraform', 'GitHub', 'CI/CD', 'Docker'],
     responsibilities: [
       'Collaborated with various application development teams as a key member of the Customer Platforms team at Sportsbet, providing robust cloud technology solutions.',
@@ -188,7 +205,6 @@ export const experiences = [
     title: 'Senior Cloud Engineer',
     startDate: 'Dec 2020',
     endDate: 'Dec 2021',
-    period: formatDateRange('Dec 2020', 'Dec 2021'),
     technologies: ['AWS', 'Kubernetes', 'Docker', 'Terraform', 'CI/CD', 'PCI Compliance'],
     responsibilities: [
       'Worked on enterprise cloud services to provide payment solutions to telecommunication and health services as a member of the PayNow Touchcorp project team.',
@@ -203,7 +219,6 @@ export const experiences = [
     title: 'DevOps Engineer',
     startDate: 'Oct 2020',
     endDate: 'Dec 2020',
-    period: formatDateRange('Oct 2020', 'Dec 2020'),
     technologies: ['Azure', 'Kubernetes', 'CI/CD', 'DevOps'],
     responsibilities: [
       'Contributed to the development of scalable cloud and DevOps engineering solutions as a member of the container platform team.',
@@ -216,7 +231,6 @@ export const experiences = [
     title: 'Developer',
     startDate: 'Oct 2019',
     endDate: 'Oct 2020',
-    period: formatDateRange('Oct 2019', 'Oct 2020'),
     technologies: ['Azure', 'Kubernetes', 'DevOps', 'CI/CD', 'Grafana', 'Prometheus'],
     responsibilities: [
       'Contributed as a permanent member of the internal DevOps team.',
@@ -231,7 +245,6 @@ export const experiences = [
     title: 'Associate Developer',
     startDate: 'Jan 2019',
     endDate: 'Sep 2019',
-    period: formatDateRange('Jan 2019', 'Sep 2019'),
     technologies: ['Azure', 'Terraform', 'Infrastructure as Code'],
     responsibilities: [
       'Ensured the internal DevOps team had the necessary support to provide efficient and effective solutions.',
@@ -288,3 +301,6 @@ export const lanyard = {
   },
   success: true,
 }
+
+// Only export the new utilities here to avoid redeclaration errors
+export { normalizeDate, formatDateRange }

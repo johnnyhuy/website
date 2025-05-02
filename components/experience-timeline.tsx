@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import TechStack from './tech-stack'
-import { experiences } from '@/data/siteData'
+import { experiences, formatDateRange } from '@/data/siteData'
 import type { StaticImageData } from 'next/image'
 import type { JSX } from 'react'
 import sportsbet from '@/data/images/companies/sportsbet.png'
@@ -15,7 +15,6 @@ interface Experience {
   title: string
   startDate: string
   endDate: string
-  period: string
   technologies: string[]
   responsibilities: string[]
 }
@@ -59,7 +58,7 @@ export default function ExperienceTimeline() {
   return (
     <div className="space-y-6 md:space-y-8">
       {grouped.map((group) => (
-        <div key={group.company + group.roles[0].period} className="timeline-item">
+        <div key={group.company + group.roles[0].startDate} className="timeline-item">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
             <div className="bg-secondary relative h-12 w-12 shrink-0 overflow-hidden rounded-md">
               {React.isValidElement(group.logo) ? (
@@ -73,7 +72,7 @@ export default function ExperienceTimeline() {
               {/* First role */}
               <div>
                 <p className="text-lg font-medium">{group.roles[0].position}</p>
-                <p className="text-muted-foreground mb-2 text-sm">{group.roles[0].period}</p>
+                <p className="text-muted-foreground mb-2 text-sm">{formatDateRange(group.roles[0].startDate, group.roles[0].endDate)}</p>
                 <div className="mb-4 overflow-x-auto pb-2">
                   <TechStack technologies={group.roles[0].technologies} size="sm" />
                 </div>
@@ -91,7 +90,7 @@ export default function ExperienceTimeline() {
                   {group.roles.slice(1).map((role, index) => (
                     <div key={index} className="">
                       <p className="text-lg font-medium">{role.position}</p>
-                      <p className="text-muted-foreground mb-2 text-sm">{role.period}</p>
+                      <p className="text-muted-foreground mb-2 text-sm">{formatDateRange(role.startDate, role.endDate)}</p>
                       <div className="mb-4 overflow-x-auto pb-2">
                         <TechStack technologies={role.technologies} size="sm" />
                       </div>
