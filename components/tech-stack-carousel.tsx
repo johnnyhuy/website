@@ -1,7 +1,6 @@
 'use client'
 
-import React from 'react'
-import { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { getTagIcon } from '@/components/tag-icons'
 
@@ -17,7 +16,12 @@ export default function TechStackCarousel({
   const [isHovered, setIsHovered] = useState(false)
   const [isTouched, setIsTouched] = useState(false)
   const [scrollWidth, setScrollWidth] = useState(0)
-  const { theme } = useTheme()
+  const { resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     const scrollContainer = scrollRef.current
@@ -61,6 +65,8 @@ export default function TechStackCarousel({
     }
   }, [isTouched])
 
+  if (!mounted) return null
+
   return (
     <div
       className="align relative flex h-full flex-row items-center overflow-hidden"
@@ -82,7 +88,11 @@ export default function TechStackCarousel({
           return (
             <div
               key={`${item.name}-${index}`}
-              className={`flex items-center justify-center rounded-lg p-2 text-white ${theme === 'dark' ? 'bg-gray-400 hover:bg-gray-700' : 'bg-gray-100 hover:bg-gray-200'} transition-colors duration-200`}
+              className={`flex items-center justify-center rounded-lg p-2 text-white ${
+                resolvedTheme === 'dark'
+                  ? 'bg-gray-400 hover:bg-gray-700'
+                  : 'bg-gray-100 hover:bg-gray-200'
+              } transition-colors duration-200`}
               title={item.name}
             >
               <IconComponent className="h-10 w-10 object-contain" />

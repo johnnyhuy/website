@@ -6,7 +6,7 @@ export interface Project {
   href?: string
   imgSrc?: string
   image?: string
-  techStack: string[]
+  tags: string[]
   githubUrl?: string | null
   demo?: string | null
   date?: string
@@ -95,7 +95,7 @@ export const projects: Project[] = [
     description:
       'Open-source AI-powered transcription tools for converting audio to text with high accuracy.',
     image: '/placeholder.svg?height=300&width=600',
-    techStack: ['TypeScript', 'React', 'Node.js', 'AI'],
+    tags: ['TypeScript', 'React', 'Node.js', 'AI'],
     githubUrl: 'https://github.com/johnnyhuy',
     demo: null,
     date: normalizeDate('2023 - Present'),
@@ -105,7 +105,7 @@ export const projects: Project[] = [
     description:
       'Custom extensions for Markdown to enhance documentation capabilities and formatting options.',
     image: '/placeholder.svg?height=300&width=600',
-    techStack: ['JavaScript', 'Markdown', 'Node.js'],
+    tags: ['JavaScript', 'Markdown', 'Node.js'],
     githubUrl: 'https://github.com/johnnyhuy',
     demo: null,
     date: normalizeDate('2022 - 2023'),
@@ -115,7 +115,7 @@ export const projects: Project[] = [
     description:
       'Solutions for collecting, storing, and analyzing data from game servers to improve performance and player experience.',
     image: '/placeholder.svg?height=300&width=600',
-    techStack: ['Python', 'SQL', 'AWS', 'Data Engineering'],
+    tags: ['Python', 'SQL', 'AWS', 'Data Engineering'],
     githubUrl: 'https://github.com/johnnyhuy',
     demo: null,
     date: normalizeDate('2021 - 2022'),
@@ -124,7 +124,7 @@ export const projects: Project[] = [
     title: 'Melbourne Corporate Coffee',
     description: 'JAM Stack website for a corporate coffee service in Melbourne.',
     image: '/placeholder.svg?height=300&width=600',
-    techStack: ['Next.js', 'Tailwind CSS', 'JAM Stack'],
+    tags: ['Next.js', 'Tailwind CSS', 'JAM Stack'],
     githubUrl: null,
     demo: 'https://melbournecorporatecoffee.com.au',
     date: normalizeDate('2021'),
@@ -133,7 +133,7 @@ export const projects: Project[] = [
     title: 'Fun Flicks',
     description: 'JAM Stack website for a movie entertainment service.',
     image: '/placeholder.svg?height=300&width=600',
-    techStack: ['Next.js', 'Tailwind CSS', 'JAM Stack'],
+    tags: ['Next.js', 'Tailwind CSS', 'JAM Stack'],
     githubUrl: null,
     demo: 'https://funflicks.com.au',
     date: normalizeDate('2020'),
@@ -142,7 +142,7 @@ export const projects: Project[] = [
     title: 'Portfolio Website',
     description: 'Personal portfolio website showcasing projects and professional experience.',
     image: '/placeholder.svg?height=300&width=600',
-    techStack: ['Next.js', 'Tailwind CSS', 'TypeScript'],
+    tags: ['Next.js', 'Tailwind CSS', 'TypeScript'],
     githubUrl: 'https://github.com/johnnyhuy',
     demo: 'https://johnnyhuy.com',
     date: normalizeDate('2020 - Present'),
@@ -150,14 +150,14 @@ export const projects: Project[] = [
   {
     title: 'A Search Engine',
     description: `What if you could look up any information in the world? Webpages, images, videos\nand more. Google has many features to help you find exactly what you're looking\nfor.`,
-    techStack: [],
+    tags: [],
     imgSrc: '/static/images/google.png',
     href: 'https://www.google.com',
   },
   {
     title: 'The Time Machine',
     description: `Imagine being able to travel back in time or to the future. Simple turn the knob\nto the desired date and press "Go". No more worrying about lost keys or\nforgotten headphones with this simple yet affordable solution.`,
-    techStack: [],
+    tags: [],
     imgSrc: '/static/images/time-machine.jpg',
     href: '/blog/the-time-machine',
   },
