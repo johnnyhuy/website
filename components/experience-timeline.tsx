@@ -117,7 +117,7 @@ export default function ExperienceTimeline() {
                     {group.roles.slice(1).map((role, index) => (
                       <div key={index} className="">
                         <p className="text-lg font-medium">{role.position}</p>
-                        <p className="text-muted-foreground mb-2 text-sm">
+                        <p className="text-muted-foreground mb-4 text-sm">
                           {formatDateRange(role.startDate, role.endDate)}
                           {(() => {
                             const duration = formatDuration(role.startDate, role.endDate)
