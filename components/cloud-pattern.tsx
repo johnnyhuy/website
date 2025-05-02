@@ -46,7 +46,7 @@ export default function CloudPattern({ className = '' }: CloudPatternProps) {
   if (!mounted) return null
 
   const theme = resolvedTheme && resolvedTheme !== 'system' ? resolvedTheme : 'light'
-  const fillColor = theme === 'dark' ? 'var(--color-white)' : 'var(--color-gray-900)'
+  const fillColor = theme === 'dark' ? 'var(--color-gray-700)' : 'var(--color-gray-200)'
   const patternTransform = `translate(${offset},${offset}) rotate(-30)`
 
   return (
