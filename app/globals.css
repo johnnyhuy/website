@@ -815,3 +815,14 @@ input:-webkit-autofill:focus {
 .token.table {
   display: inline;
 }
+
+/* Hide scrollbar for all browsers, including descendants */
+.hide-scrollbar,
+.hide-scrollbar * {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+.hide-scrollbar::-webkit-scrollbar,
+.hide-scrollbar *::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}

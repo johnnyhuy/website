@@ -76,20 +76,6 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
 
   useEffect(fetchData, [fetchData])
 
-  useEffect(() => {
-    if (!loading && data) {
-      // Desktop calendar scroll
-      if (calendarContainerRef.current) {
-        calendarContainerRef.current.scrollLeft = calendarContainerRef.current.scrollWidth
-      }
-      // Mobile calendar scroll
-      if (mobileCalendarContainerRef.current) {
-        mobileCalendarContainerRef.current.scrollLeft =
-          mobileCalendarContainerRef.current.scrollWidth
-      }
-    }
-  }, [loading, data])
-
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center gap-4">
@@ -132,7 +118,11 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
 
   return (
     <>
-      <div className="m-4 hidden sm:block" ref={calendarContainerRef} style={{ overflowX: 'auto' }}>
+      <div
+        className="hide-scrollbar m-4 hidden sm:block"
+        ref={calendarContainerRef}
+        style={{ overflowX: 'auto' }}
+      >
         <Calendar
           data={selectLastNMonths(data.contributions, 6)}
           theme={calendarTheme}
@@ -151,7 +141,7 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
         />
       </div>
       <div
-        className="m-4 scale-110 sm:hidden"
+        className="hide-scrollbar m-4 scale-110 sm:hidden"
         ref={mobileCalendarContainerRef}
         style={{ overflowX: 'auto' }}
       >
@@ -165,6 +155,7 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
           maxLevel={4}
           hideTotalCount
           hideColorLegend
+          style={{ overflowX: 'auto' }}
         />
       </div>
     </>
