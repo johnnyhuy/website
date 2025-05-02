@@ -118,7 +118,7 @@ const Navbar = () => {
               </Link>
             ))}
             <Link
-              href="https://linkedin.com/in/johnnyhuy"
+              href={profile.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4"
@@ -126,7 +126,7 @@ const Navbar = () => {
             >
               <Button
                 variant="default"
-                className="bg-accent hover:bg-accent/80 w-full py-3 text-gray-900 dark:text-gray-100"
+                className="w-full bg-yellow-500 py-3 text-gray-900 hover:bg-yellow-500/80 dark:text-gray-100"
               >
                 <Mail className="mr-2 h-5 w-5" />
                 Contact
