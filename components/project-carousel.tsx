@@ -49,8 +49,8 @@ export default function ProjectCarousel() {
           style={{ transform: `translateX(-${activeIndex * 100}%)` }}
         >
           <div className="flex">
-            {projects.map((project) => (
-              <div key={project.id} className="w-full shrink-0">
+            {projects.map((project, index) => (
+              <div key={index} className="w-full shrink-0">
                 <div className="bg-secondary/50 rounded-xl p-4">
                   <div className="mb-2 flex items-center justify-between">
                     <h4 className="font-medium">{project.title}</h4>
@@ -93,7 +93,7 @@ export default function ProjectCarousel() {
         <div className="flex gap-1">
           {projects.map((project, index) => (
             <button
-              key={project.id}
+              key={index}
               className={`h-2 rounded-full transition-all ${
                 index === activeIndex ? 'bg-accent w-4' : 'bg-muted hover:bg-muted-foreground w-2'
               }`}

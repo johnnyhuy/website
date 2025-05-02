@@ -62,7 +62,6 @@ export const profile = {
 // Projects
 export const projects: Project[] = [
   {
-    id: 1,
     title: 'AI Transcription Tooling',
     description:
       'Open-source AI-powered transcription tools for converting audio to text with high accuracy.',
@@ -73,7 +72,6 @@ export const projects: Project[] = [
     date: '2023 - Present',
   },
   {
-    id: 2,
     title: 'Markdown Extensions',
     description:
       'Custom extensions for Markdown to enhance documentation capabilities and formatting options.',
@@ -84,7 +82,6 @@ export const projects: Project[] = [
     date: '2022 - 2023',
   },
   {
-    id: 3,
     title: 'Game Server Data Warehousing',
     description:
       'Solutions for collecting, storing, and analyzing data from game servers to improve performance and player experience.',
@@ -95,7 +92,6 @@ export const projects: Project[] = [
     date: '2021 - 2022',
   },
   {
-    id: 4,
     title: 'Melbourne Corporate Coffee',
     description: 'JAM Stack website for a corporate coffee service in Melbourne.',
     image: '/placeholder.svg?height=300&width=600',
@@ -105,7 +101,6 @@ export const projects: Project[] = [
     date: '2021',
   },
   {
-    id: 5,
     title: 'Fun Flicks',
     description: 'JAM Stack website for a movie entertainment service.',
     image: '/placeholder.svg?height=300&width=600',
@@ -115,7 +110,6 @@ export const projects: Project[] = [
     date: '2020',
   },
   {
-    id: 6,
     title: 'Portfolio Website',
     description: 'Personal portfolio website showcasing projects and professional experience.',
     image: '/placeholder.svg?height=300&width=600',

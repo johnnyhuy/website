@@ -16,9 +16,9 @@ export default function ProjectsPage() {
 
         {/* Mobile-optimized project grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {projects.map((project, index) => (
+          {projects.map((project) => (
             <div
-              key={index}
+              key={project.id}
               className="bg-background border-2 border-foreground rounded-lg shadow-custom overflow-hidden flex flex-col h-full"
             >
               {/* Project image */}

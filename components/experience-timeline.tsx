@@ -5,8 +5,8 @@ import { experiences } from '@/data/siteData'
 export default function ExperienceTimeline() {
   return (
     <div className="space-y-6 md:space-y-8">
-      {experiences.map((exp, index) => (
-        <div key={index} className="timeline-item">
+      {experiences.map((exp) => (
+        <div key={exp.company + exp.period} className="timeline-item">
           <div className="flex flex-col sm:flex-row sm:items-start gap-4">
             <div className="relative h-12 w-12 shrink-0 rounded-md overflow-hidden bg-secondary">
               <Image src={exp.logo || "/placeholder.svg"} alt={exp.company} fill className="object-cover" />
@@ -22,8 +22,8 @@ export default function ExperienceTimeline() {
               </div>
 
               <ul className="list-disc pl-5 space-y-2">
-                {exp.responsibilities.map((resp, respIndex) => (
-                  <li key={respIndex} className="text-sm">
+                {exp.responsibilities.map((resp) => (
+                  <li key={resp} className="text-sm">
                     {resp}
                   </li>
                 ))}
