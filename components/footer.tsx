@@ -4,10 +4,11 @@ import { LuLinkedin, LuRss, LuGithub, LuCode } from 'react-icons/lu'
 import { profile } from '@/data/siteData'
 import Me from '@/data/images/me.jpg'
 import { LucideHome } from 'lucide-react'
+import BackgroundWavyLines from './background-wavy-lines'
 
 const Footer = () => {
   return (
-    <footer className="relative overflow-hidden">
+    <footer className="relative">
       <div className="relative z-10 container mx-auto px-4 pt-12 pb-6">
         <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-12">
           {/* Main info (left) */}
@@ -94,6 +95,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
+      <BackgroundWavyLines />
     </footer>
   )
 }
