@@ -1,10 +1,21 @@
-import Image from "next/image"
-import TechStack from "./tech-stack"
+import Image from 'next/image'
+import TechStack from './tech-stack'
 import { experiences } from '@/data/siteData'
 import type { StaticImageData } from 'next/image'
 import sportsbet from '@/data/images/companies/sportsbet.png'
 import afterpay from '@/data/images/companies/afterpay.png'
 import enett from '@/data/images/companies/enett.png'
+
+interface Experience {
+  company: string
+  position: string
+  title: string
+  startDate: string
+  endDate: string
+  period: string
+  technologies: string[]
+  responsibilities: string[]
+}
 
 // Function to map company to logo
 const companyLogoMap: Record<string, StaticImageData> = {
@@ -19,34 +30,34 @@ function getLogoForCompany(company: string): StaticImageData | undefined {
   return companyLogoMap[normalized]
 }
 
-function groupConsecutiveByCompany(experiences: typeof experiences) {
-  const groups: Array<{ company: string; logo: StaticImageData | string | undefined; roles: typeof experiences }> = [];
-  let prevCompany = '';
-  let currentGroup: any = null;
+function groupConsecutiveByCompany(experiences: Experience[]) {
+  const groups: Array<{ company: string; logo: StaticImageData | string; roles: Experience[] }> = []
+  let prevCompany = ''
+  let currentGroup: any = null
   experiences.forEach((exp) => {
     if (exp.company !== prevCompany) {
       currentGroup = {
         company: exp.company,
         logo: getLogoForCompany(exp.company) || '/placeholder.svg',
         roles: [exp],
-      };
-      groups.push(currentGroup);
-      prevCompany = exp.company;
+      }
+      groups.push(currentGroup)
+      prevCompany = exp.company
     } else {
-      currentGroup.roles.push(exp);
+      currentGroup.roles.push(exp)
     }
-  });
-  return groups;
+  })
+  return groups
 }
 
 export default function ExperienceTimeline() {
-  const grouped = groupConsecutiveByCompany(experiences);
+  const grouped = groupConsecutiveByCompany(experiences as Experience[])
   return (
     <div className="space-y-6 md:space-y-8">
       {grouped.map((group) => (
         <div key={group.company + group.roles[0].period} className="timeline-item">
-          <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-            <div className="relative h-12 w-12 shrink-0 rounded-md overflow-hidden bg-secondary">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+            <div className="bg-secondary relative h-12 w-12 shrink-0 overflow-hidden rounded-md">
               <Image src={group.logo} alt={group.company} fill className="object-cover" />
             </div>
             <div className="flex-1">
@@ -54,13 +65,13 @@ export default function ExperienceTimeline() {
               {/* First role */}
               <div>
                 <p className="text-lg font-medium">{group.roles[0].position}</p>
-                <p className="text-sm text-muted-foreground mb-2">{group.roles[0].period}</p>
+                <p className="text-muted-foreground mb-2 text-sm">{group.roles[0].period}</p>
                 <div className="mb-4 overflow-x-auto pb-2">
                   <TechStack technologies={group.roles[0].technologies} size="sm" />
                 </div>
-                <ul className="list-disc pl-5 space-y-2">
-                  {group.roles[0].responsibilities.map((resp) => (
-                    <li key={resp} className="text-sm">
+                <ul className="list-disc space-y-2 pl-5">
+                  {group.roles[0].responsibilities.map((resp, index) => (
+                    <li key={index} className="text-sm">
                       {resp}
                     </li>
                   ))}
@@ -68,17 +79,17 @@ export default function ExperienceTimeline() {
               </div>
               {/* Child roles, if any */}
               {group.roles.length > 1 && (
-                <div className="mt-4 space-y-6 border-l-2 border-muted-foreground/30 pl-6">
-                  {group.roles.slice(1).map((role, idx) => (
-                    <div key={role.position + role.period} className="">
+                <div className="border-muted-foreground/30 mt-4 space-y-6 border-l-2 pl-6">
+                  {group.roles.slice(1).map((role, index) => (
+                    <div key={index} className="">
                       <p className="text-lg font-medium">{role.position}</p>
-                      <p className="text-sm text-muted-foreground mb-2">{role.period}</p>
+                      <p className="text-muted-foreground mb-2 text-sm">{role.period}</p>
                       <div className="mb-4 overflow-x-auto pb-2">
                         <TechStack technologies={role.technologies} size="sm" />
                       </div>
-                      <ul className="list-disc pl-5 space-y-2">
-                        {role.responsibilities.map((resp) => (
-                          <li key={resp} className="text-sm">
+                      <ul className="list-disc space-y-2 pl-5">
+                        {role.responsibilities.map((resp, index) => (
+                          <li key={index} className="text-sm">
                             {resp}
                           </li>
                         ))}
@@ -92,5 +103,5 @@ export default function ExperienceTimeline() {
         </div>
       ))}
     </div>
-  );
+  )
 }
