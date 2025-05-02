@@ -114,7 +114,7 @@ export default function Home() {
             </CardContent>
           </Card>
           <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-6">
-            <CardContent className="p-4">
+            <CardContent className="h-full p-4">
               <h3 className="mb-3 flex items-center text-lg font-medium">
                 <LuLaptop className="mr-2 h-8 w-8" />
                 What I'm working on

@@ -9,22 +9,22 @@ interface CloudPatternProps {
 
 export default function CloudPattern({ className = '' }: CloudPatternProps) {
   const { resolvedTheme } = useTheme()
-  const [mounted, setMounted] = useState(false)
   const patternId = useId()
   const [offset, setOffset] = useState(0)
   const rafRef = useRef<number>(0)
   const startTimeRef = useRef<number | null>(null)
 
-  useEffect(() => setMounted(true), [])
-
   useEffect(() => {
-    if (!mounted) return
     function animate(now: number) {
       if (startTimeRef.current === null) {
         startTimeRef.current = now
       }
-      const elapsed = now - startTimeRef.current
-      // 8 px per second, loop every 56 px
+      let elapsed = now - startTimeRef.current
+      const cycle = 7000 // 56px / 8px/sec = 7s
+      if (elapsed >= cycle) {
+        startTimeRef.current = now
+        elapsed = 0
+      }
       const offsetValue = ((elapsed * 8) / 1000) % 56
       setOffset(offsetValue)
       rafRef.current = requestAnimationFrame(animate)
@@ -36,15 +36,15 @@ export default function CloudPattern({ className = '' }: CloudPatternProps) {
       }
       startTimeRef.current = null
     }
-  }, [mounted])
+  }, [])
 
-  if (!mounted || !resolvedTheme || resolvedTheme === 'system') return null
-
-  const fillColor = resolvedTheme === 'dark' ? 'var(--color-white)' : 'var(--color-gray-900)'
+  const theme = resolvedTheme && resolvedTheme !== 'system' ? resolvedTheme : 'light'
+  const fillColor = theme === 'dark' ? 'var(--color-white)' : 'var(--color-gray-900)'
   const patternTransform = `translate(${offset},${offset}) rotate(-30)`
 
   return (
     <svg
+      suppressHydrationWarning
       className={className}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 600 200"

@@ -14,11 +14,8 @@ import { profile } from '@/data/profile'
 interface Props extends Omit<ActivityCalendarProps, 'data' | 'theme'> {}
 
 async function fetchCalendarData(username: string): Promise<ApiResponse> {
-  const currentYear = new Date().getFullYear()
-  const years = [currentYear - 1, currentYear]
-  const query = years.map((y) => `y=${y}`).join('&')
   const response = await fetch(
-    `https://github-contributions-api.jogruber.de/v4/${username}/?${query}`
+    `https://github-contributions-api.jogruber.de/v4/${username}?y=${new Date().getFullYear()}`
   )
   const data: ApiResponse | ApiErrorResponse = await response.json()
 

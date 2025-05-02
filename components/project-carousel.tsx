@@ -37,11 +37,13 @@ export default function ProjectCarousel() {
     setTimeout(() => setIsAutoPlaying(true), 5000)
   }
 
-  const activeProject = projects[activeIndex]
-
   return (
-    <div className="relative" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
-      <div className="overflow-hidden rounded-xl">
+    <div
+      className="relative flex flex-col"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="flex-1 overflow-hidden rounded-xl">
         <div
           className="transition-transform duration-500 ease-in-out"
           style={{ transform: `translateX(-${activeIndex * 100}%)` }}
@@ -54,14 +56,16 @@ export default function ProjectCarousel() {
                     <h4 className="font-medium">{project.title}</h4>
                     {project.githubUrl && (
                       <Link href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                        <Button size="sm" variant="ghost" className="h-8 w-8 rounded-full p-0">
+                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
                           <Github className="h-4 w-4" />
                           <span className="sr-only">GitHub</span>
                         </Button>
                       </Link>
                     )}
                   </div>
-                  <p className="text-muted-foreground mb-3 text-sm">{project.description}</p>
+                  <p className="text-muted-foreground mb-3 min-h-[4rem] text-sm">
+                    {project.description}
+                  </p>
                   <div className="mt-3 flex flex-wrap gap-2">
                     {project.techStack.map((tech: string) => (
                       <span key={tech} className="bg-primary/10 rounded-full px-2 py-1 text-xs">
@@ -77,13 +81,8 @@ export default function ProjectCarousel() {
       </div>
 
       {/* Navigation controls */}
-      <div className="mt-3 flex items-center justify-between">
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-8 w-8 rounded-full"
-          onClick={goToPrevious}
-        >
+      <div className="mt-4 flex items-center justify-between">
+        <Button variant="outline" size="icon" className="h-8 w-8" onClick={goToPrevious}>
           <ChevronLeft className="h-4 w-4" />
           <span className="sr-only">Previous project</span>
         </Button>
@@ -105,7 +104,7 @@ export default function ProjectCarousel() {
           ))}
         </div>
 
-        <Button variant="outline" size="icon" className="h-8 w-8 rounded-full" onClick={goToNext}>
+        <Button variant="outline" size="icon" className="h-8 w-8" onClick={goToNext}>
           <ChevronRight className="h-4 w-4" />
           <span className="sr-only">Next project</span>
         </Button>
