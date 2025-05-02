@@ -17,7 +17,7 @@ export default function BlogPostItem({ post }: BlogPostItemProps) {
 
   return (
     <div className="py-4 first:pt-0 last:pb-0">
-      <div className="mb-2 flex items-center text-sm text-muted-foreground">
+      <div className="text-muted-foreground mb-2 flex items-center text-sm">
         <CalendarIcon className="mr-1 h-3 w-3" />
         {/* Display both short and relative dates */}
         <span>{`${formattedShortDate} (${formattedRelativeDate})`}</span>
@@ -29,10 +29,10 @@ export default function BlogPostItem({ post }: BlogPostItemProps) {
           </>
         )}
       </div>
-      <h3 className="mb-1 text-lg font-medium hover:text-primary">
+      <h3 className="hover:text-primary mb-1 text-lg font-medium">
         <Link href={`/blog/${post.slug}`}>{post.title}</Link>
       </h3>
-      <p className="mb-3 text-sm text-muted-foreground">{post.summary ?? ''}</p>
+      <p className="text-muted-foreground mb-3 text-sm">{post.summary ?? ''}</p>
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-2">
           {post.tags.map((tag: string, index: number) => {
@@ -41,21 +41,21 @@ export default function BlogPostItem({ post }: BlogPostItemProps) {
               <Link
                 href={`/blog?tag=${tag}`}
                 key={index}
-                className="transition-colors hover:bg-accent/10"
+                className="hover:bg-accent/10 transition-colors"
               >
                 <TagIcon
                   icon={IconComponent ? <IconComponent /> : undefined}
                   label={tag || undefined}
                   variant="solid"
                   size="sm"
-                  className="rounded-md bg-secondary/50 px-2 py-1 text-xs flex items-center"
+                  className="bg-secondary/50 flex items-center rounded-md px-2 py-1 text-xs"
                 />
               </Link>
             )
           })}
         </div>
         <Link href={`/blog/${post.slug}`} aria-label="Read post">
-          <ArrowRight className="h-4 w-4 text-primary transition-colors hover:text-accent" />
+          <ArrowRight className="text-primary hover:text-accent h-4 w-4 transition-colors" />
         </Link>
       </div>
     </div>
