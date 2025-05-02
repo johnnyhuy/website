@@ -71,21 +71,6 @@ export default function Home() {
                     )
                   })}
                 </div>
-                <div className="mt-4 flex flex-wrap justify-center gap-2 md:justify-start">
-                  {sortedTechs.map((tech) => {
-                    const Icon = getTagIcon(tech.name)
-                    return (
-                      <TagIcon
-                        key={tech.name}
-                        icon={Icon ? <Icon /> : undefined}
-                        label={tech.name}
-                        variant="solid"
-                        size="md"
-                        className="flex items-center gap-1 rounded px-2 py-1 text-xs"
-                      />
-                    )
-                  })}
-                </div>
                 <p className="text-muted-foreground mt-3 text-xs md:mt-4">{profile.contactNote}</p>
               </div>
             </CardContent>
@@ -96,7 +81,7 @@ export default function Home() {
 
           {/* Second Row */}
           {/* GitHub Activity Graph */}
-          <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-6">
+          <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 sm:block md:col-span-6">
             <CardContent className="p-4">
               <h3 className="mb-3 flex items-center text-lg font-medium md:mb-4">
                 <SiGithub className="mr-2 h-8 w-8" />
@@ -116,13 +101,13 @@ export default function Home() {
             </CardContent>
           </Card>
 
-          <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-4">
+          <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 sm:block md:col-span-4">
             <CardContent className="flex h-full flex-row items-start gap-4 p-4">
               <DiscordPresence />
               <SiDiscord className="mr-2 h-8 w-8" />
             </CardContent>
           </Card>
-          <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-4">
+          <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 sm:block md:col-span-4">
             <CardContent className="flex h-full flex-row items-start gap-4 p-4">
               <TechStackCarousel direction="ltr" techStack={sortedTechs} />
               {/* <LucideCode2 className="h-8 w-8" /> */}
@@ -156,7 +141,7 @@ export default function Home() {
           <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 md:col-span-6 md:block">
             <CloudPattern className="absolute" />
           </Card>
-          <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-6">
+          <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 sm:block md:col-span-6">
             <CardContent className="flex flex-row gap-4 p-4">
               <WakatimeGraph />
               <SiWakatime className="h-8 w-8" />

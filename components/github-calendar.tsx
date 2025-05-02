@@ -117,48 +117,24 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
   }
 
   return (
-    <>
-      <div
-        className="hide-scrollbar m-4 hidden sm:block"
-        ref={calendarContainerRef}
-        style={{ overflowX: 'auto' }}
-      >
-        <Calendar
-          data={selectLastNMonths(data.contributions, 6)}
-          theme={calendarTheme}
-          colorScheme={resolvedTheme === 'dark' ? 'dark' : 'light'}
-          blockSize={16}
-          blockMargin={6}
-          blockRadius={4}
-          maxLevel={4}
-          labels={{
-            totalCount:
-              '{{count}} activities in ' +
-              (new Date().getFullYear() - 1) +
-              ' & ' +
-              new Date().getFullYear(),
-          }}
-        />
-      </div>
-      <div
-        className="hide-scrollbar m-4 scale-110 sm:hidden"
-        ref={mobileCalendarContainerRef}
-        style={{ overflowX: 'auto' }}
-      >
-        <Calendar
-          data={selectLastNMonths(data.contributions, 6)}
-          theme={calendarTheme}
-          colorScheme={resolvedTheme === 'dark' ? 'dark' : 'light'}
-          blockSize={20}
-          blockMargin={6}
-          blockRadius={7}
-          maxLevel={4}
-          hideTotalCount
-          hideColorLegend
-          style={{ overflowX: 'auto' }}
-        />
-      </div>
-    </>
+    <div className="hide-scrollbar m-4 overflow-x-auto" ref={calendarContainerRef}>
+      <Calendar
+        data={selectLastNMonths(data.contributions, 6)}
+        theme={calendarTheme}
+        colorScheme={resolvedTheme === 'dark' ? 'dark' : 'light'}
+        blockSize={16}
+        blockMargin={6}
+        blockRadius={4}
+        maxLevel={4}
+        labels={{
+          totalCount:
+            '{{count}} activities in ' +
+            (new Date().getFullYear() - 1) +
+            ' & ' +
+            new Date().getFullYear(),
+        }}
+      />
+    </div>
   )
 }
 

@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { TagIconGroup } from '@/components/tag-icon-group'
-import { experiences, formatDateRange } from '@/data/siteData'
+import { experiences, formatDateRange, formatDuration } from '@/data/siteData'
 import type { StaticImageData } from 'next/image'
 import sportsbet from '@/data/images/companies/sportsbet.png'
 import afterpay from '@/data/images/companies/afterpay.png'
@@ -60,12 +60,11 @@ export default function ExperienceTimeline() {
   const grouped = groupConsecutiveByCompany(experiences as Experience[])
   return (
     <div className="space-y-6 md:space-y-8">
-      <ul className="space-y-0">
+      <ul className="pl-4">
         {grouped.map((group, index) => (
           <li
             key={group.company + group.roles[0].startDate}
-            className={`relative border-l-2 border-l-gray-100 pb-8 pl-8 ${index === grouped.length - 1 ? 'last:border-l-0' : ''}`}
-            style={{ borderLeftWidth: 2 }}
+            className="relative border-l-2 border-l-gray-100 pb-8 pl-8"
           >
             {/* Timeline circle */}
             <div
@@ -86,20 +85,23 @@ export default function ExperienceTimeline() {
                   <Image src={group.logo} alt={group.company} fill className="object-cover" />
                 )}
               </div>
-              <div className="flex-1">
-                <h3 className="text-xl font-bold">{group.company}</h3>
+              <div className="flex-1 pt-3">
+                <h3 className="mb-2 text-xl font-bold">{group.company}</h3>
                 {/* First role */}
                 <div>
                   <p className="text-lg font-medium">{group.roles[0].position}</p>
-                  <p className="text-muted-foreground mb-2 text-sm">
+                  <p className="text-muted-foreground mb-4 text-sm">
                     {formatDateRange(group.roles[0].startDate, group.roles[0].endDate)}
+                    {(() => {
+                      const duration = formatDuration(
+                        group.roles[0].startDate,
+                        group.roles[0].endDate
+                      )
+                      return duration ? ` · ${duration}` : ''
+                    })()}
                   </p>
                   <div className="mb-4 overflow-x-auto pb-2">
-                    <TagIconGroup
-                      technologies={group.roles[0].technologies}
-                      size="md"
-                      variant="outline"
-                    />
+                    <TagIconGroup technologies={group.roles[0].technologies} size="md" />
                   </div>
                   <ul className="list-disc space-y-2 pl-5">
                     {group.roles[0].responsibilities.map((resp, index) => (
@@ -111,19 +113,19 @@ export default function ExperienceTimeline() {
                 </div>
                 {/* Child roles, if any */}
                 {group.roles.length > 1 && (
-                  <div>
+                  <div className="mt-8 flex flex-col gap-8">
                     {group.roles.slice(1).map((role, index) => (
                       <div key={index} className="">
                         <p className="text-lg font-medium">{role.position}</p>
                         <p className="text-muted-foreground mb-2 text-sm">
                           {formatDateRange(role.startDate, role.endDate)}
+                          {(() => {
+                            const duration = formatDuration(role.startDate, role.endDate)
+                            return duration ? ` · ${duration}` : ''
+                          })()}
                         </p>
                         <div className="mb-4 overflow-x-auto pb-2">
-                          <TagIconGroup
-                            technologies={role.technologies}
-                            size="md"
-                            variant="outline"
-                          />
+                          <TagIconGroup technologies={role.technologies} size="md" />
                         </div>
                         <ul className="list-disc space-y-2 pl-5">
                           {role.responsibilities.map((resp, index) => (
