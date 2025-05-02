@@ -75,15 +75,14 @@ export default function Home() {
                   {sortedTechs.map((tech) => {
                     const Icon = getTagIcon(tech.name)
                     return (
-                      <span
+                      <TagIcon
                         key={tech.name}
+                        icon={Icon ? <Icon /> : undefined}
+                        label={tech.name}
+                        variant="solid"
+                        size="md"
                         className="flex items-center gap-1 rounded px-2 py-1 text-xs"
-                      >
-                        {Icon && (
-                          <TagIcon icon={Icon} label={tech.name} variant="solid" size="md" />
-                        )}
-                        {tech.name}
-                      </span>
+                      />
                     )
                   })}
                 </div>

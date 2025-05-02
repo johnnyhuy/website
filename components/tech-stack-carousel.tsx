@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useTheme } from 'next-themes'
 import { getTagIcon } from '@/components/tag-icons'
+import { TagIcon } from '@/components/ui/tag-icon'
 
 export default function TechStackCarousel({
   direction = 'ltr',
@@ -80,22 +81,23 @@ export default function TechStackCarousel({
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {[...stack, ...stack].map((item, index) => {
-          const IconComponent = getTagIcon(item.name)
+          const Icon = getTagIcon(item.name)
 
-          if (!IconComponent) {
+          if (!Icon) {
             return null
           }
           return (
             <div
               key={`${item.name}-${index}`}
-              className={`flex items-center justify-center rounded-lg p-2 text-white ${
-                resolvedTheme === 'dark'
-                  ? 'bg-gray-400 hover:bg-gray-700'
-                  : 'bg-gray-100 hover:bg-gray-200'
-              } transition-colors duration-200`}
+              className="flex items-center justify-center"
               title={item.name}
             >
-              <IconComponent className="h-10 w-10 object-contain" />
+              <TagIcon
+                icon={<Icon />}
+                label={item.name || undefined}
+                variant="carousel"
+                size="lg"
+              />
             </div>
           )
         })}

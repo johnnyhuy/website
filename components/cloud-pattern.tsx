@@ -1,13 +1,14 @@
 'use client'
 
 import { useTheme } from 'next-themes'
-import { useId, useEffect, useRef, useState } from 'react'
+import { useId, useEffect, useState } from 'react'
 
 interface CloudPatternProps {
   className?: string
+  animated?: boolean
 }
 
-export default function CloudPattern({ className = '' }: CloudPatternProps) {
+export default function CloudPattern({ className = '', animated = false }: CloudPatternProps) {
   const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
   const [visible, setVisible] = useState(false)
@@ -20,12 +21,15 @@ export default function CloudPattern({ className = '' }: CloudPatternProps) {
 
   useEffect(() => {
     if (mounted) {
-      // Trigger fade-in after mount
       setVisible(true)
     }
   }, [mounted])
 
   useEffect(() => {
+    if (!animated) {
+      setOffset(0)
+      return
+    }
     let rafId: number
 
     const cycle = 7000 // 7s for a full cycle
@@ -41,7 +45,7 @@ export default function CloudPattern({ className = '' }: CloudPatternProps) {
 
     rafId = requestAnimationFrame(animate)
     return () => cancelAnimationFrame(rafId)
-  }, [])
+  }, [animated])
 
   if (!mounted) return null
 

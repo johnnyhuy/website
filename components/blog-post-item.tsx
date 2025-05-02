@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { CalendarIcon, Clock, ArrowRight } from 'lucide-react'
-import TechIcon from './tech-icon'
+import { TagIcon } from '@/components/ui/tag-icon'
+import { getTagIcon } from '@/components/tag-icons'
 import { format, formatDistanceToNow, parseISO } from 'date-fns'
 import type { CoreContent } from 'pliny/utils/contentlayer.js'
 import type { Blog } from 'contentlayer/generated'
@@ -34,16 +35,24 @@ export default function BlogPostItem({ post }: BlogPostItemProps) {
       <p className="mb-3 text-sm text-muted-foreground">{post.summary ?? ''}</p>
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-2">
-          {post.tags.map((tag: string, index: number) => (
-            <Link
-              href={`/blog?tag=${tag}`}
-              key={index}
-              className="flex items-center rounded-md bg-secondary/50 px-2 py-1 text-xs transition-colors hover:bg-accent/10"
-            >
-              <TechIcon name={tag} size="sm" className="mr-1" />
-              <span>{tag}</span>
-            </Link>
-          ))}
+          {post.tags.map((tag: string, index: number) => {
+            const IconComponent = getTagIcon(tag)
+            return (
+              <Link
+                href={`/blog?tag=${tag}`}
+                key={index}
+                className="transition-colors hover:bg-accent/10"
+              >
+                <TagIcon
+                  icon={IconComponent ? <IconComponent /> : undefined}
+                  label={tag || undefined}
+                  variant="solid"
+                  size="sm"
+                  className="rounded-md bg-secondary/50 px-2 py-1 text-xs flex items-center"
+                />
+              </Link>
+            )
+          })}
         </div>
         <Link href={`/blog/${post.slug}`} aria-label="Read post">
           <ArrowRight className="h-4 w-4 text-primary transition-colors hover:text-accent" />
