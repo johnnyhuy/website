@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { LuLinkedin, LuRss, LuCode, LuBookOpen, LuLaptop, LuGithub } from 'react-icons/lu'
 import WavyLine from '@/components/wavy-line'
 import { profile } from '@/data/siteData'
+import Me from '@/data/images/me.jpg'
 
 const Footer = () => {
   return (
@@ -16,16 +17,14 @@ const Footer = () => {
           <div className="md:col-span-5 lg:col-span-4">
             <div className="mb-4 flex items-center gap-3">
               <div className="border-primary/10 relative h-12 w-12 overflow-hidden rounded-full border-2">
-                <Image src={profile.avatar} alt={profile.name} fill className="object-cover" />
+                <Image src={Me} alt={profile.name} fill className="object-cover" />
               </div>
               <div>
                 <h3 className="text-xl font-bold">{profile.name}</h3>
                 <p className="text-muted-foreground text-sm">{profile.jobTitle}</p>
               </div>
             </div>
-            <p className="text-muted-foreground mb-6 max-w-md">
-              {profile.bio}
-            </p>
+            <p className="text-muted-foreground mb-6 max-w-md">{profile.bio}</p>
             <div className="mb-6 flex space-x-4">
               {profile.github && (
                 <Link

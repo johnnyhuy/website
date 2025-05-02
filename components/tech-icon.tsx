@@ -1,68 +1,73 @@
-"use client"
-import Image from "next/image"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+'use client'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import {
+  FaReact,
+  FaNodeJs,
+  FaPython,
+  FaAws,
+  FaDocker,
+  FaJenkins,
+  FaGithub,
+  FaDatabase,
+} from 'react-icons/fa'
+import {
+  SiTypescript,
+  SiJavascript,
+  SiNextdotjs,
+  SiGraphql,
+  SiMarkdown,
+  SiGooglecloud,
+  SiKubernetes,
+  SiTerraform,
+  SiPostgresql,
+  SiMongodb,
+  SiTailwindcss,
+} from 'react-icons/si'
 
 // Map of tech names to their icons
-const techIcons: Record<string, string> = {
+const techIcons: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
   // Languages & Frameworks
-  React: "/placeholder.svg?height=40&width=40",
-  TypeScript: "/placeholder.svg?height=40&width=40",
-  JavaScript: "/placeholder.svg?height=40&width=40",
-  "Next.js": "/placeholder.svg?height=40&width=40",
-  "Node.js": "/placeholder.svg?height=40&width=40",
-  Python: "/placeholder.svg?height=40&width=40",
-  GraphQL: "/placeholder.svg?height=40&width=40",
-  Markdown: "/placeholder.svg?height=40&width=40",
+  React: FaReact,
+  TypeScript: SiTypescript,
+  JavaScript: SiJavascript,
+  'Next.js': SiNextdotjs,
+  'Node.js': FaNodeJs,
+  Python: FaPython,
+  GraphQL: SiGraphql,
+  Markdown: SiMarkdown,
 
   // Cloud & DevOps
-  AWS: "/placeholder.svg?height=40&width=40",
-  Azure: "/placeholder.svg?height=40&width=40",
-  GCP: "/placeholder.svg?height=40&width=40",
-  Docker: "/placeholder.svg?height=40&width=40",
-  Kubernetes: "/placeholder.svg?height=40&width=40",
-  Terraform: "/placeholder.svg?height=40&width=40",
-  Jenkins: "/placeholder.svg?height=40&width=40",
-  GitHub: "/placeholder.svg?height=40&width=40",
-  "CI/CD": "/placeholder.svg?height=40&width=40",
+  AWS: FaAws,
+  GCP: SiGooglecloud,
+  Docker: FaDocker,
+  Kubernetes: SiKubernetes,
+  Terraform: SiTerraform,
+  Jenkins: FaJenkins,
+  GitHub: FaGithub,
 
   // Databases
-  PostgreSQL: "/placeholder.svg?height=40&width=40",
-  MongoDB: "/placeholder.svg?height=40&width=40",
-  SQL: "/placeholder.svg?height=40&width=40",
+  PostgreSQL: SiPostgresql,
+  MongoDB: SiMongodb,
+  SQL: FaDatabase,
 
   // Other
-  DevOps: "/placeholder.svg?height=40&width=40",
-  Security: "/placeholder.svg?height=40&width=40",
-  mTLS: "/placeholder.svg?height=40&width=40",
-  Architecture: "/placeholder.svg?height=40&width=40",
-  Cloud: "/placeholder.svg?height=40&width=40",
-  AI: "/placeholder.svg?height=40&width=40",
-  "Data Engineering": "/placeholder.svg?height=40&width=40",
-  "JAM Stack": "/placeholder.svg?height=40&width=40",
-  "Tailwind CSS": "/placeholder.svg?height=40&width=40",
-  Reliability: "/placeholder.svg?height=40&width=40",
-  SRE: "/placeholder.svg?height=40&width=40",
-  "Developer Experience": "/placeholder.svg?height=40&width=40",
-  "Internal Tools": "/placeholder.svg?height=40&width=40",
-  Containers: "/placeholder.svg?height=40&width=40",
-  "PCI Compliance": "/placeholder.svg?height=40&width=40",
-  "Legacy Systems": "/placeholder.svg?height=40&width=40",
+  'Tailwind CSS': SiTailwindcss,
 }
 
 interface TechIconProps {
   name: string
-  size?: "sm" | "md" | "lg"
+  size?: 'sm' | 'md' | 'lg'
   className?: string
 }
 
-export default function TechIcon({ name, size = "md", className = "" }: TechIconProps) {
-  const iconSrc = techIcons[name] || "/placeholder.svg?height=40&width=40"
+export default function TechIcon({ name, size = 'md', className = '' }: TechIconProps) {
+  const IconComponent = techIcons[name]
 
   // Size mappings
   const sizeClasses = {
-    sm: "w-6 h-6",
-    md: "w-8 h-8",
-    lg: "w-10 h-10",
+    sm: 'w-6 h-6',
+    md: 'w-8 h-8',
+    lg: 'w-10 h-10',
   }
 
   const iconSize = {
@@ -76,10 +81,17 @@ export default function TechIcon({ name, size = "md", className = "" }: TechIcon
       <Tooltip delayDuration={300}>
         <TooltipTrigger asChild>
           <div
-            className={`tech-icon ${sizeClasses[size]} ${className} bg-secondary rounded-full flex items-center justify-center border border-border hover:border-accent transition-all duration-200`}
+            className={`tech-icon ${sizeClasses[size]} ${className} bg-secondary border-border hover:border-accent flex items-center justify-center rounded-full border transition-all duration-200`}
           >
-            <div className="relative" style={{ width: iconSize[size], height: iconSize[size] }}>
-              <Image src={iconSrc || "/placeholder.svg"} alt={name} fill className="object-contain p-1" />
+            <div
+              className="relative flex items-center justify-center"
+              style={{ width: iconSize[size], height: iconSize[size] }}
+            >
+              {IconComponent ? (
+                <IconComponent size={iconSize[size]} className="object-contain p-1" />
+              ) : (
+                <span className="text-xs">?</span>
+              )}
             </div>
           </div>
         </TooltipTrigger>

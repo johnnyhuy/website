@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X, Code, Laptop, BookOpen, MessageSquare, Mail, Book } from 'lucide-react'
+import { Menu, X, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import { EnhancedGlassEffect } from './enhanced-glass-effect'
 import { navbar } from '@/data/navbar'
+import { profile } from '@/data/siteData'
+import Johnny from '@/data/images/johnny.svg'
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -37,7 +38,7 @@ const Navbar = () => {
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link href="/" className="text-xl font-bold">
           <Image
-            src="/images/johnny.svg"
+            src={Johnny}
             alt="Johnny Huynh"
             width={32}
             height={32}
@@ -60,7 +61,7 @@ const Navbar = () => {
               <span className="text-lg">{link.name}</span>
             </Link>
           ))}
-          <Link href="https://linkedin.com/in/johnnyhuy" target="_blank" rel="noopener noreferrer">
+          <Link href={profile.linkedin} target="_blank" rel="noopener noreferrer">
             <Button variant="default" size="sm" className="bg-accent hover:bg-accent/80 ml-2">
               <Mail className="mr-2 h-4 w-4" />
               Contact

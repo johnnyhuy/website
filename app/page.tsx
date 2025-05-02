@@ -17,6 +17,7 @@ import { profile, experiences } from '@/data/siteData'
 import techStackList from '@/data/tech-stack'
 import { getTagIcon } from '@/components/tag-icons'
 import CloudPattern from '../components/cloud-pattern'
+import Me from '@/data/images/me.jpg'
 
 // Get the full data for the latest 3 posts from Contentlayer
 const sortedPosts = sortPosts(allBlogs)
@@ -37,7 +38,7 @@ export default function Home() {
             <CardContent className="flex flex-col items-center gap-4 p-4 md:flex-row md:items-start md:gap-6 md:p-6">
               <div className="relative h-24 w-24 shrink-0 md:h-32 md:w-32 lg:h-40 lg:w-40">
                 <Image
-                  src={profile.avatar}
+                  src={Me}
                   alt={profile.name}
                   fill
                   className="rounded-2xl object-cover"
