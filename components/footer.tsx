@@ -61,7 +61,7 @@ const Footer = () => {
               insights.
             </p>
             <Link href="/rss.xml">
-              <div className="bg-secondary hover:bg-secondary/80 inline-flex items-center gap-2 rounded-md px-4 py-2 transition-colors">
+              <div className="inline-flex items-center gap-2 rounded-md bg-yellow-500 px-4 py-2 transition-colors hover:bg-yellow-500/80">
                 <LuRss className="h-4 w-4" />
                 <span>Subscribe to RSS Feed</span>
               </div>
