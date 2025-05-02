@@ -1,3 +1,4 @@
+import { ReactScan } from '@/components/react-scan'
 import type React from 'react'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
@@ -74,6 +75,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <ReactScan />
       <body className={`${inter.variable} font-sans`}>
         <ThemeProvider
           attribute="class"
