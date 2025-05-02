@@ -1,6 +1,6 @@
-import type { NextConfig } from "next";
-import { withContentlayer } from "next-contentlayer2";
-import withBundleAnalyzer from "@next/bundle-analyzer";
+import type { NextConfig } from 'next'
+import { withContentlayer } from 'next-contentlayer2'
+import withBundleAnalyzer from '@next/bundle-analyzer'
 
 // You might need to insert additional domains in script-src if you are using external services
 const ContentSecurityPolicy = `
@@ -12,51 +12,51 @@ const ContentSecurityPolicy = `
   connect-src *;
   font-src 'self';
   frame-src giscus.app
-`;
+`
 
 const securityHeaders = [
   {
-    key: "Content-Security-Policy",
-    value: ContentSecurityPolicy.replace(/\n/g, ""),
+    key: 'Content-Security-Policy',
+    value: ContentSecurityPolicy.replace(/\n/g, ''),
   },
   {
-    key: "Referrer-Policy",
-    value: "strict-origin-when-cross-origin",
+    key: 'Referrer-Policy',
+    value: 'strict-origin-when-cross-origin',
   },
   {
-    key: "X-Frame-Options",
-    value: "DENY",
+    key: 'X-Frame-Options',
+    value: 'DENY',
   },
   {
-    key: "X-Content-Type-Options",
-    value: "nosniff",
+    key: 'X-Content-Type-Options',
+    value: 'nosniff',
   },
   {
-    key: "X-DNS-Prefetch-Control",
-    value: "on",
+    key: 'X-DNS-Prefetch-Control',
+    value: 'on',
   },
   {
-    key: "Strict-Transport-Security",
-    value: "max-age=31536000; includeSubDomains",
+    key: 'Strict-Transport-Security',
+    value: 'max-age=31536000; includeSubDomains',
   },
   {
-    key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=()",
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=()',
   },
-];
+]
 
-const output = process.env.EXPORT ? "export" : undefined;
-const basePath = process.env.BASE_PATH || undefined;
-const unoptimized = process.env.UNOPTIMIZED ? true : undefined;
+const output = process.env.EXPORT ? 'export' : undefined
+const basePath = process.env.BASE_PATH || undefined
+const unoptimized = process.env.UNOPTIMIZED ? true : undefined
 
 const nextConfig: NextConfig = {
   output,
   basePath,
   reactStrictMode: true,
   trailingSlash: false,
-  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
+  pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   eslint: {
-    dirs: ["app", "components", "layouts", "scripts"],
+    dirs: ['app', 'components', 'layouts', 'scripts'],
     ignoreDuringBuilds: true,
   },
   typescript: {
@@ -65,8 +65,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "picsum.photos",
+        protocol: 'https',
+        hostname: 'picsum.photos',
       },
     ],
     unoptimized,
@@ -74,15 +74,15 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)",
+        source: '/(.*)',
         headers: securityHeaders,
       },
-    ];
+    ]
   },
-};
+}
 
 export default withContentlayer(
   withBundleAnalyzer({
-    enabled: process.env.ANALYZE === "true",
+    enabled: process.env.ANALYZE === 'true',
   })(nextConfig)
-);
+)

@@ -147,7 +147,6 @@ export default function Home() {
                   </Link>
                 </div>
               </div>
-              {/* <Briefcase className="h-8 w-8" /> */}
             </CardContent>
           </Card>
 
