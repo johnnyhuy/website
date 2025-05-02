@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import type { StaticImageData } from 'next/image'
-import { LuArrowRight, LuLinkedin, LuSearch, LuLaptop, LuBookOpen } from 'react-icons/lu'
+import { LuArrowRight, LuLaptop, LuBookOpen } from 'react-icons/lu'
 import { Card, CardContent } from '@/components/ui/card'
 import GithubCalendar from '@/components/github-calendar'
 import DiscordPresence from '@/components/discord-presence'
@@ -19,7 +18,6 @@ import techStackList from '@/data/tech-stack'
 import { getTagIcon } from '@/components/tag-icons'
 import CloudPattern from '../components/cloud-pattern'
 import Me from '@/data/images/me.jpg'
-import { TagIcon } from '@/components/ui/tag-icon'
 
 const sortedPosts = sortPosts(allBlogs)
 const corePosts = allCoreContent(sortedPosts)

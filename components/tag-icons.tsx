@@ -38,12 +38,14 @@ import {
   SiTypescript,
   SiVercel,
   SiYaml,
+  SiLinkedin,
 } from 'react-icons/si'
 
 export const tagIconsMap: { [key: string]: IconType } = {
   astro: SiAstro,
   html: SiHtml5,
   css: SiCss3,
+  linkedin: SiLinkedin,
   javascript: SiJavascript,
   typescript: SiTypescript,
   react: SiReact,
@@ -83,9 +85,9 @@ export const tagIconsMap: { [key: string]: IconType } = {
   writings: FaPenSquare,
 }
 
-export const getTagIcon = (tag: string): IconType | null => {
+export const getTagIcon = (tag: string): IconType => {
   const lowerCaseTag = tag.toLowerCase()
   const normalizedTag = lowerCaseTag.replace(/ /g, '').replace('dot', '.')
   const Icon = tagIconsMap[normalizedTag] ?? tagIconsMap[lowerCaseTag]
-  return Icon ?? null
+  return Icon
 }

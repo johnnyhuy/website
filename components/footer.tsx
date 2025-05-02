@@ -1,8 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { LuLinkedin, LuRss, LuGithub } from 'react-icons/lu'
+import { LuLinkedin, LuRss, LuGithub, LuCode } from 'react-icons/lu'
 import { profile } from '@/data/siteData'
 import Me from '@/data/images/me.jpg'
+import { LucideHome } from 'lucide-react'
 
 const Footer = () => {
   return (
@@ -73,21 +74,22 @@ const Footer = () => {
           </p>
           <div className="flex items-center gap-4 text-sm">
             <Link
-              href="https://github.com/johnnyhuy/website/edit/main/app/globals.css"
-              target="_blank"
+              href="/"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
+              className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
             >
-              Edit this page
+              <LucideHome className="h-4 w-4" />
+              <span>Home</span>
             </Link>
             <span className="text-muted-foreground">•</span>
             <Link
               href="https://github.com/johnnyhuy/website"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary transition-colors"
+              className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
             >
-              Visit this website's GitHub repository
+              <LuCode className="h-4 w-4" />
+              <span>Source code</span>
             </Link>
           </div>
         </div>
