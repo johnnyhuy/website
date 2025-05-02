@@ -1,4 +1,3 @@
-
 @import 'tailwindcss';
 
 @layer base {
@@ -119,6 +118,17 @@
 
 @source '../node_modules/pliny';
 @custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --font-size-base: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.563rem;
+  --font-size-2xl: 1.953rem;
+  --font-size-3xl: 2.441rem;
+  --font-size-4xl: 3.052rem;
+  --font-size-5xl: 3.815rem;
+  --font-size-6xl: 4.768rem;
+}
 
 @theme {
   /* Font families */
@@ -293,6 +303,54 @@
 /* Blog post styling */
 .prose {
   color: var(--color-gray-900);
+  font-size: 1.25rem; /* major third: 20px */
+  line-height: 1.75; /* leading-relaxed */
+}
+
+.prose p,
+.prose li {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+.prose h1 {
+  font-size: 3.052rem; /* major third: 49px */
+  line-height: 1.1;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.prose h2 {
+  font-size: 2.441rem; /* major third: 39px */
+  line-height: 1.15;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.prose h3 {
+  font-size: 1.953rem; /* major third: 31px */
+  line-height: 1.2;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .prose {
+    font-size: 1rem; /* base: 16px */
+    line-height: 1.625;
+  }
+  .prose h1 {
+    font-size: 2.441rem; /* 39px */
+    line-height: 1.15;
+  }
+  .prose h2 {
+    font-size: 1.953rem; /* 31px */
+    line-height: 1.2;
+  }
+  .prose h3 {
+    font-size: 1.563rem; /* 25px */
+    line-height: 1.25;
+  }
 }
 
 .prose h2 {
@@ -604,7 +662,7 @@ input:-webkit-autofill:focus {
 
 /* Code title styles */
 .remark-code-title {
-  @apply rounded-xs bg-[var(--color-gray-900)] px-5 py-3 font-mono text-sm font-bold text-gray-200;
+  @apply rounded-t-lg bg-gray-800 px-5 py-3 font-mono text-sm font-bold text-gray-200;
 }
 
 .remark-code-title + div > pre {
@@ -757,4 +815,35 @@ textarea:focus,
 textarea:focus-visible {
   --tw-ring-shadow: 0 0 #0000 !important;
   box-shadow: none !important;
+}
+
+/* --- Dark mode prose inversion --- */
+html.dark .prose {
+  color: var(--color-gray-100);
+}
+html.dark .prose h1,
+html.dark .prose h2,
+html.dark .prose h3,
+html.dark .prose h4,
+html.dark .prose h5,
+html.dark .prose h6 {
+  color: var(--color-gray-100);
+}
+html.dark .prose a {
+  color: var(--color-gray-300);
+}
+html.dark .prose strong {
+  color: var(--color-gray-100);
+}
+html.dark .prose code {
+  color: var(--color-yellow-500);
+}
+html.dark .prose blockquote {
+  border-color: var(--color-gray-700);
+  color: var(--color-gray-400);
+}
+
+
+html.dark .prose pre {
+  background-color: var(--color-gray-800);
 }
