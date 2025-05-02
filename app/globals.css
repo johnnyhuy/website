@@ -522,32 +522,29 @@ html.light {
 
 /* Custom shadow for cards to match resume style with increased distance */
 .shadow-custom {
-  box-shadow: 6px 6px 0 0 var(--color-foreground);
+  box-shadow: 6px 6px 0 0 var(--color-gray-200);
 }
-
 @media (min-width: 768px) {
   .shadow-custom {
-    box-shadow: 8px 8px 0 0 var(--color-foreground);
+    box-shadow: 8px 8px 0 0 var(--color-gray-200);
   }
 }
 
 .dark .shadow-custom {
-  box-shadow: 6px 6px 0 0 rgba(255, 255, 255, 0.8);
+  box-shadow: 6px 6px 0 0 var(--color-gray-700);
 }
-
 @media (min-width: 768px) {
   .dark .shadow-custom {
-    box-shadow: 8px 8px 0 0 rgba(255, 255, 255, 0.8);
+    box-shadow: 8px 8px 0 0 var(--color-gray-700);
   }
 }
 
 .light .shadow-custom {
-  box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.8);
+  box-shadow: 6px 6px 0 0 var(--color-gray-200);
 }
-
 @media (min-width: 768px) {
   .light .shadow-custom {
-    box-shadow: 8px 8px 0 0 rgba(0, 0, 0, 0.8);
+    box-shadow: 8px 8px 0 0 var(--color-gray-200);
   }
 }
 
@@ -566,6 +563,14 @@ html.light {
 
 .hover-accent:hover {
   color: var(--color-accent);
+}
+
+.card {
+  border-color: var(--color-gray-200);
+}
+
+.dark .card {
+  border-color: var(--color-gray-700);
 }
 
 /* Mobile optimizations */
