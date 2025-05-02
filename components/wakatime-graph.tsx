@@ -83,7 +83,7 @@ const WakatimeGraph = ({ omitLanguages = [] }: Props) => {
   if (isLoading)
     return (
       <div className="size-full rounded-3xl p-4">
-        <div className="text-muted-foreground mb-2 text-xs font-medium tracking-wide uppercase">
+        <div className="mb-2 text-xs font-medium tracking-wide text-gray-500 uppercase">
           languages all time spent
         </div>
         <div className="space-y-1.5">
@@ -140,7 +140,7 @@ const WakatimeGraph = ({ omitLanguages = [] }: Props) => {
           </Bar>
         </BarChart>
       </ChartContainer>
-      <div className="text-muted-foreground mb-2 text-xs font-medium tracking-wide uppercase">
+      <div className="mb-2 text-xs font-medium tracking-wide text-gray-500 uppercase">
         languages all time spent
       </div>
     </div>

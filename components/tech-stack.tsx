@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { getTagIcon } from '@/components/tag-icons'
+import { TagIcon } from '@/components/ui/tag-icon'
 
 interface TechStackProps {
   technologies: string[]
@@ -37,7 +38,6 @@ export default function TechStack({
           if (!IconComponent) {
             return null
           }
-          const iconSizeClass = size === 'sm' ? 'w-4 h-4' : size === 'lg' ? 'w-6 h-6' : 'w-5 h-5'
           return (
             <div
               key={tech}
@@ -49,7 +49,13 @@ export default function TechStack({
                 transition: 'margin 0.3s ease',
               }}
             >
-              <IconComponent className={iconSizeClass} />
+              <TagIcon
+                icon={IconComponent}
+                label={tech}
+                variant="ghost"
+                size={size}
+                className="h-full w-full"
+              />
             </div>
           )
         })}

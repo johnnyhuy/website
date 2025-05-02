@@ -85,7 +85,7 @@ export default function ProjectCarousel() {
 
       {/* Navigation controls */}
       <div className="mt-4 flex items-center justify-between">
-        <Button variant="outline" size="icon" className="h-8 w-8" onClick={goToPrevious}>
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={goToPrevious}>
           <ChevronLeft className="h-4 w-4" />
           <span className="sr-only">Previous project</span>
         </Button>
@@ -107,7 +107,7 @@ export default function ProjectCarousel() {
           ))}
         </div>
 
-        <Button variant="outline" size="icon" className="h-8 w-8" onClick={goToNext}>
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={goToNext}>
           <ChevronRight className="h-4 w-4" />
           <span className="sr-only">Next project</span>
         </Button>

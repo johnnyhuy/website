@@ -20,3 +20,4 @@
 
 # Cascade
 - Apply the fix without confirmation unless you need more information
+- Check package.json if you need to install a new package

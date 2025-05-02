@@ -19,6 +19,7 @@ import techStackList from '@/data/tech-stack'
 import { getTagIcon } from '@/components/tag-icons'
 import CloudPattern from '../components/cloud-pattern'
 import Me from '@/data/images/me.jpg'
+import { TagIcon } from '@/components/ui/tag-icon'
 
 const sortedPosts = sortPosts(allBlogs)
 const corePosts = allCoreContent(sortedPosts)
@@ -76,9 +77,11 @@ export default function Home() {
                     return (
                       <span
                         key={tech.name}
-                        className="bg-muted flex items-center gap-1 rounded px-2 py-1 text-xs"
+                        className="flex items-center gap-1 rounded px-2 py-1 text-xs"
                       >
-                        {Icon && <Icon className="h-4 w-4" />}
+                        {Icon && (
+                          <TagIcon icon={Icon} label={tech.name} variant="solid" size="md" />
+                        )}
                         {tech.name}
                       </span>
                     )
@@ -170,7 +173,7 @@ export default function Home() {
                 </h3>
               </div>
 
-              <div className="divide-border mt-4 divide-y rounded-lg">
+              <div className="mt-4 divide-y divide-gray-800 rounded-lg">
                 {featuredPostsData.map((post) => (
                   <div key={post.slug} className="px-4 py-4">
                     <BlogPostItem post={post} />

@@ -90,7 +90,7 @@ export default function BlogPage() {
           </div>
           <Button
             onClick={handleRandomPost}
-            variant="outline"
+            variant="ghost"
             className="flex w-full items-center gap-2 sm:w-auto"
           >
             <Shuffle className="h-4 w-4" />
