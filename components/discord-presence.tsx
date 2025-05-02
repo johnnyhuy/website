@@ -1,51 +1,11 @@
-"use client"
+'use client'
 import { useMemo, useState, useEffect } from 'react'
 import { FaDiscord } from 'react-icons/fa'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { statusColors, lanyard } from '@/data/siteData'
 
-// const statusColors: Record<string, string> = {
-//   online: 'bg-green-500',
-//   idle: 'bg-yellow-400',
-//   dnd: 'bg-red-500',
-//   offline: 'bg-muted-foreground',
-// }
-
 const DiscordPresence = () => {
-  // Simulate the payload for demo/development
-  // const lanyard = {
-  //   data: {
-  //     discord_user: {
-  //       id: '183829779810615297',
-  //       username: 'thejohnnaye',
-  //       avatar: '14c25c04f274ac5d641d0223e3767e2b',
-  //       display_name: 'John Doe',
-  //     },
-  //     discord_status: 'online',
-  //     activities: [
-  //       {
-  //         id: '87cb1d50afaf131e',
-  //         name: 'Visual Studio Code',
-  //         type: 0,
-  //         state: 'Workspace: cloud',
-  //         details: 'Editing values.kube01.yaml',
-  //         application_id: '383226320970055681',
-  //         timestamps: {
-  //           start: 1745678099307,
-  //         },
-  //         assets: {
-  //           large_image: '1359299519124078724',
-  //           large_text: 'Editing a YAML file',
-  //           small_image: '1359308034446200892',
-  //           small_text: 'Cursor',
-  //         },
-  //         created_at: 1745678099552,
-  //       },
-  //     ],
-  //   },
-  //   success: true,
-  // }
   const isLoading = false
 
   const { discord_user, discord_status, activities } = lanyard.data
@@ -74,8 +34,8 @@ const DiscordPresence = () => {
           hours > 0
             ? `${hours}h ${minutes}m`
             : minutes > 0
-            ? `${minutes}m ${seconds}s`
-            : `${seconds}s`
+              ? `${minutes}m ${seconds}s`
+              : `${seconds}s`
         )
       }
     }
@@ -97,7 +57,7 @@ const DiscordPresence = () => {
   }
 
   return (
-    <div className="w-full h-full flex flex-row justify-between gap-1 pb-2">
+    <div className="flex h-full w-full flex-row justify-between gap-1 pb-2">
       {/* Header: Avatar, Name, Status, Discord logo */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -106,30 +66,28 @@ const DiscordPresence = () => {
               <img
                 src={avatarUrl}
                 alt={discord_user.display_name || discord_user.username}
-                className="w-10 h-10 rounded-full border-2 border-background object-cover"
+                className="border-background h-10 w-10 rounded-full border-2 object-cover"
                 width={48}
                 height={48}
               />
             ) : (
-              <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
-                <FaDiscord className="text-xl text-muted-foreground" />
+              <div className="bg-secondary flex h-12 w-12 items-center justify-center rounded-full">
+                <FaDiscord className="text-muted-foreground text-xl" />
               </div>
             )}
             {/* Status dot */}
             <span
               className={cn(
-                'absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-zinc-900 dark:border-zinc-900 border-white',
+                'absolute right-0 bottom-0 h-4 w-4 rounded-full border-2 border-white border-zinc-900 dark:border-zinc-900',
                 statusColors[discord_status] || statusColors['offline']
               )}
             />
           </div>
-          <div className="flex flex-col min-w-0">
-            <span className="font-semibold text-base truncate text-foreground">
+          <div className="flex min-w-0 flex-col">
+            <span className="text-foreground truncate text-base font-semibold">
               {discord_user.display_name || discord_user.username}
             </span>
-            <span className="text-xs text-muted-foreground truncate">
-              @{discord_user.username}
-            </span>
+            <span className="text-muted-foreground truncate text-xs">@{discord_user.username}</span>
           </div>
         </div>
       </div>
@@ -137,7 +95,7 @@ const DiscordPresence = () => {
       <div className="flex items-center gap-4">
         {mainActivity ? (
           <>
-            <div className="relative w-10 h-10 flex items-center justify-center rounded-lg bg-secondary">
+            <div className="bg-secondary relative flex h-10 w-10 items-center justify-center rounded-lg">
               <img
                 src={`https://cdn.discordapp.com/app-assets/${mainActivity.application_id}/${mainActivity.assets.large_image}.png`}
                 alt={mainActivity.assets.large_text || mainActivity.name}
@@ -151,19 +109,23 @@ const DiscordPresence = () => {
                   alt={mainActivity.assets.small_text || ''}
                   width={20}
                   height={20}
-                  className="absolute -bottom-2 -right-2 rounded-full border border-border bg-background shadow-sm"
+                  className="border-border bg-background absolute -right-2 -bottom-2 rounded-full border shadow-sm"
                 />
               )}
             </div>
-            <div className="flex flex-col min-w-0">
-              <span className="text-sm font-semibold truncate max-w-[140px] text-foreground">{mainActivity.name}</span>
+            <div className="flex min-w-0 flex-col">
+              <span className="text-foreground max-w-[140px] truncate text-sm font-semibold">
+                {mainActivity.name}
+              </span>
               {mainActivity.details && (
-                <span className="text-xs text-foreground/80 truncate max-w-[140px]">{mainActivity.details}</span>
+                <span className="text-foreground/80 max-w-[140px] truncate text-xs">
+                  {mainActivity.details}
+                </span>
               )}
             </div>
           </>
         ) : (
-          <div className="text-xs text-muted-foreground">No current activity</div>
+          <div className="text-muted-foreground text-xs">No current activity</div>
         )}
       </div>
     </div>

@@ -55,7 +55,7 @@ const Navbar = () => {
               className={`flex items-center rounded-lg px-3 py-2 transition-colors ${
                 pathname === link.path || pathname.startsWith(`${link.path}/`)
                   ? 'bg-secondary/70 font-medium'
-                  : 'text-muted-foreground hover:text-foreground'
+                  : 'text-gray-500 hover:text-gray-600'
               }`}
             >
               <span>{link.name}</span>
@@ -97,7 +97,7 @@ const Navbar = () => {
               className={`flex items-center rounded-lg px-4 py-3 transition-colors ${
                 pathname === '/'
                   ? 'bg-secondary/70 font-medium'
-                  : 'text-muted-foreground hover:text-foreground'
+                  : 'text-gray-500 hover:text-gray-600'
               }`}
               onClick={() => setIsMenuOpen(false)}
             >
@@ -110,7 +110,7 @@ const Navbar = () => {
                 className={`flex items-center rounded-lg px-4 py-3 transition-colors ${
                   pathname === link.path || pathname.startsWith(`${link.path}/`)
                     ? 'bg-secondary/70 font-medium'
-                    : 'text-muted-foreground hover:text-foreground'
+                    : 'text-gray-500 hover:text-gray-600'
                 }`}
                 onClick={() => setIsMenuOpen(false)}
               >
