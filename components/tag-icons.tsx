@@ -1,4 +1,3 @@
-'use client'
 import { type IconType } from 'react-icons/lib'
 import {
   FaBook,
@@ -87,8 +86,6 @@ export const tagIconsMap: { [key: string]: IconType } = {
 export const getTagIcon = (tag: string): IconType | null => {
   const lowerCaseTag = tag.toLowerCase()
   const normalizedTag = lowerCaseTag.replace(/ /g, '').replace('dot', '.')
-
   const Icon = tagIconsMap[normalizedTag] ?? tagIconsMap[lowerCaseTag]
-
   return Icon ?? null
 }

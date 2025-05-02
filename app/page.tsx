@@ -1,15 +1,12 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { LuArrowRight, LuLinkedin, LuSearch, LuLaptop, LuBookOpen } from 'react-icons/lu'
-import { LuGithub } from 'react-icons/lu'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import GithubCalendar from '@/components/github-calendar'
 import DiscordPresence from '@/components/discord-presence'
 import WakatimeGraph from '@/components/wakatime-graph'
 import BlogPostItem from '@/components/blog-post-item'
 import ExperienceTimeline from '@/components/experience-timeline'
-import CloudPattern from '@/components/cloud-pattern'
 import TechStackCarousel from '@/components/tech-stack-carousel'
 import ProjectCarousel from '@/components/project-carousel'
 import { SiDiscord, SiGithub, SiWakatime } from 'react-icons/si'
@@ -17,32 +14,16 @@ import { allBlogs } from 'contentlayer/generated'
 import type { Blog } from 'contentlayer/generated'
 import { CoreContent, allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 import { profile } from '@/data/profile'
-import { projects } from '@/data/projects'
 import { experiences } from '@/data/experience'
-import headerNavLinks from '@/data/headerNavLinks'
-import { navbar } from '@/data/navbar'
+import techStackList from '@/data/tech-stack'
+import { getTagIcon } from '@/components/tag-icons'
+import CloudPattern from '../components/cloud-pattern'
 
 // Get the full data for the latest 3 posts from Contentlayer
 const sortedPosts = sortPosts(allBlogs)
 const corePosts = allCoreContent(sortedPosts)
 const featuredPostsData: CoreContent<Blog>[] = corePosts.slice(0, 3)
 
-const techStackList = [
-  { name: 'React' },
-  { name: 'TypeScript' },
-  { name: 'Next.js' },
-  { name: 'Node.js' },
-  { name: 'Python' },
-  { name: 'Docker' },
-  { name: 'Figma' },
-  { name: 'Git' },
-  { name: 'Vercel' },
-  { name: 'AWS' },
-  { name: 'Kubernetes' },
-  { name: 'Terraform' },
-]
-
-// Use the imported techStackList and sort it
 const sortedTechs = techStackList.sort((a: { name: string }, b: { name: string }) =>
   a.name.localeCompare(b.name)
 )
@@ -72,26 +53,36 @@ export default function Home() {
                   {profile.title}
                 </h2>
                 <p className="mb-3 max-w-xl text-sm md:mb-4 md:text-base">{profile.bio}</p>
-                <div className="flex flex-wrap justify-center gap-2 md:justify-start">
-                  {profile.links.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Button size="sm" variant="outline">
-                        {link.icon}
+                <div className="mt-2 flex flex-wrap justify-center gap-2 md:justify-start">
+                  {profile.links.map((link) => {
+                    const Icon = getTagIcon(link.icon)
+                    return (
+                      <a
+                        href={link.href}
+                        key={link.label}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:bg-muted inline-flex items-center gap-1 rounded px-2 py-1 text-sm transition"
+                      >
+                        {Icon && <Icon className="h-4 w-4" />}
                         {link.label}
-                      </Button>
-                    </Link>
-                  ))}
-                  <Link href="/projects">
-                    <Button size="sm">
-                      <span className="mr-1">Projects</span>
-                      <LuArrowRight className="h-3 w-3" />
-                    </Button>
-                  </Link>
+                      </a>
+                    )
+                  })}
+                </div>
+                <div className="mt-4 flex flex-wrap justify-center gap-2 md:justify-start">
+                  {sortedTechs.map((tech) => {
+                    const Icon = getTagIcon(tech.name)
+                    return (
+                      <span
+                        key={tech.name}
+                        className="bg-muted flex items-center gap-1 rounded px-2 py-1 text-xs"
+                      >
+                        {Icon && <Icon className="h-4 w-4" />}
+                        {tech.name}
+                      </span>
+                    )
+                  })}
                 </div>
                 <p className="text-muted-foreground mt-3 text-xs md:mt-4">{profile.contactNote}</p>
               </div>

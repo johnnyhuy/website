@@ -1,3 +1,5 @@
+import { LuGithub, LuLinkedin } from 'react-icons/lu'
+
 export const profile = {
   name: 'Johnny Huynh',
   avatar: '/images/me.jpg',
@@ -7,7 +9,8 @@ export const profile = {
   twitter: '',
   linkedin: 'https://linkedin.com/in/johnnyhuy',
   github: 'https://github.com/johnnyhuy',
-  description: 'Johnny Huynh is a Principal Engineer with over 6 years of experience specializing in platform engineering, cloud infrastructure, and DevOps. He is passionate about building scalable systems, automating workflows, and sharing knowledge with the tech community.',
+  description:
+    'Johnny Huynh is a Principal Engineer with over 6 years of experience specializing in platform engineering, cloud infrastructure, and DevOps. He is passionate about building scalable systems, automating workflows, and sharing knowledge with the tech community.',
   siteUrl: 'https://johnnyhuy.com',
   siteRepo: 'https://github.com/johnnyhuy/website',
   siteLogo: '/favicon/favicon.svg',
@@ -31,7 +34,7 @@ export const profile = {
     {
       label: 'GitHub',
       href: 'https://github.com/johnnyhuy',
-      icon: 'github', // Use icon string for mapping or dynamic import
+      icon: 'github',
     },
     {
       label: 'LinkedIn',
@@ -41,4 +44,4 @@ export const profile = {
   ],
   contactNote: 'For recruitment and job opportunities, please contact me via LinkedIn only.',
   githubUsername: 'johnnyhuy',
-};
+}
