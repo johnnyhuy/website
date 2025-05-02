@@ -44,16 +44,16 @@
     --color-gray-700: oklch(0.3 0 0);
     --color-gray-800: oklch(0.2 0 0);
     --color-gray-900: oklch(0.1 0 0);
-    --color-yellow-50:  oklch(0.18 0.05 91.11);
-    --color-yellow-100: oklch(0.3 0.07 91.11);
-    --color-yellow-200: oklch(0.42 0.09 91.11);
-    --color-yellow-300: oklch(0.54 0.11 91.11);
-    --color-yellow-400: oklch(0.66 0.14 91.11);
-    --color-yellow-500: oklch(0.78 0.16 91.11);
-    --color-yellow-600: oklch(0.82 0.17 91.11);
-    --color-yellow-700: oklch(0.85 0.18 91.11);
-    --color-yellow-800: oklch(0.89 0.19 91.11);
-    --color-yellow-900: oklch(0.93 0.20 91.11);
+    --color-yellow-50:  oklch(0.22 0.04 91.08);
+    --color-yellow-100: oklch(0.32 0.07 91.08);
+    --color-yellow-200: oklch(0.44 0.10 91.08);
+    --color-yellow-300: oklch(0.58 0.13 91.08);
+    --color-yellow-400: oklch(0.72 0.16 91.08);
+    --color-yellow-500: oklch(0.87 0.18 91.08);
+    --color-yellow-600: oklch(0.80 0.17 91.08);
+    --color-yellow-700: oklch(0.67 0.15 91.08);
+    --color-yellow-800: oklch(0.54 0.12 91.08);
+    --color-yellow-900: oklch(0.42 0.09 91.08);
     --color-green-50: oklch(0.4 0.1 140);
     --color-green-100: oklch(0.45 0.15 140);
     --color-green-200: oklch(0.5 0.2 140);
@@ -135,16 +135,16 @@
   --color-gray-700: oklch(0.3 0 0);
   --color-gray-800: oklch(0.2 0 0);
   --color-gray-900: oklch(0.1 0 0);
-  --color-yellow-50:  oklch(0.99 0.05 100);
-  --color-yellow-100: oklch(0.97 0.10 100);
-  --color-yellow-200: oklch(0.95 0.15 100);
-  --color-yellow-300: oklch(0.93 0.20 100);
-  --color-yellow-400: oklch(0.91 0.25 100);
-  --color-yellow-500: oklch(0.89 0.30 100);
-  --color-yellow-600: oklch(0.87 0.35 100);
-  --color-yellow-700: oklch(0.85 0.40 100);
-  --color-yellow-800: oklch(0.83 0.45 100);
-  --color-yellow-900: oklch(0.81 0.50 100);
+  --color-yellow-50:  oklch(0.97 0.04 91.08);
+  --color-yellow-100: oklch(0.93 0.08 91.08);
+  --color-yellow-200: oklch(0.91 0.12 91.08);
+  --color-yellow-300: oklch(0.89 0.15 91.08);
+  --color-yellow-400: oklch(0.88 0.17 91.08);
+  --color-yellow-500: oklch(0.87 0.18 91.08);
+  --color-yellow-600: oklch(0.78 0.16 91.08);
+  --color-yellow-700: oklch(0.68 0.14 91.08);
+  --color-yellow-800: oklch(0.58 0.11 91.08);
+  --color-yellow-900: oklch(0.48 0.09 91.08);
   --color-green-50: oklch(0.97 0.05 140);
   --color-green-100: oklch(0.95 0.1 140);
   --color-green-200: oklch(0.93 0.15 140);
@@ -356,29 +356,6 @@
 .copy-button.copied {
   background-color: var(--color-green-500) / 0.2;
   color: var(--color-green-500);
-}
-
-/* Tech Stack Icons */
-.tech-stack-group {
-  @apply flex items-center;
-}
-
-.tech-stack-group:hover .tech-icon-wrapper {
-  margin-right: 0.5rem;
-}
-
-.tech-icon-wrapper {
-  @apply transition-all duration-300;
-  margin-right: -0.5rem;
-}
-
-.tech-icon {
-  @apply transition-all duration-200;
-}
-
-.tech-icon:hover {
-  transform: scale(1.2);
-  z-index: 50;
 }
 
 /* Projects timeline styling - updated */

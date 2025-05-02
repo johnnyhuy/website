@@ -71,7 +71,7 @@ export default function ExperienceTimeline() {
           >
             {/* Timeline circle */}
             <div
-              className="absolute top-0 left-[-9px] flex items-center justify-center rounded-full bg-yellow-500"
+              className="absolute top-[1rem] left-[-0.56rem] flex items-center justify-center rounded-full bg-yellow-500"
               aria-hidden="true"
               style={{ width: 16, height: 16 }}
             ></div>

@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Github, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { projects } from '@/data/siteData'
+import { LuArrowLeft, LuArrowRight, LuGithub } from 'react-icons/lu'
 
 export default function ProjectCarousel() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -51,13 +51,13 @@ export default function ProjectCarousel() {
           <div className="flex">
             {projects.map((project, index) => (
               <div key={index} className="w-full shrink-0">
-                <div className="bg-secondary/50 rounded-xl p-4">
+                <div className="rounded-xl bg-gray-800/50 p-4">
                   <div className="mb-2 flex items-center justify-between">
                     <h4 className="font-medium">{project.title}</h4>
                     {project.githubUrl && (
                       <Link href={project.githubUrl} target="_blank" rel="noopener noreferrer">
                         <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-                          <Github className="h-4 w-4" />
+                          <LuGithub className="h-4 w-4" />
                           <span className="sr-only">GitHub</span>
                         </Button>
                       </Link>
@@ -70,7 +70,7 @@ export default function ProjectCarousel() {
                     {project.tags.map((tech: string) => (
                       <span
                         key={`${project.id}-${tech}`}
-                        className="bg-primary/10 rounded-full px-2 py-1 text-xs"
+                        className="rounded-full bg-gray-800/10 px-2 py-1 text-xs"
                       >
                         {tech}
                       </span>
@@ -86,7 +86,7 @@ export default function ProjectCarousel() {
       {/* Navigation controls */}
       <div className="mt-4 flex items-center justify-between">
         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={goToPrevious}>
-          <ChevronLeft className="h-4 w-4" />
+          <LuArrowLeft className="h-4 w-4" />
           <span className="sr-only">Previous project</span>
         </Button>
 
@@ -95,7 +95,7 @@ export default function ProjectCarousel() {
             <button
               key={index}
               className={`h-2 rounded-full transition-all ${
-                index === activeIndex ? 'bg-accent w-4' : 'bg-muted hover:bg-muted-foreground w-2'
+                index === activeIndex ? 'w-4 bg-yellow-500' : 'w-2 bg-gray-800 hover:bg-gray-600'
               }`}
               onClick={() => {
                 setActiveIndex(index)
@@ -108,7 +108,7 @@ export default function ProjectCarousel() {
         </div>
 
         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={goToNext}>
-          <ChevronRight className="h-4 w-4" />
+          <LuArrowRight className="h-4 w-4" />
           <span className="sr-only">Next project</span>
         </Button>
       </div>

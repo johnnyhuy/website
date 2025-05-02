@@ -184,7 +184,7 @@ export default function Home() {
         </div>
 
         {/* Experience Section */}
-        <section className="border-border mt-8 border-t pt-8 md:mt-12 md:pt-12">
+        <section className="mt-8 pt-8 md:mt-12 md:pt-12">
           <h2 className="mb-6 flex items-center text-2xl font-bold md:mb-8 md:text-3xl">
             Experience
           </h2>
