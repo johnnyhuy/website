@@ -93,7 +93,9 @@ export default function ProjectCarousel() {
             <button
               key={index}
               className={`h-2 rounded-full transition-all ${
-                index === activeIndex ? 'w-4 bg-yellow-500' : 'w-2 bg-gray-800 hover:bg-gray-600'
+                index === activeIndex
+                  ? 'w-4 bg-yellow-500'
+                  : 'w-2 bg-gray-200 hover:bg-gray-600 dark:bg-gray-800'
               }`}
               onClick={() => {
                 setActiveIndex(index)
