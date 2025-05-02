@@ -1,7 +1,7 @@
 'use client'
 
 import { Skeleton } from '@/components/ui/skeleton'
-import { type FunctionComponent, useCallback, useEffect, useState } from 'react'
+import { type FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
 import Calendar, { type Props as ActivityCalendarProps } from 'react-activity-calendar'
 import { SiDiscord } from 'react-icons/si'
 import { useTheme } from 'next-themes'
@@ -14,8 +14,12 @@ import { profile } from '@/data/siteData'
 interface Props extends Omit<ActivityCalendarProps, 'data' | 'theme'> {}
 
 async function fetchCalendarData(username: string): Promise<ApiResponse> {
+  const currentYear = new Date().getFullYear()
+  const lastYear = currentYear - 1
+
+  // Fetch both years in a single request
   const response = await fetch(
-    `https://github-contributions-api.jogruber.de/v4/${username}?y=${new Date().getFullYear()}`
+    `https://github-contributions-api.jogruber.de/v4/${username}?y=${currentYear}&y=${lastYear}`
   )
   const data: ApiResponse | ApiErrorResponse = await response.json()
 
@@ -25,6 +29,11 @@ async function fetchCalendarData(username: string): Promise<ApiResponse> {
         (data as ApiErrorResponse).error
       }`
     )
+  }
+
+  // Sort contributions by date ascending
+  if ('contributions' in data && Array.isArray(data.contributions)) {
+    data.contributions.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
   }
 
   return data as ApiResponse
@@ -53,6 +62,9 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
     ],
   }
 
+  const calendarContainerRef = useRef<HTMLDivElement>(null)
+  const mobileCalendarContainerRef = useRef<HTMLDivElement>(null)
+
   const fetchData = useCallback(() => {
     setLoading(true)
     setError(null)
@@ -63,6 +75,20 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
   }, [])
 
   useEffect(fetchData, [fetchData])
+
+  useEffect(() => {
+    if (!loading && data) {
+      // Desktop calendar scroll
+      if (calendarContainerRef.current) {
+        calendarContainerRef.current.scrollLeft = calendarContainerRef.current.scrollWidth
+      }
+      // Mobile calendar scroll
+      if (mobileCalendarContainerRef.current) {
+        mobileCalendarContainerRef.current.scrollLeft =
+          mobileCalendarContainerRef.current.scrollWidth
+      }
+    }
+  }, [loading, data])
 
   if (error) {
     return (
@@ -88,29 +114,47 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
     return <Skeleton className="h-[70%] w-[85%] rounded-3xl" />
   }
 
+  // Returns only the contributions from the last N months, up to but not including today
+  const selectLastNMonths = (
+    contributions: Activity[],
+    months: number,
+    currentDate: Date = new Date()
+  ) => {
+    // Start from the first day of the month N months ago
+    const start = new Date(currentDate.getFullYear(), currentDate.getMonth() - months, 1)
+    // End at the last day of the previous month
+    const end = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0)
+    return contributions.filter((activity) => {
+      const activityDate = new Date(activity.date)
+      return activityDate >= start && activityDate <= end
+    })
+  }
+
   return (
     <>
-      <div className="m-4 hidden sm:block">
+      <div className="m-4 hidden sm:block" ref={calendarContainerRef} style={{ overflowX: 'auto' }}>
         <Calendar
-          data={selectLastNDays(data.contributions, 133)}
+          data={selectLastNMonths(data.contributions, 6)}
           theme={calendarTheme}
           colorScheme={resolvedTheme === 'dark' ? 'dark' : 'light'}
           blockSize={16}
           blockMargin={6}
           blockRadius={4}
-          {...props}
           maxLevel={4}
         />
       </div>
-      <div className="m-4 scale-110 sm:hidden">
+      <div
+        className="m-4 scale-110 sm:hidden"
+        ref={mobileCalendarContainerRef}
+        style={{ overflowX: 'auto' }}
+      >
         <Calendar
-          data={selectLastNDays(data.contributions, 60)}
+          data={selectLastNMonths(data.contributions, 6)}
           theme={calendarTheme}
           colorScheme={resolvedTheme === 'dark' ? 'dark' : 'light'}
           blockSize={20}
           blockMargin={6}
           blockRadius={7}
-          {...props}
           maxLevel={4}
           hideTotalCount
           hideColorLegend
@@ -136,17 +180,6 @@ interface ApiResponse {
 
 interface ApiErrorResponse {
   error: string
-}
-
-const selectLastNDays = (contributions: Activity[], days: number) => {
-  const today = new Date()
-  const startDate = new Date(today)
-  startDate.setDate(today.getDate() - days)
-
-  return contributions.filter((activity) => {
-    const activityDate = new Date(activity.date)
-    return activityDate >= startDate && activityDate <= today
-  })
 }
 
 export default GithubCalendar
