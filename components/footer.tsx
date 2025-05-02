@@ -13,8 +13,8 @@ const Footer = () => {
 
       <div className="relative z-10 container mx-auto px-4 pt-12 pb-6">
         <div className="mb-12 grid grid-cols-1 gap-8 md:grid-cols-12">
-          {/* Main info */}
-          <div className="md:col-span-5 lg:col-span-4">
+          {/* Main info (left) */}
+          <div className="flex flex-col justify-center md:col-span-6 lg:col-span-5">
             <div className="mb-4 flex items-center gap-3">
               <div className="border-primary/10 relative h-12 w-12 overflow-hidden rounded-full border-2">
                 <Image src={Me} alt={profile.name} fill className="object-cover" />
@@ -55,8 +55,8 @@ const Footer = () => {
             </p>
           </div>
 
-          {/* RSS Feed */}
-          <div className="md:col-span-7 lg:col-span-4">
+          {/* Stay Updated (right) */}
+          <div className="flex flex-col justify-center md:col-span-6 md:col-start-7 lg:col-span-5 lg:col-start-8">
             <h3 className="mb-4 text-lg font-medium">Stay Updated</h3>
             <p className="text-muted-foreground mb-4 text-sm">
               Subscribe to my RSS feed to receive updates on new projects, blog posts, and tech
@@ -69,41 +69,6 @@ const Footer = () => {
               </div>
             </Link>
           </div>
-
-          {/* Categories */}
-          <div className="md:col-span-12 lg:col-span-4">
-            <h3 className="mb-4 text-lg font-medium">Categories</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <Link
-                href="/blog?tag=DevOps"
-                className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
-              >
-                <LuCode className="h-4 w-4" />
-                <span className="text-sm">DevOps</span>
-              </Link>
-              <Link
-                href="/blog?tag=Kubernetes"
-                className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
-              >
-                <LuLaptop className="h-4 w-4" />
-                <span className="text-sm">Kubernetes</span>
-              </Link>
-              <Link
-                href="/blog?tag=Cloud"
-                className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
-              >
-                <LuBookOpen className="h-4 w-4" />
-                <span className="text-sm">Cloud</span>
-              </Link>
-              <Link
-                href="/blog?tag=Architecture"
-                className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
-              >
-                <LuCode className="h-4 w-4" />
-                <span className="text-sm">Architecture</span>
-              </Link>
-            </div>
-          </div>
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
@@ -112,17 +77,21 @@ const Footer = () => {
           </p>
           <div className="flex items-center gap-4 text-sm">
             <Link
-              href="/privacy-policy"
+              href="https://github.com/johnnyhuy/website/edit/main/app/globals.css"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              Privacy Policy
+              Edit this page
             </Link>
             <span className="text-muted-foreground">•</span>
             <Link
-              href="/terms"
+              href="https://github.com/johnnyhuy/website"
+              target="_blank"
+              rel="noopener noreferrer"
               className="text-muted-foreground hover:text-primary transition-colors"
             >
-              Terms of Use
+              Visit this website's GitHub repository
             </Link>
           </div>
         </div>
