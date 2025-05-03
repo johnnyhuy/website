@@ -297,7 +297,6 @@ export const experiences: Experience[] = [
       'Maintained cinema equipment and consulted clients on-site.',
       'Ran cinema events for local clients.',
       'Advised clients on equipment for self-hosted events.',
-      'Worked under pressure with production deadlines.',
     ],
   },
   {

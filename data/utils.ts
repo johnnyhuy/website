@@ -31,7 +31,7 @@ export function formatDateRange(start: string, end: string): string {
       const startMonth = normStart.match(/^[A-Za-z]{3}/)?.[0]
       const endMonth = normEnd.match(/^[A-Za-z]{3}/)?.[0]
       if (startMonth && endMonth) {
-        return `${startMonth}–${endMonth} ${startYear}`
+        return `${startMonth} – ${endMonth} ${startYear}`
       }
     }
     return `${normStart} – ${normEnd}`
