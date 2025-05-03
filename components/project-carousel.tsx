@@ -63,7 +63,7 @@ export default function ProjectCarousel() {
                     </Link>
                   )}
                 </div>
-                <p className="mb-3 min-h-[4rem] text-sm text-gray-500">{project.description}</p>
+                <p className="mb-3 text-sm text-gray-500">{project.description}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {project.tags.map((tech: string, index: number) => (
                     <TagIcon key={index} tag={tech} size="md" variant="outline" label={tech} />

@@ -17,6 +17,7 @@ import { profile, experiences } from '@/data/siteData'
 import { getTagIcon } from '@/components/ui/tag-icon'
 import CloudPattern from '../components/cloud-pattern'
 import Me from '@/data/images/me.jpg'
+import { CompanyLogo } from '@/components/company-logo'
 
 const sortedPosts = sortPosts(allBlogs)
 const corePosts = allCoreContent(sortedPosts)
@@ -108,9 +109,7 @@ export default function Home() {
           <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-4">
             <CardContent className="flex flex-row items-start justify-between p-4">
               <div className="flex items-start gap-3">
-                <div className="bg-secondary flex h-10 w-10 shrink-0 items-center justify-center rounded">
-                  <div className="text-xl font-bold">S</div>
-                </div>
+                <CompanyLogo companyName={experiences[0].company} className="h-10 w-10" />
                 <div>
                   <h4 className="font-medium">{experiences[0].title}</h4>
                   <p className="text-sm text-gray-400">{experiences[0].company}</p>
