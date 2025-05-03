@@ -10,6 +10,7 @@ import type {
 import { profile } from '@/data/siteData'
 import Image from 'next/image'
 import { SiDiscord } from 'react-icons/si'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface LanyardData extends LibraryLanyardData {}
 interface Activity extends LibraryActivity {}
@@ -34,12 +35,34 @@ const getActivityText = (activity: Activity): string => {
     case 0:
       return `Playing ${activity.name}`
     case 2:
-      return ''
+      return `Listening to ${activity.name}`
     case 4:
       return activity.state || 'Custom Status'
     default:
       return `${activity.name}: ${activity.state || activity.details || ''}`
   }
+}
+
+const getDiscordAssetUrl = (applicationId: string | undefined, imageId: string): string => {
+  if (!applicationId || !imageId) return ''
+
+  // Handle external assets (like Spotify)
+  if (imageId.startsWith('spotify:')) {
+    return `https://i.scdn.co/image/${imageId.replace('spotify:', '')}`
+  }
+
+  // Handle Discord CDN assets
+  if (imageId.startsWith('mp:')) {
+    return `https://media.discordapp.net/${imageId.replace('mp:', '')}`
+  }
+
+  // Handle regular Discord assets
+  if (imageId.startsWith('external:')) {
+    return imageId.replace('external:', '')
+  }
+
+  // Default Discord application assets
+  return `https://cdn.discordapp.com/app-assets/${applicationId}/${imageId}.png`
 }
 
 export function DiscordPresence() {
@@ -101,10 +124,35 @@ export function DiscordPresence() {
     : '/images/default-discord.png'
 
   let activityText = ''
+  let largeImageUrl = ''
+  let smallImageUrl = ''
+  let largeImageAlt = ''
+  let smallImageAlt = ''
+
   if (spotify) {
-    activityText = `Listening to ${spotify.song}`
+    activityText = `Listening to ${spotify.song} by ${spotify.artist}`
+    largeImageUrl = spotify.album_art_url
+    largeImageAlt = spotify.album
   } else if (primaryActivity) {
     activityText = getActivityText(primaryActivity)
+
+    if (primaryActivity.assets) {
+      if (primaryActivity.assets.large_image) {
+        largeImageUrl = getDiscordAssetUrl(
+          primaryActivity.application_id,
+          primaryActivity.assets.large_image
+        )
+        largeImageAlt = primaryActivity.assets.large_text || primaryActivity.name
+      }
+
+      if (primaryActivity.assets.small_image) {
+        smallImageUrl = getDiscordAssetUrl(
+          primaryActivity.application_id,
+          primaryActivity.assets.small_image
+        )
+        smallImageAlt = primaryActivity.assets.small_text || ''
+      }
+    }
   } else if (customStatus) {
     activityText = customStatus.state ?? ''
   } else {
@@ -118,8 +166,8 @@ export function DiscordPresence() {
           <Image
             src={avatarUrl}
             alt={`${discord_user.username}'s Discord Avatar`}
-            width={40}
-            height={40}
+            width={42}
+            height={42}
             className="rounded-full border-2 border-white dark:border-neutral-900"
           />
           <span
@@ -138,10 +186,38 @@ export function DiscordPresence() {
         </div>
       </div>
 
-      <div className="hidden flex-shrink-0 text-right text-xs text-neutral-600 sm:block dark:text-neutral-400">
-        <p className="truncate" title={activityText}>
-          {activityText}
-        </p>
+      <div className="hidden flex-shrink-0 items-center text-right text-xs text-neutral-600 sm:flex dark:text-neutral-400">
+        {largeImageUrl && (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="relative mr-2">
+                  <Image
+                    src={largeImageUrl}
+                    alt={largeImageAlt}
+                    width={42}
+                    height={42}
+                    className="rounded"
+                  />
+                  {smallImageUrl && (
+                    <div className="absolute -right-2 -bottom-2">
+                      <Image
+                        src={smallImageUrl}
+                        alt={smallImageAlt}
+                        width={24}
+                        height={24}
+                        className="rounded-full border border-white dark:border-neutral-900"
+                      />
+                    </div>
+                  )}
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{activityText}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
       </div>
     </div>
   )
