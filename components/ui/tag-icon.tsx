@@ -132,6 +132,13 @@ export const getTagIcon = (tag: string): IconType => {
   return Icon
 }
 
+// New function to check if an icon exists for a tag
+export const hasIcon = (tag: string): boolean => {
+  const lowerCaseTag = tag.toLowerCase()
+  const normalizedTag = lowerCaseTag.replace(/ /g, '').replace('dot', '.')
+  return !!(tagIconsMap[normalizedTag] ?? tagIconsMap[lowerCaseTag])
+}
+
 export const tagIconVariants = cva('inline-flex items-center justify-center rounded', {
   variants: {
     variant: {
@@ -147,6 +154,8 @@ export const tagIconVariants = cva('inline-flex items-center justify-center roun
       sm: 'text-xs',
       md: 'text-sm',
       lg: 'text-base',
+      xl: 'text-xl',
+      xl2: 'text-2xl',
     },
     colorVariant: {
       gray: 'text-gray-700',
@@ -189,6 +198,8 @@ export const TagIcon: React.FC<TagIconProps> = ({
     sm: 'h-3 w-3',
     md: 'h-4 w-4',
     lg: 'h-6 w-6',
+    xl: 'h-8 w-8',
+    xl2: 'h-10 w-10',
   }
 
   const iconSizeClass = size ? sizeClasses[size] : sizeClasses.md
@@ -208,7 +219,6 @@ export const TagIcon: React.FC<TagIconProps> = ({
         React.cloneElement(Icon as React.ReactElement<any>, {
           className: `${(Icon.props as any).className || ''} ${iconSizeClass}`.trim(),
         })}
-      {/* Add whitespace-nowrap to prevent label text wrapping */}
       {label && (
         <span className={`${Icon ? 'ml-1' : ''} align-middle whitespace-nowrap`}>{label}</span>
       )}

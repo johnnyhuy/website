@@ -1,15 +1,14 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { getTagIcon } from '@/components/ui/tag-icon'
-import { TagIcon } from '@/components/ui/tag-icon'
+import { TagIcon, hasIcon } from '@/components/ui/tag-icon'
 import { experiences } from '@/data/siteData'
 
-const allTechs = experiences.flatMap((exp) => exp.technologies)
-const techStack = Array.from(new Set(allTechs))
+const techStackWithIcons = Array.from(
+  new Set(experiences.flatMap((exp) => exp.technologies))
+).filter(hasIcon)
 
 export default function TechStackCarousel({ direction = 'ltr' }: { direction?: 'ltr' | 'rtl' }) {
-  const stack = techStack || []
   const scrollRef = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
   const [isTouched, setIsTouched] = useState(false)
@@ -51,7 +50,7 @@ export default function TechStackCarousel({ direction = 'ltr' }: { direction?: '
     return () => {
       cancelAnimationFrame(animationId)
     }
-  }, [isHovered, isTouched, direction, stack.length])
+  }, [isHovered, isTouched, direction])
 
   useEffect(() => {
     if (isTouched) {
@@ -76,15 +75,10 @@ export default function TechStackCarousel({ direction = 'ltr' }: { direction?: '
         className="scrollbar-hide flex w-[400px] space-x-4 overflow-x-auto md:space-x-6"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {[...stack, ...stack].map((item, index) => {
-          const Icon = getTagIcon(item)
-
-          if (!Icon) {
-            return null
-          }
+        {techStackWithIcons.map((tech, index) => {
           return (
-            <div key={`${item}-${index}`} className="flex items-center justify-center" title={item}>
-              <TagIcon icon={<Icon />} label={item || undefined} variant="carousel" size="lg" />
+            <div key={index} className="flex items-center justify-center" title={tech}>
+              <TagIcon tag={tech} variant="outline" size="xl2" />
             </div>
           )
         })}
