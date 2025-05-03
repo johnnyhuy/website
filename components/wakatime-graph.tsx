@@ -9,7 +9,7 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart'
 import { Skeleton } from '@/components/ui/skeleton'
-import { getTagIcon } from '@/components/tag-icons'
+import { getTagIcon } from '@/components/ui/tag-icon'
 
 interface Language {
   name: string

@@ -20,7 +20,7 @@ import { Comments, CommentsConfig } from 'pliny/comments/index.js'
 import { components } from '@/components/mdx-components'
 import { format, formatDistanceToNow } from 'date-fns'
 import { TagIcon } from '@/components/ui/tag-icon'
-import { getTagIcon } from '@/components/tag-icons'
+import { getTagIcon } from '@/components/ui/tag-icon'
 
 export default function BlogPostPage({ params }: { params: Promise<{ slug: string | string[] }> }) {
   const { slug } = use(params)

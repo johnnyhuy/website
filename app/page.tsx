@@ -15,7 +15,7 @@ import type { Blog } from 'contentlayer/generated'
 import { CoreContent, allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 import { profile, experiences } from '@/data/siteData'
 import techStackList from '@/data/tech-stack'
-import { getTagIcon } from '@/components/tag-icons'
+import { getTagIcon } from '@/components/ui/tag-icon'
 import CloudPattern from '../components/cloud-pattern'
 import Me from '@/data/images/me.jpg'
 

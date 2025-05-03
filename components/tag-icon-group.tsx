@@ -1,5 +1,4 @@
 import { TagIcon } from '@/components/ui/tag-icon'
-import { getTagIcon } from './tag-icons'
 
 interface TagIconGroupProps {
   technologies: string[]

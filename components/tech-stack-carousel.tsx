@@ -1,8 +1,7 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { useTheme } from 'next-themes'
-import { getTagIcon } from '@/components/tag-icons'
+import { getTagIcon } from '@/components/ui/tag-icon'
 import { TagIcon } from '@/components/ui/tag-icon'
 
 export default function TechStackCarousel({

@@ -1,6 +1,6 @@
 'use client'
 
-import { getTagIcon } from '@/components/tag-icons'
+import { getTagIcon } from '@/components/ui/tag-icon'
 import { TagIcon } from '@/components/ui/tag-icon'
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 

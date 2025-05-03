@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { CalendarIcon, Clock, ArrowRight } from 'lucide-react'
 import { TagIcon } from '@/components/ui/tag-icon'
-import { getTagIcon } from '@/components/tag-icons'
+import { getTagIcon } from '@/components/ui/tag-icon'
 import { format, formatDistanceToNow, parseISO } from 'date-fns'
 import type { CoreContent } from 'pliny/utils/contentlayer.js'
 import type { Blog } from 'contentlayer/generated'
