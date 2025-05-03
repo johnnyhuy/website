@@ -63,7 +63,6 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
   }
 
   const calendarContainerRef = useRef<HTMLDivElement>(null)
-  const mobileCalendarContainerRef = useRef<HTMLDivElement>(null)
 
   const fetchData = useCallback(() => {
     setLoading(true)

@@ -21,12 +21,17 @@ export default function TechStackCarousel({ direction = 'ltr' }: { direction?: '
 
   useEffect(() => {
     const scrollContainer = scrollRef.current
-    if (!scrollContainer) return
+    if (!scrollContainer || !mounted) return
+
+    // Set initial position based on direction
+    if (direction === 'rtl') {
+      scrollContainer.scrollLeft = scrollContainer.scrollWidth / 2
+    }
 
     const currentScrollWidth = scrollContainer.scrollWidth
 
     let animationId: number
-    let position = direction === 'rtl' ? currentScrollWidth / 2 : 0
+    let position = direction === 'rtl' ? scrollContainer.scrollWidth / 2 : 0
 
     const scroll = () => {
       if (!scrollRef.current) {
@@ -51,12 +56,13 @@ export default function TechStackCarousel({ direction = 'ltr' }: { direction?: '
       animationId = requestAnimationFrame(scroll)
     }
 
+    // Start animation immediately
     animationId = requestAnimationFrame(scroll)
 
     return () => {
       cancelAnimationFrame(animationId)
     }
-  }, [isHovered, isTouched, direction])
+  }, [isHovered, isTouched, direction, mounted])
 
   useEffect(() => {
     if (isTouched) {
