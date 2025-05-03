@@ -63,6 +63,14 @@ export const profile = {
 // Projects
 export const projects: Project[] = [
   {
+    title: 'transcribe-me',
+    description: 'The transcriber that uses Anthropic and OpenAI.',
+    tags: ['TypeScript', 'AI', 'Node.js'],
+    githubUrl: 'https://github.com/echohello-dev/transcribe-me',
+    demo: null,
+    date: normalizeDate('2024 - Present'),
+  },
+  {
     title: 'actions-discord-git-webhook',
     description: 'GitHub actions webhook for Discord rich embedded info',
     tags: ['JavaScript', 'GitHub Actions', 'Discord'],

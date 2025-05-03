@@ -5,6 +5,7 @@ import { TagIcon, getTagIcon } from '@/components/ui/tag-icon'
 import { projects } from '@/data/siteData'
 import React from 'react'
 import { LuCalendar, LuExternalLink, LuGithub } from 'react-icons/lu'
+import { generateBackgroundColor } from '@/data/utils'
 
 export default function ProjectsPage() {
   return (
@@ -24,6 +25,8 @@ export default function ProjectsPage() {
             const demo = project.demo || project.href || null
             const tags = project.tags || []
             const date = project.date || ''
+            const bgColorClasses = generateBackgroundColor(project.title)
+
             return (
               <div
                 key={index}
@@ -34,16 +37,22 @@ export default function ProjectsPage() {
                   {typeof image === 'string' ? (
                     <Image src={image} alt={project.title} fill className="object-cover" />
                   ) : tags.length > 0 && getTagIcon(tags[0]) ? (
-                    <div className="flex h-full w-full items-center justify-center bg-gray-100 dark:bg-gray-800">
+                    <div
+                      className={`flex h-full w-full items-center justify-center ${bgColorClasses}`}
+                    >
                       <TagIcon
                         icon={React.createElement(getTagIcon(tags[0]), {
-                          className: 'h-20 w-20 text-gray-400 dark:text-gray-500',
+                          className: 'h-20 w-20 text-gray-900 dark:text-gray-100',
                         })}
                         size="lg"
                         variant="ghost"
                       />
                     </div>
-                  ) : null}
+                  ) : (
+                    <div
+                      className={`flex h-full w-full items-center justify-center ${bgColorClasses}`}
+                    />
+                  )}
                   {date && (
                     <div className="absolute top-2 right-2 flex items-center rounded-md border-1 border-gray-900 bg-white px-2 py-1 text-xs backdrop-blur-xs dark:bg-gray-700">
                       <LuCalendar className="mr-1 h-3 w-3" />

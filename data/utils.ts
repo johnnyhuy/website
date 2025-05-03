@@ -77,3 +77,60 @@ export function formatDuration(start: string, end: string, now: Date = new Date(
   if (months > 0) return `${months} mos`
   return '<1 mo'
 }
+
+/**
+ * Generates a background color based on a string seed (like a project name)
+ * Returns a tailwind-compatible background color class for both light and dark modes
+ * @param seed The string to use as a seed (e.g., project name)
+ * @param opacity Optional opacity value (0-100)
+ * @returns A string with Tailwind CSS classes for background
+ */
+export function generateBackgroundColor(seed: string, opacity: number = 10): string {
+  // Generate a hash from the seed string
+  let hash = 0
+  for (let i = 0; i < seed.length; i++) {
+    hash = seed.charCodeAt(i) + ((hash << 5) - hash)
+  }
+
+  // Define color palettes for light and dark modes
+  // Using pastel colors for light mode and deeper colors for dark mode
+  const lightColors = [
+    'bg-blue-50',
+    'bg-indigo-50',
+    'bg-purple-50',
+    'bg-pink-50',
+    'bg-red-50',
+    'bg-orange-50',
+    'bg-amber-50',
+    'bg-yellow-50',
+    'bg-lime-50',
+    'bg-green-50',
+    'bg-emerald-50',
+    'bg-teal-50',
+    'bg-cyan-50',
+    'bg-sky-50',
+  ]
+
+  const darkColors = [
+    'dark:bg-blue-900',
+    'dark:bg-indigo-900',
+    'dark:bg-purple-900',
+    'dark:bg-pink-900',
+    'dark:bg-red-900',
+    'dark:bg-orange-900',
+    'dark:bg-amber-900',
+    'dark:bg-yellow-900',
+    'dark:bg-lime-900',
+    'dark:bg-green-900',
+    'dark:bg-emerald-900',
+    'dark:bg-teal-900',
+    'dark:bg-cyan-900',
+    'dark:bg-sky-900',
+  ]
+
+  // Use the hash to select a color from each palette
+  const index = Math.abs(hash) % lightColors.length
+
+  // Return the combined classes for light and dark mode
+  return `${lightColors[index]} ${darkColors[index]}`
+}
