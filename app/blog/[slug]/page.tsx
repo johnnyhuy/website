@@ -13,7 +13,7 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { copyToClipboard, generateShareableUrl, generateSocialShareText } from '@/lib/copy-utils'
-import { allBlogs, allAuthors } from 'contentlayer/generated'
+import { allBlogs, allAuthors, Blog } from 'contentlayer/generated'
 import { MDXLayoutRenderer } from 'pliny/mdx-components.js'
 import { coreContent } from 'pliny/utils/contentlayer.js'
 import siteMetadata from '@/data/siteMetadata'
@@ -22,6 +22,12 @@ import { components } from '@/components/mdx-components'
 import { format, formatDistanceToNow } from 'date-fns'
 import { TagIcon } from '@/components/ui/tag-icon'
 import { getTagIcon } from '@/components/ui/tag-icon'
+
+export async function generateStaticParams() {
+  return allBlogs.map((post: Blog) => ({
+    slug: post.slug,
+  }))
+}
 
 export default function BlogPostPage({ params }: { params: Promise<{ slug: string | string[] }> }) {
   const { slug } = use(params)
