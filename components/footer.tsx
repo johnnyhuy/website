@@ -1,6 +1,14 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { LuLinkedin, LuRss, LuGithub, LuCode } from 'react-icons/lu'
+import {
+  SiNextdotjs,
+  SiReact,
+  SiTypescript,
+  SiTailwindcss,
+  SiRadixui,
+  SiPnpm,
+} from 'react-icons/si'
 import { profile } from '@/data/siteData'
 import Me from '@/data/images/me.jpg'
 import { LucideHome } from 'lucide-react'
@@ -70,19 +78,10 @@ const Footer = () => {
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <p className="text-sm text-gray-400">
+          <p className="text-xs text-gray-400">
             &copy; {new Date().getFullYear()} {profile.name}. All rights reserved.
           </p>
-          <div className="flex items-center gap-4 text-sm">
-            <Link
-              href="/"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-gray-400 hover:text-gray-100"
-            >
-              <LucideHome className="h-4 w-4" />
-              <span>Home</span>
-            </Link>
-            <span className="text-gray-400">•</span>
+          <div className="flex items-center gap-4 text-xs">
             <Link
               href={profile.siteRepo}
               target="_blank"
@@ -90,8 +89,23 @@ const Footer = () => {
               className="flex items-center gap-2 text-gray-400 hover:text-gray-100"
             >
               <LuCode className="h-4 w-4" />
-              <span>Source code</span>
+              <span className="text-xs">Source code</span>
             </Link>
+            <span className="text-gray-400">•</span>
+            <div className="flex items-center gap-2 text-gray-400">
+              <span className="text-xs">Built with:</span>
+              <div className="flex items-center gap-1.5">
+                <SiNextdotjs
+                  className="h-4 w-4 hover:text-[#000000] dark:hover:text-white"
+                  title="Next.js"
+                />
+                <SiReact className="h-4 w-4 hover:text-[#61DAFB]" title="React" />
+                <SiTypescript className="h-4 w-4 hover:text-[#3178C6]" title="TypeScript" />
+                <SiTailwindcss className="h-4 w-4 hover:text-[#06B6D4]" title="Tailwind CSS" />
+                <SiRadixui className="h-4 w-4 hover:text-[#E2E8F0]" title="Radix UI" />
+                <SiPnpm className="h-4 w-4 hover:text-[#F69220]" title="pnpm" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
