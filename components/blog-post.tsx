@@ -21,13 +21,12 @@ import { format, formatDistanceToNow } from 'date-fns'
 import { TagIcon } from '@/components/ui/tag-icon'
 import { getTagIcon } from '@/components/ui/tag-icon'
 
-// Define interfaces for props
-interface BlogPostClientProps {
+interface BlogPostProps {
   post: any;
   author?: any;
 }
 
-export default function BlogPostClient({ post, author }: BlogPostClientProps) {
+export function BlogPost({ post, author }: BlogPostProps) {
   const searchParams = useSearchParams()
   const [showTldr, setShowTldr] = useState(false)
   const [showFullContent, setShowFullContent] = useState(true)
