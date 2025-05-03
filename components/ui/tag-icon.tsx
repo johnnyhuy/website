@@ -145,7 +145,7 @@ export const tagIconVariants = cva('inline-flex items-center justify-center roun
       solid: 'bg-gray-100 text-gray-900 dark:text-gray-100',
       outline:
         'rounded-md border border-gray-900 px-2 py-1 text-gray-900 dark:border-gray-100 dark:text-gray-100',
-      ghost: 'bg-transparent text-gray-700',
+      ghost: 'bg-transparent text-gray-900 dark:text-gray-100',
       label: 'bg-transparent text-gray-900 gap-1 px-1 py-0.5 font-medium',
       carousel:
         'rounded-lg p-2 text-white bg-gray-100 hover:bg-gray-200 dark:bg-gray-400 dark:hover:bg-gray-700 transition-colors duration-200',

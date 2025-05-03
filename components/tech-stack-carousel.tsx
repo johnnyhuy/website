@@ -88,7 +88,7 @@ export default function TechStackCarousel({ direction = 'ltr' }: { direction?: '
               <Tooltip key={`${tech}-${index}`}>
                 <TooltipTrigger asChild>
                   <div className="flex flex-shrink-0 items-center justify-center">
-                    <TagIcon tag={tech} variant="outline" size="xl2" />
+                    <TagIcon tag={tech} variant="ghost" size="xl2" />
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
