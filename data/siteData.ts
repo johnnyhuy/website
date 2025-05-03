@@ -211,7 +211,7 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    company: 'eNett International',
+    company: 'eNett',
     position: 'DevOps Engineer',
     title: 'DevOps Engineer',
     startDate: 'Oct 2020',
@@ -226,14 +226,14 @@ export const experiences: Experience[] = [
       'Kubernetes',
     ],
     description:
-      'DevOps engineer in the container platform team at eNett International, building and maintaining cloud-native infrastructure and automation.',
+      'DevOps engineer in the container platform team at eNett, building and maintaining cloud-native infrastructure and automation.',
     responsibilities: [
       'Built and maintained container orchestration systems for production.',
       'Delivered key performance indicators throughout tenure.',
     ],
   },
   {
-    company: 'eNett International',
+    company: 'eNett',
     position: 'Developer',
     title: 'Developer',
     startDate: 'Oct 2019',
@@ -248,7 +248,7 @@ export const experiences: Experience[] = [
       'Prometheus',
     ],
     description:
-      'Software developer in the internal DevOps team at eNett International, focusing on CI/CD, monitoring, and Kubernetes platform delivery.',
+      'Software developer in the internal DevOps team at eNett, focusing on CI/CD, monitoring, and Kubernetes platform delivery.',
     responsibilities: [
       'Provisioned production-ready applications to Kubernetes clusters.',
       'Maintained code and built pipelines in Azure DevOps.',
@@ -257,14 +257,14 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    company: 'eNett International',
+    company: 'eNett',
     position: 'Associate Developer',
     title: 'Associate Developer',
     startDate: 'Jan 2019',
     endDate: 'Sep 2019',
     technologies: ['Microsoft Azure', 'Terraform', 'Jira'],
     description:
-      'Associate developer supporting DevOps initiatives and infrastructure projects for eNett International.',
+      'Associate developer supporting DevOps initiatives and infrastructure projects for eNett.',
     responsibilities: [
       'Provisioned infrastructure with continuous delivery using Terraform.',
       'Developed infrastructure and configuration as code on Azure.',
@@ -272,14 +272,14 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    company: 'eNett International',
+    company: 'eNett',
     position: 'Intern Developer',
     title: 'Intern Developer',
     startDate: 'Jan 2018',
     endDate: 'Jan 2019',
     technologies: ['C#', 'Microsoft Azure', 'Confluence', 'Jira'],
     description:
-      'Intern developer at eNett International, contributing to agile software development and support for production systems.',
+      'Intern developer at eNett, contributing to agile software development and support for production systems.',
     responsibilities: [
       'Participated in agile development with daily standups.',
       'Developed C# software on Microsoft platform.',
@@ -287,7 +287,7 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    company: 'Melbourne Open Air Cinema',
+    company: 'Funflicks',
     position: 'Team Supervisor',
     title: 'Team Supervisor',
     startDate: 'Nov 2015',
