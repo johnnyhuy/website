@@ -1,6 +1,6 @@
 import { allBlogs, allAuthors } from 'contentlayer/generated'
 import { notFound } from 'next/navigation'
-import BlogPostClient from './client-page'
+import { BlogPost } from '@/components/blog-post'
 
 export async function generateStaticParams() {
   return allBlogs.map((post) => ({
@@ -11,7 +11,7 @@ export async function generateStaticParams() {
 export default function BlogPostPage({ params }: { params: { slug: string | string[] } }) {
   const slugStr = Array.isArray(params.slug) ? params.slug.join('/') : params.slug
   const post = allBlogs.find((p) => p.slug === slugStr)
-  
+
   if (!post) {
     return notFound()
   }
@@ -21,5 +21,5 @@ export default function BlogPostPage({ params }: { params: { slug: string | stri
     ? allAuthors.find((a) => a.slug === authorId || a.name === authorId)
     : null
 
-  return <BlogPostClient post={post} author={author} />
+  return <BlogPost post={post} author={author} />
 }
