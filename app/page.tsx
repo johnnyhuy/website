@@ -61,7 +61,7 @@ export default function Home() {
                         key={link.label}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 rounded px-2 py-1 text-sm transition hover:bg-gray-200 dark:hover:bg-gray-700"
+                        className="inline-flex items-center gap-2 rounded px-2 py-1 text-sm transition hover:bg-gray-200 dark:hover:bg-gray-700"
                       >
                         {Icon && <Icon className="h-4 w-4" />}
                         {link.label}
