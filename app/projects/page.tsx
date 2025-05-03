@@ -3,19 +3,11 @@ import Image from 'next/image'
 import { Github, ExternalLink, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import TechStack from '@/components/tech-stack'
+import { getTagIcon } from '@/components/tag-icons'
+import { TagIcon } from '@/components/ui/tag-icon'
 import { projects } from '@/data/siteData'
-import { FaReact, FaNodeJs, FaAws, FaDocker, FaPython } from 'react-icons/fa'
-import {
-  SiTypescript,
-  SiNextdotjs,
-  SiKubernetes,
-  SiTerraform,
-  SiGraphql,
-  SiPostgresql,
-  SiMongodb,
-  SiReact,
-} from 'react-icons/si'
-import type { JSX } from 'react'
+import { SiReact } from 'react-icons/si'
+import React from 'react'
 
 export default function ProjectsPage() {
   return (
@@ -38,19 +30,25 @@ export default function ProjectsPage() {
             return (
               <div
                 key={index}
-                className="shadow-custom flex h-full flex-col overflow-hidden rounded-lg border-2 border-gray-900 dark:border-gray-200"
+                className="shadow-custom flex h-full flex-col overflow-hidden rounded-lg border-1 border-gray-900 dark:border-gray-200"
               >
                 {/* Project image */}
                 <div className="relative h-48 w-full">
                   {typeof image === 'string' ? (
                     <Image src={image} alt={project.title} fill className="object-cover" />
-                  ) : (
+                  ) : tags.length > 0 && getTagIcon(tags[0]) ? (
                     <div className="flex h-full w-full items-center justify-center bg-gray-100 dark:bg-gray-800">
-                      <SiReact className="text-4xl text-gray-400" />
+                      <TagIcon
+                        icon={React.createElement(getTagIcon(tags[0]), {
+                          className: 'h-20 w-20 text-gray-400 dark:text-gray-500',
+                        })}
+                        size="lg"
+                        variant="ghost"
+                      />
                     </div>
-                  )}
+                  ) : null}
                   {date && (
-                    <div className="absolute top-2 right-2 flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs backdrop-blur-xs dark:bg-gray-700">
+                    <div className="absolute top-2 right-2 flex items-center rounded-md border-1 border-gray-900 bg-white px-2 py-1 text-xs backdrop-blur-xs dark:bg-gray-700">
                       <Calendar className="mr-1 h-3 w-3" />
                       <span>{date}</span>
                     </div>
@@ -67,14 +65,9 @@ export default function ProjectsPage() {
                   </div>
 
                   {/* Links */}
-                  <div className="mt-auto flex gap-2">
+                  <div className="mt-auto flex items-start justify-start gap-2">
                     {github && (
-                      <Link
-                        href={github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1"
-                      >
+                      <Link href={github} target="_blank" rel="noopener noreferrer">
                         <Button variant="default" size="sm">
                           <Github className="mr-1 h-4 w-4" />
                           GitHub
@@ -82,12 +75,7 @@ export default function ProjectsPage() {
                       </Link>
                     )}
                     {demo && (
-                      <Link
-                        href={demo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1"
-                      >
+                      <Link href={demo} target="_blank" rel="noopener noreferrer">
                         <Button variant="default" size="sm">
                           <ExternalLink className="mr-1 h-4 w-4" />
                           Demo

@@ -17,7 +17,6 @@ export default function TechStackCarousel({
   const [isHovered, setIsHovered] = useState(false)
   const [isTouched, setIsTouched] = useState(false)
   const [scrollWidth, setScrollWidth] = useState(0)
-  const { resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {

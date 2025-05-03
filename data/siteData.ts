@@ -146,7 +146,6 @@ export const projects: Project[] = [
     title: 'AI Transcription Tooling',
     description:
       'Open-source AI-powered transcription tools for converting audio to text with high accuracy.',
-    image: '/placeholder.svg?height=300&width=600',
     tags: ['TypeScript', 'React', 'Node.js', 'AI'],
     githubUrl: 'https://github.com/johnnyhuy',
     demo: null,
@@ -156,7 +155,6 @@ export const projects: Project[] = [
     title: 'Markdown Extensions',
     description:
       'Custom extensions for Markdown to enhance documentation capabilities and formatting options.',
-    image: '/placeholder.svg?height=300&width=600',
     tags: ['JavaScript', 'Markdown', 'Node.js'],
     githubUrl: 'https://github.com/johnnyhuy',
     demo: null,
@@ -166,7 +164,6 @@ export const projects: Project[] = [
     title: 'Game Server Data Warehousing',
     description:
       'Solutions for collecting, storing, and analyzing data from game servers to improve performance and player experience.',
-    image: '/placeholder.svg?height=300&width=600',
     tags: ['Python', 'SQL', 'AWS', 'Data Engineering'],
     githubUrl: 'https://github.com/johnnyhuy',
     demo: null,
@@ -175,7 +172,6 @@ export const projects: Project[] = [
   {
     title: 'Melbourne Corporate Coffee',
     description: 'JAM Stack website for a corporate coffee service in Melbourne.',
-    image: '/placeholder.svg?height=300&width=600',
     tags: ['Next.js', 'Tailwind CSS', 'JAM Stack'],
     githubUrl: null,
     demo: 'https://melbournecorporatecoffee.com.au',
@@ -184,7 +180,6 @@ export const projects: Project[] = [
   {
     title: 'Fun Flicks',
     description: 'JAM Stack website for a movie entertainment service.',
-    image: '/placeholder.svg?height=300&width=600',
     tags: ['Next.js', 'Tailwind CSS', 'JAM Stack'],
     githubUrl: null,
     demo: 'https://funflicks.com.au',
@@ -193,7 +188,6 @@ export const projects: Project[] = [
   {
     title: 'Portfolio Website',
     description: 'Personal portfolio website showcasing projects and professional experience.',
-    image: '/placeholder.svg?height=300&width=600',
     tags: ['Next.js', 'Tailwind CSS', 'TypeScript'],
     githubUrl: 'https://github.com/johnnyhuy',
     demo: 'https://johnnyhuy.com',
@@ -289,27 +283,24 @@ export const experiences = [
 // Header Nav Links
 export const headerNavLinks = [
   { name: 'Projects', path: '/projects' },
-  { name: 'Uses', path: '/uses' },
   { name: 'Blog', path: '/blog' },
-  { name: 'TechDocs', path: '/techdocs' },
-  { name: 'Guestbook', path: '/guestbook' },
 ]
 
 // Navbar Data (migrated from navbar.ts)
 export const navbar = {
   logo: {
-    src: "/images/johnny.svg",
-    alt: "Johnny Huynh",
+    src: '/images/johnny.svg',
+    alt: 'Johnny Huynh',
     width: 32,
     height: 32,
   },
   contact: {
-    url: "https://linkedin.com/in/johnnyhuy",
-    label: "Contact",
-    icon: "Mail", // for dynamic import if needed
-    buttonClass: "bg-accent hover:bg-accent/80 ml-2",
-    rel: "noopener noreferrer",
-    target: "_blank",
+    url: 'https://linkedin.com/in/johnnyhuy',
+    label: 'Contact',
+    icon: 'Mail', // for dynamic import if needed
+    buttonClass: 'bg-accent hover:bg-accent/80 ml-2',
+    rel: 'noopener noreferrer',
+    target: '_blank',
   },
   navLinks: headerNavLinks,
 }

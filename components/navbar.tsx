@@ -30,19 +30,19 @@ const Navbar = () => {
 
   return (
     <header
-      className={`fixed top-0 right-0 left-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 right-0 left-0 z-50 duration-300 ${
         isScrolled ? 'glass-nav py-2' : 'bg-transparent py-4'
       }`}
     >
       <EnhancedGlassEffect isActive={isScrolled} />
       <div className="container mx-auto flex items-center justify-between px-4">
-        <Link href="/" className="font-bold">
+        <Link href="/">
           <Image
             src={Johnny}
             alt={navbar.logo.alt}
             width={32}
             height={32}
-            className={`transition-all duration-300 ${isScrolled ? 'rounded-lg' : 'rounded-md'}`}
+            className={`duration-300 ${isScrolled ? 'rounded-lg' : 'rounded-md'}`}
           />
         </Link>
 
@@ -52,11 +52,11 @@ const Navbar = () => {
             <Link
               key={link.path}
               href={link.path}
-              className={`flex items-center rounded-lg px-3 py-2 transition-colors ${
+              className={`flex items-center rounded-lg px-3 py-2 duration-200 ${
                 pathname === link.path || pathname.startsWith(`${link.path}/`)
-                  ? 'bg-secondary/70 font-medium'
-                  : 'text-gray-500 hover:text-gray-600'
-              }`}
+                  ? 'text-gray-900 dark:text-gray-100'
+                  : 'text-gray-400 hover:text-gray-900 focus:outline-none dark:text-gray-200 dark:hover:text-gray-100'
+              } `}
             >
               <span>{link.name}</span>
             </Link>
@@ -65,7 +65,7 @@ const Navbar = () => {
             <Button
               variant="default"
               size="sm"
-              className="bg-accent hover:bg-accent/80 ml-2 text-gray-900"
+              className="ml-2 cursor-pointer bg-yellow-500 text-gray-900 hover:bg-yellow-400 hover:text-gray-900 focus:outline-none dark:bg-yellow-400 dark:text-gray-900 dark:hover:bg-yellow-500"
             >
               <Mail className="mr-2 h-4 w-4" />
               Contact
@@ -94,11 +94,11 @@ const Navbar = () => {
           <nav className="container mx-auto flex flex-col space-y-4 px-4 py-6">
             <Link
               href="/"
-              className={`flex items-center rounded-lg px-4 py-3 transition-colors ${
+              className={`flex items-center rounded-lg px-4 py-3 duration-200 ${
                 pathname === '/'
-                  ? 'bg-secondary/70 font-medium'
-                  : 'text-gray-500 hover:text-gray-600'
-              }`}
+                  ? 'bg-secondary/70 font-medium text-gray-900 dark:text-gray-900'
+                  : 'text-gray-500 hover:bg-gray-100 hover:text-yellow-500 focus:ring-yellow-400 focus:outline-none dark:text-gray-300 dark:hover:bg-gray-200 dark:hover:text-yellow-600'
+              } `}
               onClick={() => setIsMenuOpen(false)}
             >
               <span className="">Home</span>
@@ -107,11 +107,11 @@ const Navbar = () => {
               <Link
                 key={link.path}
                 href={link.path}
-                className={`flex items-center rounded-lg px-4 py-3 transition-colors ${
+                className={`flex items-center rounded-lg px-4 py-3 duration-200 ${
                   pathname === link.path || pathname.startsWith(`${link.path}/`)
-                    ? 'bg-secondary/70 font-medium'
-                    : 'text-gray-500 hover:text-gray-600'
-                }`}
+                    ? 'bg-secondary/70 font-medium text-gray-900 dark:text-gray-900'
+                    : 'text-gray-500 hover:bg-gray-100 hover:text-yellow-500 focus:ring-yellow-400 focus:outline-none dark:text-gray-300 dark:hover:bg-gray-200 dark:hover:text-yellow-600'
+                } `}
                 onClick={() => setIsMenuOpen(false)}
               >
                 <span className="">{link.name}</span>
@@ -126,7 +126,7 @@ const Navbar = () => {
             >
               <Button
                 variant="default"
-                className="w-full bg-yellow-500 py-3 text-gray-900 hover:bg-yellow-400 dark:text-gray-100"
+                className="w-full bg-yellow-500 py-3 text-gray-900 hover:bg-yellow-400 hover:text-gray-900 focus:ring-yellow-400 focus:outline-none dark:bg-yellow-400 dark:text-gray-900 dark:hover:bg-yellow-500"
               >
                 <Mail className="mr-2 h-5 w-5" />
                 Contact

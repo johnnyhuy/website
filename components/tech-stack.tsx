@@ -1,78 +1,51 @@
 'use client'
 
-import { useState } from 'react'
 import { getTagIcon } from '@/components/tag-icons'
 import { TagIcon } from '@/components/ui/tag-icon'
+import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip'
 
 interface TechStackProps {
   technologies: string[]
   size?: 'sm' | 'md' | 'lg'
-  limit?: number
-  className?: string
 }
 
-export default function TechStack({
-  technologies,
-  size = 'md',
-  limit = 5,
-  className = '',
-}: TechStackProps) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  // Limit the number of technologies shown
-  const visibleTechs = technologies.slice(0, limit)
-  const remainingCount = technologies.length - limit
-
+export default function TechStack({ technologies, size = 'md' }: TechStackProps) {
   return (
-    <div
-      className={`tech-stack-container relative flex items-center ${className}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <div
-        className={`tech-stack-group flex transition-all duration-300 ${isHovered ? 'expanded' : ''}`}
-      >
-        {visibleTechs.map((tech, index) => {
-          const IconComponent = getTagIcon(tech)
-          // Only render if an icon component is found
-          if (!IconComponent) {
-            return null
-          }
-          return (
-            <div
-              key={tech}
-              className={`tech-icon-wrapper border-border bg-secondary flex items-center justify-center rounded-full border p-1 ${size === 'sm' ? 'h-6 w-6' : size === 'lg' ? 'h-10 w-10' : 'h-8 w-8'} hover:border-accent transition-all duration-200`}
-              title={tech}
-              style={{
-                zIndex: 10 - index,
-                marginLeft: index === 0 ? '0' : isHovered ? '0.5rem' : '-0.5rem',
-                transition: 'margin 0.3s ease',
-              }}
-            >
-              <TagIcon
-                icon={<IconComponent />}
-                label={tech}
-                variant="ghost"
-                size={size}
-                className="h-full w-full"
-              />
-            </div>
-          )
-        })}
-
-        {remainingCount > 0 && (
-          <div
-            className={`tech-icon-wrapper flex items-center justify-center ${size === 'sm' ? 'h-6 w-6' : size === 'lg' ? 'h-10 w-10' : 'h-8 w-8'} bg-secondary border-border hover:border-accent rounded-full border transition-all duration-200`}
-            style={{
-              zIndex: 10 - visibleTechs.length,
-              marginLeft: isHovered ? '0.5rem' : '-0.5rem',
-              transition: 'margin 0.3s ease',
-            }}
-          >
-            <span className="text-xs font-medium">+{remainingCount}</span>
-          </div>
-        )}
+    <TooltipProvider>
+      <div className="group relative flex items-center">
+        <div className="flex">
+          {technologies.map((tech, index) => {
+            const IconComponent = getTagIcon(tech)
+            if (!IconComponent) {
+              return null
+            }
+            return (
+              <Tooltip key={tech}>
+                <TooltipTrigger asChild>
+                  <div
+                    className={`hover:border-accent flex h-8 w-8 items-center justify-center rounded-full border border-gray-900 bg-white p-1 dark:border-gray-600 dark:bg-gray-900 ${index !== 0 ? 'ml-[-0.5rem] group-hover:ml-2' : ''}`}
+                    tabIndex={0}
+                    style={{
+                      zIndex: 10 - index,
+                      outline: 'none',
+                    }}
+                  >
+                    <TagIcon
+                      icon={<IconComponent className="h-4 w-4" />}
+                      variant="ghost"
+                      size={size}
+                    />
+                    <span className="sr-only">{tech}</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="top" align="center">
+                  {tech}
+                </TooltipContent>
+              </Tooltip>
+            )
+          })}
+        </div>
       </div>
-    </div>
+    </TooltipProvider>
   )
 }

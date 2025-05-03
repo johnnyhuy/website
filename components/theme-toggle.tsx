@@ -34,7 +34,7 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <Button variant="outline" size="icon" className="h-9 w-9 rounded-lg">
+      <Button variant="ghost" size="icon" className="h-9 w-9 cursor-pointer rounded-lg">
         <span className="sr-only">Toggle theme</span>
         <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all" />
       </Button>
@@ -46,7 +46,11 @@ export function ThemeToggle() {
       <Tooltip delayDuration={300}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="rounded-lg focus:outline-none focus:ring-0 focus:border-none">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="cursor-pointer rounded-lg focus:border-none focus:ring-0 focus:outline-none"
+            >
               <Sun className="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
               <Moon className="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
               <span className="sr-only">Toggle theme</span>
