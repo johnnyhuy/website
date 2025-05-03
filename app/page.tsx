@@ -111,9 +111,9 @@ export default function Home() {
               <div className="flex items-start gap-3">
                 <CompanyLogo companyName={experiences[0].company} className="h-10 w-10" />
                 <div>
-                  <h4 className="font-medium">{experiences[0].title}</h4>
-                  <p className="text-sm text-gray-400">{experiences[0].company}</p>
-                  <p className="mt-1 text-xs text-gray-400">
+                  <h4 className="text-sm font-medium">{experiences[0].title}</h4>
+                  <p className="text-xs text-gray-400">{experiences[0].company}</p>
+                  <p className="text-xs text-gray-400">
                     {experiences[0].startDate} - {experiences[0].endDate}
                   </p>
                 </div>
