@@ -42,7 +42,7 @@ export default function BlogPage() {
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div className="mb-4 sm:mb-0">
             <h1 className="mb-2 text-3xl font-bold md:text-4xl">Blog</h1>
-            <p className="text-muted-foreground text-lg md:text-xl">
+            <p className="text-lg text-gray-400 md:text-xl">
               Thoughts, learnings, and insights from my experience in software engineering.
             </p>
           </div>
@@ -86,7 +86,7 @@ export default function BlogPage() {
             filteredPosts.map((post) => <BlogPostItem key={post.slug} post={post} />)
           ) : (
             <div className="py-12 text-center">
-              <p className="text-muted-foreground">No posts found matching your filter criteria.</p>
+              <p className="text-gray-400">No posts found matching your filter criteria.</p>
             </div>
           )}
         </div>

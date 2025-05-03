@@ -72,7 +72,7 @@ const DiscordPresence = () => {
               />
             ) : (
               <div className="bg-secondary flex h-12 w-12 items-center justify-center rounded-full">
-                <FaDiscord className="text-muted-foreground text-xl" />
+                <FaDiscord className="text-xl text-gray-400" />
               </div>
             )}
             {/* Status dot */}
@@ -87,7 +87,7 @@ const DiscordPresence = () => {
             <span className="text-foreground truncate text-base font-semibold">
               {discord_user.display_name || discord_user.username}
             </span>
-            <span className="text-muted-foreground truncate text-xs">@{discord_user.username}</span>
+            <span className="truncate text-xs text-gray-400">@{discord_user.username}</span>
           </div>
         </div>
       </div>
@@ -125,7 +125,7 @@ const DiscordPresence = () => {
             </div>
           </>
         ) : (
-          <div className="text-muted-foreground text-xs">No current activity</div>
+          <div className="text-xs text-gray-400">No current activity</div>
         )}
       </div>
     </div>

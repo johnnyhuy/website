@@ -50,30 +50,28 @@ export default function ProjectCarousel() {
         >
           <div className="flex">
             {projects.map((project, index) => (
-              <div key={index} className="w-full shrink-0">
-                <div className="rounded-xl bg-gray-100 p-4">
-                  <div className="mb-2 flex items-center justify-between">
-                    <h4 className="font-medium">{project.title}</h4>
-                    {project.githubUrl && (
-                      <Link href={project.githubUrl} target="_blank" rel="noopener noreferrer">
-                        <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
-                          <LuGithub className="h-4 w-4" />
-                          <span className="sr-only">GitHub</span>
-                        </Button>
-                      </Link>
-                    )}
-                  </div>
-                  <p className="mb-3 min-h-[4rem] text-sm text-gray-500">{project.description}</p>
-                  <div className="mt-3 flex flex-wrap gap-2">
-                    {project.tags.map((tech: string) => (
-                      <span
-                        key={`${project.id}-${tech}`}
-                        className="rounded-full bg-gray-800/10 px-2 py-1 text-xs"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
+              <div key={index} className="w-full shrink-0 p-4">
+                <div className="mb-2 flex items-center justify-between">
+                  <h4 className="font-medium">{project.title}</h4>
+                  {project.githubUrl && (
+                    <Link href={project.githubUrl} target="_blank" rel="noopener noreferrer">
+                      <Button size="sm" variant="ghost" className="h-8 w-8 p-0">
+                        <LuGithub className="h-4 w-4" />
+                        <span className="sr-only">GitHub</span>
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+                <p className="mb-3 min-h-[4rem] text-sm text-gray-500">{project.description}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {project.tags.map((tech: string) => (
+                    <span
+                      key={`${project.id}-${tech}`}
+                      className="rounded-md bg-gray-800/10 px-2 py-1 text-xs"
+                    >
+                      {tech}
+                    </span>
+                  ))}
                 </div>
               </div>
             ))}
@@ -95,7 +93,7 @@ export default function ProjectCarousel() {
               className={`h-2 rounded-full transition-all ${
                 index === activeIndex
                   ? 'w-4 bg-yellow-500'
-                  : 'w-2 bg-gray-200 hover:bg-gray-600 dark:bg-gray-800'
+                  : 'w-2 bg-gray-200 hover:bg-gray-600 dark:bg-gray-700'
               }`}
               onClick={() => {
                 setActiveIndex(index)

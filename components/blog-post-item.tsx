@@ -17,7 +17,10 @@ export default function BlogPostItem({ post }: BlogPostItemProps) {
 
   return (
     <div className="py-4 first:pt-0 last:pb-0">
-      <div className="text-muted-foreground mb-2 flex items-center text-sm">
+      <h3 className="hover:text-primary mb-1 text-lg font-medium">
+        <Link href={`/blog/${post.slug}`}>{post.title}</Link>
+      </h3>
+      <div className="mb-2 flex items-center text-sm text-gray-400">
         <CalendarIcon className="mr-1 h-3 w-3" />
         {/* Display both short and relative dates */}
         <span>{`${formattedShortDate} (${formattedRelativeDate})`}</span>
@@ -29,10 +32,7 @@ export default function BlogPostItem({ post }: BlogPostItemProps) {
           </>
         )}
       </div>
-      <h3 className="hover:text-primary mb-1 text-lg font-medium">
-        <Link href={`/blog/${post.slug}`}>{post.title}</Link>
-      </h3>
-      <p className="text-muted-foreground mb-3 text-sm">{post.summary ?? ''}</p>
+      <p className="mb-3 text-sm text-gray-400">{post.summary ?? ''}</p>
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-2">
           {post.tags.map((tag: string, index: number) => {
@@ -48,7 +48,7 @@ export default function BlogPostItem({ post }: BlogPostItemProps) {
                   label={tag || undefined}
                   variant="solid"
                   size="sm"
-                  className="bg-secondary/50 flex items-center rounded-md px-2 py-1 text-xs"
+                  className="flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs dark:bg-gray-700"
                 />
               </Link>
             )

@@ -48,7 +48,7 @@ export default function Home() {
                 <h1 className="mb-1 text-2xl font-bold md:mb-2 md:text-3xl lg:text-4xl">
                   {profile.name}
                 </h1>
-                <h2 className="text-muted-foreground mb-2 text-lg md:mb-4 md:text-xl lg:text-2xl">
+                <h2 className="mb-2 text-lg text-gray-400 md:mb-4 md:text-xl lg:text-2xl">
                   {profile.title}
                 </h2>
                 <p className="mb-3 max-w-xl text-sm md:mb-4 md:text-base">{profile.bio}</p>
@@ -61,7 +61,7 @@ export default function Home() {
                         key={link.label}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="hover:bg-muted inline-flex items-center gap-1 rounded px-2 py-1 text-sm transition"
+                        className="inline-flex items-center gap-1 rounded px-2 py-1 text-sm transition hover:bg-gray-200 dark:hover:bg-gray-700"
                       >
                         {Icon && <Icon className="h-4 w-4" />}
                         {link.label}
@@ -69,7 +69,7 @@ export default function Home() {
                     )
                   })}
                 </div>
-                <p className="text-muted-foreground mt-3 text-xs md:mt-4">{profile.contactNote}</p>
+                <p className="mt-3 text-xs text-gray-400 italic md:mt-4">{profile.contactNote}</p>
               </div>
             </CardContent>
           </Card>
@@ -93,7 +93,7 @@ export default function Home() {
             <CardContent className="h-full p-4">
               <h3 className="mb-3 flex items-center text-lg font-medium">
                 <LuLaptop className="mr-2 h-8 w-8" />
-                What I'm working on
+                Projects
               </h3>
               <ProjectCarousel />
             </CardContent>
@@ -108,7 +108,6 @@ export default function Home() {
           <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 sm:block md:col-span-4">
             <CardContent className="flex h-full flex-row items-start gap-4 p-4">
               <TechStackCarousel direction="ltr" techStack={sortedTechs} />
-              {/* <LucideCode2 className="h-8 w-8" /> */}
             </CardContent>
           </Card>
           <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-4">
@@ -119,8 +118,8 @@ export default function Home() {
                 </div>
                 <div>
                   <h4 className="font-medium">{experiences[0].title}</h4>
-                  <p className="text-muted-foreground text-sm">{experiences[0].company}</p>
-                  <p className="text-muted-foreground mt-1 text-xs">
+                  <p className="text-sm text-gray-400">{experiences[0].company}</p>
+                  <p className="mt-1 text-xs text-gray-400">
                     {experiences[0].startDate} - {experiences[0].endDate}
                   </p>
                   <Link

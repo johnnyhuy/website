@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import Image from 'next/image'
 import { EnhancedGlassEffect } from './enhanced-glass-effect'
-import { navbar } from '@/data/navbar'
+import { navbar } from '@/data/siteData'
 import { profile } from '@/data/siteData'
 import Johnny from '@/data/images/johnny.svg'
 
@@ -39,7 +39,7 @@ const Navbar = () => {
         <Link href="/" className="font-bold">
           <Image
             src={Johnny}
-            alt="Johnny Huynh"
+            alt={navbar.logo.alt}
             width={32}
             height={32}
             className={`transition-all duration-300 ${isScrolled ? 'rounded-lg' : 'rounded-md'}`}
@@ -126,7 +126,7 @@ const Navbar = () => {
             >
               <Button
                 variant="default"
-                className="w-full bg-yellow-500 py-3 text-gray-900 hover:bg-yellow-500/80 dark:text-gray-100"
+                className="w-full bg-yellow-500 py-3 text-gray-900 hover:bg-yellow-400 dark:text-gray-100"
               >
                 <Mail className="mr-2 h-5 w-5" />
                 Contact

@@ -11,7 +11,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { FloatingThemeToggle } from '@/components/floating-theme-toggle'
 import { copyToClipboard, generateShareableUrl, generateSocialShareText } from '@/lib/copy-utils'
 import { allBlogs, allAuthors } from 'contentlayer/generated'
 import { MDXLayoutRenderer } from 'pliny/mdx-components.js'
@@ -108,7 +107,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
           <header className="mb-6 md:mb-8">
             <h1 className="mb-4 text-3xl font-bold md:text-4xl lg:text-5xl">{post.title}</h1>
 
-            <div className="text-muted-foreground mb-4 flex flex-wrap items-center justify-between text-sm md:mb-6">
+            <div className="mb-4 flex flex-wrap items-center justify-between text-sm text-gray-400 md:mb-6">
               <div className="mb-2 flex items-center space-x-4 sm:mb-0">
                 <div className="flex items-center">
                   <Calendar className="mr-1 h-3 w-3" />
@@ -334,7 +333,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                 {post.relatedPosts.map((relatedPost: any) => (
                   <Card key={relatedPost.id} className="overflow-hidden">
                     <CardContent className="p-4 md:p-6">
-                      <div className="text-muted-foreground mb-2 flex items-center text-sm">
+                      <div className="mb-2 flex items-center text-sm text-gray-400">
                         <Calendar className="mr-1 h-3 w-3" />
                         <span>{relatedPost.date}</span>
                         <span className="mx-2">•</span>
@@ -349,7 +348,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                           {relatedPost.title}
                         </Link>
                       </h3>
-                      <p className="text-muted-foreground mb-4">{relatedPost.excerpt}</p>
+                      <p className="mb-4 text-gray-400">{relatedPost.excerpt}</p>
                       <div className="mb-6 flex flex-wrap gap-2 pb-2 md:mb-8">
                         {relatedPost.tags.map((tag: string, index: number) => {
                           const IconComponent = getTagIcon(tag)
@@ -390,8 +389,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             </div>
           )}
         </article>
-
-        <FloatingThemeToggle position="bottom-right" />
       </div>
     </div>
   )

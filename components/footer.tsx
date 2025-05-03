@@ -19,10 +19,10 @@ const Footer = () => {
               </div>
               <div>
                 <h3 className="text-xl font-bold">{profile.name}</h3>
-                <p className="text-muted-foreground text-sm">{profile.jobTitle}</p>
+                <p className="text-sm text-gray-400">{profile.jobTitle}</p>
               </div>
             </div>
-            <p className="text-muted-foreground mb-6 max-w-md">{profile.bio}</p>
+            <p className="mb-6 max-w-md text-gray-400">{profile.bio}</p>
             <div className="mb-6 flex space-x-4">
               {profile.github && (
                 <Link
@@ -31,7 +31,7 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   aria-label="GitHub"
                 >
-                  <LuGithub className="hover:text-primary h-5 w-5 transition-colors" />
+                  <LuGithub className="hover:text-primary h-5 w-5" />
                   <span className="sr-only">Github</span>
                 </Link>
               )}
@@ -42,12 +42,12 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   aria-label="LinkedIn"
                 >
-                  <LuLinkedin className="hover:text-primary h-5 w-5 transition-colors" />
+                  <LuLinkedin className="hover:text-primary h-5 w-5" />
                   <span className="sr-only">LinkedIn</span>
                 </Link>
               )}
             </div>
-            <p className="text-muted-foreground text-sm">
+            <p className="text-sm text-gray-400">
               For recruitment and job opportunities, please contact me via LinkedIn only. I don't
               accept unsolicited phone calls or emails.
             </p>
@@ -56,38 +56,38 @@ const Footer = () => {
           {/* Stay Updated (right) */}
           <div className="flex flex-col justify-center md:col-span-6 md:col-start-7 lg:col-span-5 lg:col-start-8">
             <h3 className="mb-4 text-lg font-medium">Stay Updated</h3>
-            <p className="text-muted-foreground mb-4 text-sm">
+            <p className="mb-4 text-gray-400">
               Subscribe to my RSS feed to receive updates on new projects, blog posts, and tech
               insights.
             </p>
             <Link href="/rss.xml">
-              <div className="inline-flex items-center gap-2 rounded-md bg-yellow-500 px-4 py-2 transition-colors hover:bg-yellow-500/80">
+              <div className="inline-flex items-center gap-2 rounded-md bg-yellow-500 px-4 py-2 text-gray-900 hover:bg-yellow-400">
                 <LuRss className="h-4 w-4" />
-                <span>Subscribe to RSS Feed</span>
+                <span>RSS Feed</span>
               </div>
             </Link>
           </div>
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
-          <p className="text-muted-foreground text-sm">
+          <p className="text-sm text-gray-400">
             &copy; {new Date().getFullYear()} {profile.name}. All rights reserved.
           </p>
           <div className="flex items-center gap-4 text-sm">
             <Link
               href="/"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
+              className="flex items-center gap-2 text-gray-400 hover:text-gray-100"
             >
               <LucideHome className="h-4 w-4" />
               <span>Home</span>
             </Link>
-            <span className="text-muted-foreground">•</span>
+            <span className="text-gray-400">•</span>
             <Link
-              href="https://github.com/johnnyhuy/website"
+              href={profile.siteRepo}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-primary flex items-center gap-2 transition-colors"
+              className="flex items-center gap-2 text-gray-400 hover:text-gray-100"
             >
               <LuCode className="h-4 w-4" />
               <span>Source code</span>

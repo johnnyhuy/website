@@ -47,8 +47,8 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
 
   const calendarTheme = {
     dark: [
+      'var(--color-gray-700)',
       'var(--color-gray-800)',
-      'var(--color-gray-900)',
       'var(--color-yellow-500)',
       'var(--color-yellow-600)',
       'var(--color-yellow-700)',
@@ -80,7 +80,7 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
     return (
       <div className="flex flex-col items-center justify-center gap-4">
         <SiDiscord className="h-auto w-24 text-[#5865F2] sm:w-48" />
-        <p className="text-muted-foreground w-48 text-center text-sm sm:w-64">
+        <p className="w-48 text-center text-sm text-gray-400 sm:w-64">
           This component is down. Please DM me on{' '}
           <a
             href={profile.discord.link}

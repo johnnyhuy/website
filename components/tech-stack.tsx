@@ -50,7 +50,7 @@ export default function TechStack({
               }}
             >
               <TagIcon
-                icon={IconComponent}
+                icon={<IconComponent />}
                 label={tech}
                 variant="ghost"
                 size={size}
