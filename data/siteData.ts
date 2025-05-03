@@ -98,7 +98,7 @@ export const projects: Project[] = [
     date: normalizeDate('2021'),
   },
   {
-    title: 'Fun Flicks',
+    title: 'FunFlicks',
     description: 'JAM Stack website for a movie entertainment service.',
     tags: ['Next.js', 'Tailwind CSS', 'JAM Stack'],
     githubUrl: null,
@@ -117,14 +117,12 @@ export const projects: Project[] = [
     title: 'A Search Engine',
     description: `What if you could look up any information in the world? Webpages, images, videos\nand more. Google has many features to help you find exactly what you're looking\nfor.`,
     tags: [],
-    imgSrc: '/static/images/google.png',
     href: 'https://www.google.com',
   },
   {
     title: 'The Time Machine',
     description: `Imagine being able to travel back in time or to the future. Simple turn the knob\nto the desired date and press "Go". No more worrying about lost keys or\nforgotten headphones with this simple yet affordable solution.`,
     tags: [],
-    imgSrc: '/static/images/time-machine.jpg',
     href: '/blog/the-time-machine',
   },
 ]
@@ -287,14 +285,14 @@ export const experiences: Experience[] = [
     ],
   },
   {
-    company: 'Funflicks',
+    company: 'FunFlicks',
     position: 'Team Supervisor',
     title: 'Team Supervisor',
     startDate: 'Nov 2015',
     endDate: 'Feb 2018',
     technologies: ['Cinema', 'Media', 'Outdoor Entertainment'],
     description:
-      'Team supervisor for Melbourne Open Air Cinema, managing event operations and technical support for outdoor cinema experiences.',
+      'Team supervisor for FunFlicks, managing event operations and technical support for outdoor cinema experiences.',
     responsibilities: [
       'Maintained cinema equipment and consulted clients on-site.',
       'Ran cinema events for local clients.',
