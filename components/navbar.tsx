@@ -65,7 +65,7 @@ const Navbar = () => {
             <Button
               variant="default"
               size="sm"
-              className="ml-2 cursor-pointer bg-yellow-500 text-gray-900 hover:bg-yellow-400 hover:text-gray-900 focus:outline-none dark:bg-yellow-400 dark:text-gray-900 dark:hover:bg-yellow-500"
+              className="ml-2 cursor-pointer bg-yellow-500 text-gray-900 hover:bg-yellow-400 hover:text-gray-900 focus:outline-none dark:bg-yellow-500 dark:text-gray-900 dark:hover:bg-yellow-900 dark:hover:text-gray-100"
             >
               <Mail className="mr-2 h-4 w-4" />
               Contact

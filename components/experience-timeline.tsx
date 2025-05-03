@@ -1,13 +1,8 @@
-import Image from 'next/image'
 import { TagIconGroup } from '@/components/tag-icon-group'
-import type { StaticImageData } from 'next/image'
-import sportsbet from '@/data/images/companies/sportsbet.png'
-import afterpay from '@/data/images/companies/afterpay.png'
-import enett from '@/data/images/companies/enett.png'
-import { FaReact } from 'react-icons/fa'
 import * as React from 'react'
 import { experiences, formatDateRange } from '@/data/siteData'
 import { formatDuration } from '@/data/utils'
+import { CompanyLogo } from './company-logo'
 
 interface Experience {
   company: string
@@ -20,33 +15,17 @@ interface Experience {
   responsibilities: string[]
 }
 
-// Function to map company to logo
-const companyLogoMap: Record<string, StaticImageData> = {
-  sportsbet,
-  afterpay,
-  enett,
-}
-
-function getLogoForCompany(company: string): StaticImageData | undefined {
-  if (!company) return undefined
-  const normalized = company.toLowerCase().replace(/[^a-z0-9]/g, '')
-  return companyLogoMap[normalized]
-}
-
 function groupConsecutiveByCompany(experiences: Experience[]) {
   const groups: Array<{
     company: string
-    logo: StaticImageData | React.ReactElement
     roles: Experience[]
   }> = []
   let prevCompany = ''
   let currentGroup: any = null
   experiences.forEach((exp) => {
     if (exp.company !== prevCompany) {
-      const logo = getLogoForCompany(exp.company)
       currentGroup = {
         company: exp.company,
-        logo: logo ? logo : <FaReact className="text-2xl text-gray-400" />,
         roles: [exp],
       }
       groups.push(currentGroup)
@@ -80,13 +59,7 @@ export default function ExperienceTimeline() {
               style={{ width: 18, height: 18 }}
             ></div>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-              <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md">
-                {React.isValidElement(group.logo) ? (
-                  group.logo
-                ) : (
-                  <Image src={group.logo} alt={group.company} fill className="object-cover" />
-                )}
-              </div>
+              <CompanyLogo companyName={group.company} />
               <div className="flex-1 pt-3 md:max-w-3xl">
                 <h3 className="mb-2 text-xl font-bold">{group.company}</h3>
                 {/* First role */}

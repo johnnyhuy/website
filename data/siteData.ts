@@ -153,7 +153,6 @@ export const experiences: Experience[] = [
       'Amazon Web Services (AWS)',
       'Kubernetes',
       'ServiceNow',
-      'Developer Experience',
     ],
     description:
       'Lead engineering for platform and AI initiatives at Sportsbet, with a focus on enterprise-scale developer experience, cloud infrastructure, and security strategy.',

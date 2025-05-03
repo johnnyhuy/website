@@ -3,14 +3,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { getTagIcon } from '@/components/ui/tag-icon'
 import { TagIcon } from '@/components/ui/tag-icon'
+import { experiences } from '@/data/siteData'
 
-export default function TechStackCarousel({
-  direction = 'ltr',
-  techStack,
-}: {
-  direction?: 'ltr' | 'rtl'
-  techStack?: { name: string }[]
-}) {
+const allTechs = experiences.flatMap((exp) => exp.technologies)
+const techStack = Array.from(new Set(allTechs))
+
+export default function TechStackCarousel({ direction = 'ltr' }: { direction?: 'ltr' | 'rtl' }) {
   const stack = techStack || []
   const scrollRef = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
@@ -79,23 +77,14 @@ export default function TechStackCarousel({
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {[...stack, ...stack].map((item, index) => {
-          const Icon = getTagIcon(item.name)
+          const Icon = getTagIcon(item)
 
           if (!Icon) {
             return null
           }
           return (
-            <div
-              key={`${item.name}-${index}`}
-              className="flex items-center justify-center"
-              title={item.name}
-            >
-              <TagIcon
-                icon={<Icon />}
-                label={item.name || undefined}
-                variant="carousel"
-                size="lg"
-              />
+            <div key={`${item}-${index}`} className="flex items-center justify-center" title={item}>
+              <TagIcon icon={<Icon />} label={item || undefined} variant="carousel" size="lg" />
             </div>
           )
         })}

@@ -1,6 +1,4 @@
-'use client'
 import { TagIcon } from './ui/tag-icon'
-import { getTagIcon } from './tag-icons'
 
 interface TechIconProps {
   name: string
@@ -9,14 +7,11 @@ interface TechIconProps {
 }
 
 export default function TechIcon({ name, size = 'md', className = '' }: TechIconProps) {
-  const IconComponent = getTagIcon(name)
-
   return (
     <div className="flex items-center">
       <TagIcon
-        icon={IconComponent}
-        label={name}
-        variant="label"
+        icon={name}
+        variant="outline"
         size={size}
         className={className}
         colorVariant="default"

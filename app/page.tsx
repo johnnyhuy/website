@@ -14,7 +14,6 @@ import { allBlogs } from 'contentlayer/generated'
 import type { Blog } from 'contentlayer/generated'
 import { CoreContent, allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 import { profile, experiences } from '@/data/siteData'
-import techStackList from '@/data/tech-stack'
 import { getTagIcon } from '@/components/ui/tag-icon'
 import CloudPattern from '../components/cloud-pattern'
 import Me from '@/data/images/me.jpg'
@@ -22,10 +21,6 @@ import Me from '@/data/images/me.jpg'
 const sortedPosts = sortPosts(allBlogs)
 const corePosts = allCoreContent(sortedPosts)
 const featuredPostsData: CoreContent<Blog>[] = corePosts.slice(0, 3)
-
-const sortedTechs = techStackList.sort((a: { name: string }, b: { name: string }) =>
-  a.name.localeCompare(b.name)
-)
 
 export default function Home() {
   return (
@@ -107,7 +102,7 @@ export default function Home() {
           </Card>
           <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 sm:block md:col-span-4">
             <CardContent className="flex h-full flex-row items-start gap-4 p-4">
-              <TechStackCarousel direction="ltr" techStack={sortedTechs} />
+              <TechStackCarousel direction="ltr" />
             </CardContent>
           </Card>
           <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-4">
