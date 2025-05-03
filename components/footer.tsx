@@ -57,7 +57,7 @@ const Footer = () => {
             </div>
             <p className="text-sm text-gray-400">
               For recruitment and job opportunities, please contact me via LinkedIn only. I don't
-              accept unsolicited phone calls or emails.
+              accept unsolicited phone calls or emails (if you find it).
             </p>
           </div>
 

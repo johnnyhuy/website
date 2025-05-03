@@ -42,9 +42,7 @@ export default function BlogPage() {
         <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div className="mb-4 sm:mb-0">
             <h1 className="mb-2 text-3xl font-bold md:text-4xl">Blog</h1>
-            <p className="text-lg text-gray-400 md:text-xl">
-              Thoughts, learnings, and insights from my experience in software engineering.
-            </p>
+            <p className="text-lg text-gray-400 md:text-xl">Thoughts, learnings, and insights.</p>
           </div>
         </div>
 

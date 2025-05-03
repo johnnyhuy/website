@@ -7,7 +7,39 @@ import React from 'react'
 import { LuCalendar, LuExternalLink, LuGithub } from 'react-icons/lu'
 import { generateBackgroundColor } from '@/data/utils'
 
+/**
+ * Compare function to sort projects by date in descending order
+ */
+const sortProjectsByDateDesc = (a: { date?: string }, b: { date?: string }): number => {
+  // Handle cases where date might be undefined
+  if (!a.date && !b.date) return 0
+  if (!a.date) return 1 // a comes after b if a has no date
+  if (!b.date) return -1 // b comes after a if b has no date
+
+  // Special handling for "Present" dates (should come first)
+  const aHasPresent = a.date.includes('Present')
+  const bHasPresent = b.date.includes('Present')
+
+  if (aHasPresent && !bHasPresent) return -1
+  if (!aHasPresent && bHasPresent) return 1
+
+  // For date ranges like "2020 - Present" or "2020 - 2022", extract start year
+  const getYearFromDate = (date: string): number => {
+    const yearMatch = date.match(/(\d{4})/)
+    return yearMatch ? parseInt(yearMatch[0], 10) : 0
+  }
+
+  const aYear = getYearFromDate(a.date)
+  const bYear = getYearFromDate(b.date)
+
+  // Sort by year descending
+  return bYear - aYear
+}
+
 export default function ProjectsPage() {
+  // Sort projects by date in descending order
+  const sortedProjects = [...projects].sort(sortProjectsByDateDesc)
+
   return (
     <div className="pt-24">
       <div className="container mx-auto px-4 py-8 md:py-12">
@@ -18,7 +50,7 @@ export default function ProjectsPage() {
 
         {/* Mobile-optimized project grid */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project, index) => {
+          {sortedProjects.map((project, index) => {
             // Use githubUrl as the toggle for GitHub button
             const image = project.image || project.imgSrc
             const github = project.githubUrl || null
@@ -54,7 +86,7 @@ export default function ProjectsPage() {
                     />
                   )}
                   {date && (
-                    <div className="absolute top-2 right-2 flex items-center rounded-md border-1 border-gray-900 bg-white px-2 py-1 text-xs backdrop-blur-xs dark:bg-gray-700">
+                    <div className="absolute top-2 right-2 flex items-center rounded-md border-1 border-gray-900 bg-white px-2 py-1 text-xs backdrop-blur-xs dark:border-gray-200 dark:bg-gray-700">
                       <LuCalendar className="mr-1 h-3 w-3" />
                       <span>{date}</span>
                     </div>
@@ -72,7 +104,7 @@ export default function ProjectsPage() {
                         return (
                           <TagIcon
                             key={tagIndex}
-                            icon={tag}
+                            tag={tag}
                             label={tag}
                             variant="outline"
                             size="sm"
