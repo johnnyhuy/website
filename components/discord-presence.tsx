@@ -1,7 +1,12 @@
 'use client'
 
 import { useLanyard } from 'react-use-lanyard'
-import type { LanyardData as LibraryLanyardData, Activity as LibraryActivity, Spotify as LibrarySpotifyData, DiscordUser as LibraryDiscordUser } from 'react-use-lanyard/dist/types'
+import type {
+  LanyardData as LibraryLanyardData,
+  Activity as LibraryActivity,
+  Spotify as LibrarySpotifyData,
+  DiscordUser as LibraryDiscordUser,
+} from 'react-use-lanyard/dist/types'
 import { profile } from '@/data/siteData'
 import Image from 'next/image'
 import { SiDiscord } from 'react-icons/si'
@@ -42,12 +47,22 @@ export function DiscordPresence() {
 
   if (error) {
     console.error('Lanyard hook error:', error)
-    return <div>Error loading Discord status.</div>
+    return (
+      <div className="flex items-center space-x-2 rounded-md p-3">
+        <SiDiscord className="h-6 w-6 text-neutral-600 dark:text-neutral-400" />
+        <div className="flex-1">
+          <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
+            Discord Status
+          </p>
+          <p className="text-xs text-neutral-600 dark:text-neutral-400">Error loading</p>
+        </div>
+      </div>
+    )
   }
 
   if (!lanyardSWRData) {
     return (
-      <div className="flex items-center space-x-2 rounded-md border border-neutral-200 p-3 dark:border-neutral-700">
+      <div className="flex items-center space-x-2 rounded-md p-3">
         <SiDiscord className="h-6 w-6 text-neutral-600 dark:text-neutral-400" />
         <div className="flex-1">
           <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
@@ -63,7 +78,7 @@ export function DiscordPresence() {
 
   if (!lanyardData) {
     return (
-      <div className="flex items-center space-x-2 rounded-md border border-neutral-200 p-3 dark:border-neutral-700">
+      <div className="flex items-center space-x-2 rounded-md p-3">
         <SiDiscord className="h-6 w-6 text-neutral-600 dark:text-neutral-400" />
         <div className="flex-1">
           <p className="text-sm font-medium text-neutral-800 dark:text-neutral-200">
@@ -78,62 +93,56 @@ export function DiscordPresence() {
   }
 
   const { discord_status, activities, spotify, discord_user } = lanyardData
-
   const statusColor = getStatusColor(discord_status)
   const primaryActivity = activities?.find((a: Activity) => a.type !== 4)
   const customStatus = activities?.find((a: Activity) => a.type === 4)
-
-  const avatarUrl = discord_user?.avatar
+  const avatarUrl = discord_user.avatar
     ? `https://cdn.discordapp.com/avatars/${profile.discord.userId}/${discord_user.avatar}.png`
     : '/images/default-discord.png'
 
+  let activityText = ''
+  if (spotify) {
+    activityText = `Listening to ${spotify.song}`
+  } else if (primaryActivity) {
+    activityText = getActivityText(primaryActivity)
+  } else if (customStatus) {
+    activityText = customStatus.state ?? ''
+  } else {
+    activityText = discord_status.charAt(0).toUpperCase() + discord_status.slice(1)
+  }
+
   return (
-    <a
-      href={profile.discord.link}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="block rounded-md border border-neutral-200 p-3 transition-colors hover:bg-neutral-100 dark:border-neutral-700 dark:hover:bg-neutral-800"
-    >
-      <div className="flex items-center space-x-3">
-        <div className="relative">
+    <div className="flex h-full w-full flex-row items-center justify-between gap-4">
+      <div className="flex items-center gap-3">
+        <div className="relative flex-shrink-0">
           <Image
             src={avatarUrl}
             alt={`${discord_user.username}'s Discord Avatar`}
             width={40}
             height={40}
-            className="rounded-full"
+            className="rounded-full border-2 border-white dark:border-neutral-900"
           />
           <span
-            className={`absolute bottom-0 right-0 block h-3 w-3 rounded-full border-2 border-white dark:border-neutral-900 ${statusColor}`}
+            className={`absolute right-0 bottom-0 block h-3.5 w-3.5 rounded-full border-2 border-white dark:border-neutral-900 ${statusColor}`}
             title={`Status: ${discord_status}`}
             aria-label={`Status: ${discord_status}`}
           />
         </div>
-        <div className="flex-1 overflow-hidden">
-          <p className="truncate text-sm font-semibold text-neutral-800 dark:text-neutral-100">
-            {/* Use global_name instead of display_name */}
-            {(discord_user?.global_name || discord_user?.username) ?? 'Discord User'}
-          </p>
-          {spotify ? (
-            <p className="truncate text-xs text-neutral-600 dark:text-neutral-400">
-              Listening to {spotify.song} by {spotify.artist}
-            </p>
-          ) : primaryActivity ? (
-            <p className="truncate text-xs text-neutral-600 dark:text-neutral-400">
-              {getActivityText(primaryActivity)}
-            </p>
-          ) : customStatus ? (
-            <p className="truncate text-xs text-neutral-600 dark:text-neutral-400">
-              {customStatus.state}
-            </p>
-          ) : (
-            <p className="truncate text-xs capitalize text-neutral-600 dark:text-neutral-400">
-              {discord_status}
-            </p>
-          )}
+        <div className="flex min-w-0 flex-col">
+          <span className="truncate text-sm font-semibold text-neutral-800 dark:text-neutral-100">
+            {discord_user.global_name || discord_user.username}
+          </span>
+          <span className="truncate text-xs text-neutral-500 dark:text-neutral-400">
+            @{discord_user.username}
+          </span>
         </div>
-        <SiDiscord className="h-5 w-5 flex-shrink-0 text-neutral-600 dark:text-neutral-400" />
       </div>
-    </a>
+
+      <div className="hidden flex-shrink-0 text-right text-xs text-neutral-600 sm:block dark:text-neutral-400">
+        <p className="truncate" title={activityText}>
+          {activityText}
+        </p>
+      </div>
+    </div>
   )
 }
