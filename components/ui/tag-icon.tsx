@@ -57,6 +57,7 @@ import {
   SiYaml,
 } from 'react-icons/si'
 import { VscAzure, VscAzureDevops } from 'react-icons/vsc'
+import { LuFilm, LuPersonStanding, LuPhoneCall } from 'react-icons/lu'
 
 export const tagIconsMap: { [key: string]: IconType } = {
   azure: VscAzure,
@@ -87,7 +88,12 @@ export const tagIconsMap: { [key: string]: IconType } = {
   latex: SiLatex,
   ai: SiOpenai,
   artificialintelligence: SiOpenai,
+  'artificial intelligence': SiOpenai,
+  'artificial intelligence (ai)': SiOpenai,
   'ai/ml': SiOpenai,
+  'customer service': LuPhoneCall,
+  'help desk support': LuPersonStanding,
+  cinema: LuFilm,
   sql: SiMysql,
   backstage: SiBackstage,
   security: SiAuth0,
