@@ -2,8 +2,9 @@
   "name": "johnnyhuy",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@9.3.0",
   "scripts": {
-    "dev": "contentlayer2 build && next dev --turbopack",
+    "dev": "concurrently \"contentlayer2 dev\" \"next dev --turbopack\"",
     "build": "contentlayer2 build && next build",
     "contentlayer": "contentlayer2 build",
     "start": "next start",
@@ -98,6 +99,7 @@
     "@types/node": "^22.15.2",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "concurrently": "^9.1.2",
     "postcss": "^8.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4.1.4",
