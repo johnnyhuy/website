@@ -1,4 +1,5 @@
-// Project Interface
+import { normalizeDate, formatDateRange } from './utils'
+
 export interface Project {
   id?: number
   title: string
@@ -57,87 +58,6 @@ export const profile = {
   ],
   contactNote: 'For recruitment and job opportunities, please contact me via LinkedIn only.',
   githubUsername: 'johnnyhuy',
-}
-
-// Utility to normalize and format dates
-function normalizeDate(input: string): string | undefined {
-  if (!input) return undefined
-  // Try to parse common formats: 'Dec 2021', '2021', 'Present', etc.
-  if (/present/i.test(input)) return 'Present'
-  // Try month-year (e.g. Dec 2021)
-  const monthYearMatch = input.match(
-    /^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*[ .-]*(\d{4})$/i
-  )
-  if (monthYearMatch) {
-    const date = new Date(`${monthYearMatch[1]} 1, ${monthYearMatch[2]}`)
-    return date.toLocaleString('en-US', { month: 'short', year: 'numeric' })
-  }
-  // Try year only
-  const yearMatch = input.match(/^\d{4}$/)
-  if (yearMatch) return input
-  // Fallback: return as-is
-  return input
-}
-
-function formatDateRange(start: string, end: string): string {
-  const normStart = normalizeDate(start)
-  const normEnd = normalizeDate(end)
-  // If both are present and in the same year, show as "Jan–Mar 2021"
-  if (normStart && normEnd && normStart !== 'Present' && normEnd !== 'Present') {
-    // Try to extract years
-    const startYear = normStart.match(/\d{4}$/)?.[0]
-    const endYear = normEnd.match(/\d{4}$/)?.[0]
-    if (startYear && endYear && startYear === endYear) {
-      // Try to extract months
-      const startMonth = normStart.match(/^[A-Za-z]{3}/)?.[0]
-      const endMonth = normEnd.match(/^[A-Za-z]{3}/)?.[0]
-      if (startMonth && endMonth) {
-        return `${startMonth}–${endMonth} ${startYear}`
-      }
-    }
-    return `${normStart} – ${normEnd}`
-  }
-  if (normStart && normEnd && normEnd === 'Present') {
-    // "Jan 2021 – Present" or "2021 – Present"
-    return `${normStart} – Present`
-  }
-  if (normStart) return normStart
-  if (normEnd) return normEnd
-  return ''
-}
-
-// Returns a human-readable duration, e.g. "6 mos", ">3 years"
-export function formatDuration(start: string, end: string, now: Date = new Date()): string {
-  // Normalize dates
-  const normStart = normalizeDate(start)
-  const normEnd = normalizeDate(end)
-  if (!normStart) return ''
-  // Parse start
-  let startDate: Date | undefined
-  let endDate: Date | undefined
-  // Try parsing as "Mon YYYY" or "YYYY"
-  const parse = (str: string): Date | undefined => {
-    if (str === 'Present') return undefined
-    const monthYear = str.match(/^(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) (\d{4})$/)
-    if (monthYear) return new Date(`${monthYear[1]} 1, ${monthYear[2]}`)
-    const year = str.match(/^(\d{4})$/)
-    if (year) return new Date(`${year[1]}-01-01`)
-    return undefined
-  }
-  startDate = parse(normStart)
-  endDate = normEnd === 'Present' ? now : parse(normEnd ?? '')
-  if (!startDate || !endDate) return ''
-  // Calculate diff
-  let months =
-    (endDate.getFullYear() - startDate.getFullYear()) * 12 +
-    (endDate.getMonth() - startDate.getMonth())
-  let years = Math.floor(months / 12)
-  months = months % 12
-  if (years >= 3 && months === 0) return `>${years} years`
-  if (years >= 2) return `${years} yrs${months > 0 ? ` ${months} mos` : ''}`
-  if (years === 1) return months > 0 ? `1 yr ${months} mos` : '1 yr'
-  if (months > 0) return `${months} mos`
-  return '<1 mo'
 }
 
 // Projects
@@ -209,22 +129,77 @@ export const projects: Project[] = [
   },
 ]
 
-// Experience
-export const experiences = [
+export interface Experience {
+  company: string
+  position: string
+  title: string
+  startDate: string
+  endDate: string
+  technologies: string[]
+  description: string
+  responsibilities: string[]
+}
+
+export const experiences: Experience[] = [
   {
     company: 'Sportsbet',
-    position: 'Lead Cloud Engineer',
-    title: 'Lead Cloud Engineer',
-    startDate: 'Dec 2021',
+    position: 'Lead Engineer - Platform & AI Engineering',
+    title: 'Lead Engineer',
+    startDate: 'Dec 2024',
     endDate: 'Present',
-    technologies: ['AWS', 'Kubernetes', 'Terraform', 'GitHub', 'CI/CD', 'Docker'],
+    technologies: [
+      'Artificial Intelligence (AI)',
+      'Backstage',
+      'Amazon Web Services (AWS)',
+      'Kubernetes',
+      'ServiceNow',
+      'Cloud Infrastructure',
+      'Security Architecture',
+      'Developer Experience',
+      'AI/ML Integration',
+    ],
+    description:
+      'Lead engineering for platform and AI initiatives at Sportsbet, with a focus on enterprise-scale developer experience, cloud infrastructure, and security strategy.',
     responsibilities: [
-      'Collaborated with various application development teams as a key member of the Customer Platforms team at Sportsbet, providing robust cloud technology solutions.',
-      'Championed the migration of internal tools to GitHub, optimising collaboration and streamlining workflows across teams.',
-      'Served as a technical lead in a key portfolio project, utilising Ping Identity authentication platforms.',
-      'Lead technical initiatives for the Customer Platforms team, enhancing cloud technology solutions and fostering a culture of engineering excellence.',
-      'Spearheaded strategic initiatives such as the migration from Stash to GitHub, enabling streamlined workflows and improved collaboration.',
-      'Partnered with multiple teams at Sportsbet to implement and maintain critical platform technologies such as Ping Identity and Kong.',
+      'Designed and delivered an enterprise AI MVP with cross-team collaboration.',
+      'Established security-as-code culture through threat modeling automation.',
+      'Created a standardised service documentation framework in Backstage.',
+      'Led AI SDLC intake and systematic evaluation of AI tools.',
+      'Pioneered production-ready AI adoption and improved developer productivity.',
+      'Drove technical vision and roadmap for developer experience initiatives.',
+      'Implemented automated quality gates and deployment pipelines.',
+      'Pioneered ServiceNow change management automation to reduce deployment overhead.',
+    ],
+  },
+  {
+    company: 'Sportsbet',
+    position: 'Lead Engineer - Cloud',
+    title: 'Lead Engineer',
+    startDate: 'Dec 2021',
+    endDate: 'Dec 2024',
+    technologies: [
+      'Kubernetes',
+      'Ping Identity',
+      'Backstage',
+      'AWS',
+      'GitHub Actions',
+      'Cloud Infrastructure',
+      'DevOps',
+      'CI/CD',
+      'Sumo Logic',
+      'CloudWatch',
+      'New Relic',
+    ],
+    description:
+      'Oversaw cloud platform engineering at Sportsbet, driving the evolution of authentication, developer tooling, and infrastructure for large-scale, high-availability systems.',
+    responsibilities: [
+      'Spearheaded Backstage developer platform implementation.',
+      'Migrated CI/CD infrastructure from Jenkins to GitHub Actions.',
+      'Shipped production Kubernetes clusters for major events.',
+      'Architected authentication with Ping Identity for robust security.',
+      'Authored Engineering Career Framework for enterprise adoption.',
+      'Advanced "shift left" security practices.',
+      'Established platform reliability and observability standards.',
     ],
   },
   {
@@ -233,49 +208,130 @@ export const experiences = [
     title: 'Senior Cloud Engineer',
     startDate: 'Dec 2020',
     endDate: 'Dec 2021',
-    technologies: ['AWS', 'Kubernetes', 'Docker', 'Terraform', 'CI/CD', 'PCI Compliance'],
+    technologies: [
+      'Amazon Web Services (AWS)',
+      'DevOps',
+      'Terraform',
+      'Amazon ECS',
+      'Confluence',
+      'Jira',
+      'Site Reliability Engineering',
+    ],
+    description:
+      'Senior engineer responsible for cloud migration and infrastructure at Afterpay, supporting enterprise payment solutions and scalable cloud services.',
     responsibilities: [
-      'Worked on enterprise cloud services to provide payment solutions to telecommunication and health services as a member of the PayNow Touchcorp project team.',
-      'Lead an AWS cloud migration from VMware Cloud on AWS.',
-      'Drove AWS cloud migrations and containerised legacy telecommunications applications for PCI compliance, focusing on Optus & Vodafone projects.',
-      'Implemented a zero-trust mTLS infrastructure for NAB HICAPS terminal applications.',
+      'Led AWS cloud migration from data centres.',
+      'Containerised legacy telecom applications for AWS production.',
+      'Managed highly scalable database infrastructure.',
     ],
   },
   {
-    company: 'eNett',
+    company: 'eNett International',
     position: 'DevOps Engineer',
     title: 'DevOps Engineer',
     startDate: 'Oct 2020',
     endDate: 'Dec 2020',
-    technologies: ['Azure', 'Kubernetes', 'CI/CD', 'DevOps'],
+    technologies: [
+      'DevOps',
+      'Microsoft Azure',
+      'Azure DevOps',
+      'Terraform',
+      'Confluence',
+      'Jira',
+      'Site Reliability Engineering',
+      'Kubernetes',
+    ],
+    description:
+      'DevOps engineer in the container platform team at eNett International, building and maintaining cloud-native infrastructure and automation.',
     responsibilities: [
-      'Contributed to the development of scalable cloud and DevOps engineering solutions as a member of the container platform team.',
-      'Contributed to Azure cloud migrations and the automation of CI/CD pipelines using Kubernetes.',
+      'Built and maintained container orchestration systems for production.',
+      'Delivered key performance indicators throughout tenure.',
     ],
   },
   {
-    company: 'eNett',
+    company: 'eNett International',
     position: 'Developer',
     title: 'Developer',
     startDate: 'Oct 2019',
     endDate: 'Oct 2020',
-    technologies: ['Azure', 'Kubernetes', 'DevOps', 'CI/CD', 'Grafana', 'Prometheus'],
+    technologies: [
+      'DevOps',
+      'Microsoft Azure',
+      'Azure DevOps',
+      'Confluence',
+      'Jira',
+      'Kubernetes',
+      'Grafana',
+      'Prometheus',
+    ],
+    description:
+      'Software developer in the internal DevOps team at eNett International, focusing on CI/CD, monitoring, and Kubernetes platform delivery.',
     responsibilities: [
-      'Contributed as a permanent member of the internal DevOps team.',
-      'Pioneered new CI/CD automation with Azure DevOps.',
-      'Contributed to a Travelport cloud migration to Azure Kubernetes Services.',
-      'Lead monitoring capabilities with Grafana and Prometheus on production systems.',
+      'Provisioned production-ready applications to Kubernetes clusters.',
+      'Maintained code and built pipelines in Azure DevOps.',
+      'Produced monitoring with Grafana and Prometheus.',
+      'Deployed infrastructure as code for Kubernetes clusters in Azure.',
     ],
   },
   {
-    company: 'eNett',
+    company: 'eNett International',
     position: 'Associate Developer',
     title: 'Associate Developer',
     startDate: 'Jan 2019',
     endDate: 'Sep 2019',
-    technologies: ['Azure', 'Terraform', 'Infrastructure as Code'],
+    technologies: ['DevOps', 'Microsoft Azure', 'Terraform', 'Jira'],
+    description:
+      'Associate developer supporting DevOps initiatives and infrastructure projects for eNett International.',
     responsibilities: [
-      'Ensured the internal DevOps team had the necessary support to provide efficient and effective solutions.',
+      'Provisioned infrastructure with continuous delivery using Terraform.',
+      'Developed infrastructure and configuration as code on Azure.',
+      'Assisted as technical lead on a sponsored university project.',
+    ],
+  },
+  {
+    company: 'eNett International',
+    position: 'Intern Developer',
+    title: 'Intern Developer',
+    startDate: 'Jan 2018',
+    endDate: 'Jan 2019',
+    technologies: ['C#', 'Microsoft Azure', 'Confluence', 'Jira'],
+    description:
+      'Intern developer at eNett International, contributing to agile software development and support for production systems.',
+    responsibilities: [
+      'Participated in agile development with daily standups.',
+      'Developed C# software on Microsoft platform.',
+      'Supported production systems within the support team.',
+    ],
+  },
+  {
+    company: 'Melbourne Open Air Cinema',
+    position: 'Team Supervisor',
+    title: 'Team Supervisor',
+    startDate: 'Nov 2015',
+    endDate: 'Feb 2018',
+    technologies: ['Cinema', 'Media', 'Outdoor Entertainment'],
+    description:
+      'Team supervisor for Melbourne Open Air Cinema, managing event operations and technical support for outdoor cinema experiences.',
+    responsibilities: [
+      'Maintained cinema equipment and consulted clients on-site.',
+      'Ran cinema events for local clients.',
+      'Advised clients on equipment for self-hosted events.',
+      'Worked under pressure with production deadlines.',
+    ],
+  },
+  {
+    company: 'Tennis Australia',
+    position: 'IT Support Assistant',
+    title: 'IT Support Assistant',
+    startDate: 'Oct 2016',
+    endDate: 'Jan 2017',
+    technologies: ['Customer Service', 'Help Desk Support'],
+    description:
+      'IT support assistant at Tennis Australia, providing technical and customer service support for internal staff.',
+    responsibilities: [
+      'Managed telephone calls for online support.',
+      'Set up laptops to network drives.',
+      'Provided on-site support for IT devices.',
     ],
   },
 ]
@@ -294,25 +350,10 @@ export const navbar = {
     width: 32,
     height: 32,
   },
-  contact: {
-    url: 'https://linkedin.com/in/johnnyhuy',
-    label: 'Contact',
-    icon: 'Mail', // for dynamic import if needed
-    buttonClass: 'bg-accent hover:bg-accent/80 ml-2',
-    rel: 'noopener noreferrer',
-    target: '_blank',
-  },
   navLinks: headerNavLinks,
 }
 
 // Discord Presence Data
-export const statusColors: Record<string, string> = {
-  online: 'bg-green-500',
-  idle: 'bg-yellow-400',
-  dnd: 'bg-red-500',
-  offline: 'bg-muted-foreground',
-}
-
 export const lanyard = {
   data: {
     discord_user: {

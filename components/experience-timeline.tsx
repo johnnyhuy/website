@@ -1,12 +1,13 @@
 import Image from 'next/image'
 import { TagIconGroup } from '@/components/tag-icon-group'
-import { experiences, formatDateRange, formatDuration } from '@/data/siteData'
 import type { StaticImageData } from 'next/image'
 import sportsbet from '@/data/images/companies/sportsbet.png'
 import afterpay from '@/data/images/companies/afterpay.png'
 import enett from '@/data/images/companies/enett.png'
 import { FaReact } from 'react-icons/fa'
 import * as React from 'react'
+import { experiences, formatDateRange } from '@/data/siteData'
+import { formatDuration } from '@/data/utils'
 
 interface Experience {
   company: string
@@ -15,6 +16,7 @@ interface Experience {
   startDate: string
   endDate: string
   technologies: string[]
+  description: string
   responsibilities: string[]
 }
 
@@ -103,11 +105,10 @@ export default function ExperienceTimeline() {
                   <div className="mb-4 overflow-x-auto pb-2">
                     <TagIconGroup technologies={group.roles[0].technologies} size="md" />
                   </div>
-                  <ul className="list-disc space-y-2 pl-5">
+                  <p className="mb-2 text-base text-gray-700 dark:text-gray-300">{group.roles[0].description}</p>
+                  <ul className="list-disc ml-5 space-y-1">
                     {group.roles[0].responsibilities.map((resp, index) => (
-                      <li key={index} className="text-sm">
-                        {resp}
-                      </li>
+                      <li key={index}>{resp}</li>
                     ))}
                   </ul>
                 </div>
@@ -127,11 +128,10 @@ export default function ExperienceTimeline() {
                         <div className="mb-4 overflow-x-auto pb-2">
                           <TagIconGroup technologies={role.technologies} size="md" />
                         </div>
-                        <ul className="list-disc space-y-2 pl-5">
+                        <p className="mb-2 text-base text-gray-700 dark:text-gray-300">{role.description}</p>
+                        <ul className="list-disc ml-5 space-y-1">
                           {role.responsibilities.map((resp, index) => (
-                            <li key={index} className="text-sm">
-                              {resp}
-                            </li>
+                            <li key={index}>{resp}</li>
                           ))}
                         </ul>
                       </div>

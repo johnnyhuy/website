@@ -3,7 +3,7 @@ import { useMemo, useState, useEffect } from 'react'
 import { FaDiscord } from 'react-icons/fa'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
-import { statusColors, lanyard } from '@/data/siteData'
+import { lanyard } from '@/data/siteData'
 
 const DiscordPresence = () => {
   const isLoading = false
@@ -78,8 +78,14 @@ const DiscordPresence = () => {
             {/* Status dot */}
             <span
               className={cn(
-                'absolute right-0 bottom-0 h-4 w-4 rounded-full border-2 border-white border-zinc-900 dark:border-zinc-900',
-                statusColors[discord_status] || statusColors['offline']
+                'absolute right-0 bottom-0 h-4 w-4 rounded-full border-2 border-white dark:border-zinc-900',
+                discord_status === 'online' && 'bg-green-500',
+                discord_status === 'idle' && 'bg-yellow-400',
+                discord_status === 'dnd' && 'bg-red-500',
+                discord_status !== 'online' &&
+                  discord_status !== 'idle' &&
+                  discord_status !== 'dnd' &&
+                  'bg-gray-400 dark:bg-gray-600'
               )}
             />
           </div>
