@@ -27,7 +27,7 @@ const Footer = () => {
               </div>
               <div>
                 <h3 className="text-xl font-bold">{profile.name}</h3>
-                <p className="text-sm text-gray-400">{profile.jobTitle}</p>
+                <p className="text-sm text-gray-400">{profile.title}</p>
               </div>
             </div>
             <p className="mb-6 max-w-md text-gray-400">{profile.bio}</p>
