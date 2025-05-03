@@ -90,10 +90,10 @@ export default function ProjectCarousel() {
           {projects.map((project, index) => (
             <button
               key={index}
-              className={`h-2 rounded-full transition-all ${
+              className={`h-4 rounded-full transition-all ${
                 index === activeIndex
-                  ? 'w-4 bg-yellow-500'
-                  : 'w-2 bg-gray-200 hover:bg-gray-600 dark:bg-gray-700'
+                  ? 'w-8 bg-yellow-500'
+                  : 'w-4 bg-gray-100 hover:bg-gray-600 dark:bg-gray-700'
               }`}
               onClick={() => {
                 setActiveIndex(index)
