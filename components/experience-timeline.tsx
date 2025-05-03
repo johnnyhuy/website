@@ -87,7 +87,7 @@ export default function ExperienceTimeline() {
                   <Image src={group.logo} alt={group.company} fill className="object-cover" />
                 )}
               </div>
-              <div className="flex-1 pt-3">
+              <div className="flex-1 pt-3 md:max-w-3xl">
                 <h3 className="mb-2 text-xl font-bold">{group.company}</h3>
                 {/* First role */}
                 <div>
@@ -105,8 +105,10 @@ export default function ExperienceTimeline() {
                   <div className="mb-4 overflow-x-auto pb-2">
                     <TagIconGroup technologies={group.roles[0].technologies} size="md" />
                   </div>
-                  <p className="mb-2 text-base text-gray-700 dark:text-gray-300">{group.roles[0].description}</p>
-                  <ul className="list-disc ml-5 space-y-1">
+                  <p className="mb-2 text-base text-gray-700 dark:text-gray-300">
+                    {group.roles[0].description}
+                  </p>
+                  <ul className="ml-5 list-disc space-y-1">
                     {group.roles[0].responsibilities.map((resp, index) => (
                       <li key={index}>{resp}</li>
                     ))}
@@ -128,8 +130,10 @@ export default function ExperienceTimeline() {
                         <div className="mb-4 overflow-x-auto pb-2">
                           <TagIconGroup technologies={role.technologies} size="md" />
                         </div>
-                        <p className="mb-2 text-base text-gray-700 dark:text-gray-300">{role.description}</p>
-                        <ul className="list-disc ml-5 space-y-1">
+                        <p className="mb-2 text-base text-gray-700 dark:text-gray-300">
+                          {role.description}
+                        </p>
+                        <ul className="ml-5 list-disc space-y-1">
                           {role.responsibilities.map((resp, index) => (
                             <li key={index}>{resp}</li>
                           ))}

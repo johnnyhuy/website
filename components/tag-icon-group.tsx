@@ -15,23 +15,18 @@ export const TagIconGroup: React.FC<TagIconGroupProps> = ({
 }) => {
   return (
     <div className={`group relative flex items-center ${className}`}>
-      <div className="flex gap-2">
+      {/* Add flex-wrap */}
+      <div className="flex flex-wrap gap-2">
         {technologies.map((tech) => {
-          const IconComponent = getTagIcon(tech)
-          if (!IconComponent) return null
           return (
-            <span
+            <TagIcon
               key={tech}
-              className="flex h-8 items-center justify-center rounded-full border border-gray-900 px-2 dark:border-gray-600"
+              tag={tech}
+              size={size}
+              label={tech}
+              variant="outline"
               title={tech}
-            >
-              <TagIcon
-                icon={<IconComponent className="h-4 w-4" />}
-                size={size}
-                label={tech}
-                className="transition-all duration-200"
-              />
-            </span>
+            />
           )
         })}
       </div>

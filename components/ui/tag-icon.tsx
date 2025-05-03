@@ -1,31 +1,31 @@
 'use client'
 import * as React from 'react'
-import { Slot } from '@radix-ui/react-slot'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { getTagIcon } from '../tag-icons'
 
 export const tagIconVariants = cva('inline-flex items-center justify-center rounded', {
   variants: {
     variant: {
-      solid: 'text-[color:var(--color-gray-900)] dark:text-[color:var(--color-gray-100)]',
-      outline: 'border border-[color:var(--color-border)] text-[color:var(--color-gray-900)]',
-      ghost: 'bg-transparent text-[color:var(--color-gray-700)]',
-      label: 'bg-transparent text-[color:var(--color-gray-900)] gap-1 px-1 py-0.5 font-medium',
+      solid: 'bg-gray-100 text-gray-900 dark:text-gray-100',
+      outline:
+        'rounded-md border border-gray-900 px-2 py-1 text-gray-900 dark:border-gray-100 dark:text-gray-100',
+      ghost: 'bg-transparent text-gray-700',
+      label: 'bg-transparent text-gray-900 gap-1 px-1 py-0.5 font-medium',
       carousel:
         'rounded-lg p-2 text-white bg-gray-100 hover:bg-gray-200 dark:bg-gray-400 dark:hover:bg-gray-700 transition-colors duration-200',
     },
     size: {
-      sm: 'h-3 w-3 text-xs',
-      md: 'h-4 w-4 text-sm',
-      lg: 'h-6 w-6 text-base',
+      sm: 'text-xs',
+      md: 'text-sm',
+      lg: 'text-base',
     },
     colorVariant: {
-      gray: 'text-[color:var(--color-gray-700)]',
-      yellow: 'text-[color:var(--color-yellow-500)]',
-      green: 'text-[color:var(--color-green-500)]',
-      blue: 'text-[color:var(--color-blue-500)]',
-      red: 'text-[color:var(--color-red-500)]',
-      white: 'text-[color:var(--color-white)]',
+      gray: 'text-gray-700',
+      yellow: 'text-yellow-500',
+      green: 'text-green-500',
+      blue: 'text-blue-500',
+      red: 'text-red-500',
+      white: 'text-white',
       default: '',
     },
   },
@@ -39,12 +39,14 @@ export const tagIconVariants = cva('inline-flex items-center justify-center roun
 export interface TagIconProps
   extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'color'>,
     VariantProps<typeof tagIconVariants> {
-  icon: React.ReactNode
+  icon?: React.ReactNode
+  tag?: string
   label?: string
 }
 
 export const TagIcon: React.FC<TagIconProps> = ({
   icon,
+  tag,
   label,
   variant,
   size,
@@ -52,16 +54,33 @@ export const TagIcon: React.FC<TagIconProps> = ({
   className,
   ...props
 }) => {
+  const Icon = icon ?? (tag ? getTagIcon(tag) : undefined)
+
+  const sizeClasses = {
+    sm: 'h-3 w-3',
+    md: 'h-4 w-4',
+    lg: 'h-6 w-6',
+  }
+
+  const iconSizeClass = size ? sizeClasses[size] : sizeClasses.md
+
   return (
     <span
-      className={`flex items-center gap-1 rounded text-xs ${className ?? ''}`}
+      className={tagIconVariants({ variant, size, colorVariant, className })}
       role="img"
       aria-label={label}
       title={label}
       {...props}
     >
-      <Slot>{icon}</Slot>
-      {label && <span className="align-middle">{label}</span>}
+      {Icon && typeof Icon === 'function' && <Icon className={iconSizeClass} />}
+      {Icon &&
+        typeof Icon !== 'function' &&
+        React.isValidElement(Icon) &&
+        React.cloneElement(Icon as React.ReactElement<any>, {
+          className: `${(Icon.props as any).className || ''} ${iconSizeClass}`.trim(),
+        })}
+      {/* Add whitespace-nowrap to prevent label text wrapping */}
+      {label && <span className="ml-1 align-middle whitespace-nowrap">{label}</span>}
     </span>
   )
 }

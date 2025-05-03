@@ -36,19 +36,14 @@ export default function BlogPostItem({ post }: BlogPostItemProps) {
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-2">
           {post.tags.map((tag: string, index: number) => {
-            const IconComponent = getTagIcon(tag)
+            const Icon = getTagIcon(tag)
             return (
-              <Link
-                href={`/blog?tag=${tag}`}
-                key={index}
-                className="hover:bg-accent/10 transition-colors"
-              >
+              <Link href={`/blog?tag=${tag}`} key={index} className="cursor-pointer">
                 <TagIcon
-                  icon={IconComponent ? <IconComponent /> : undefined}
-                  label={tag || undefined}
-                  variant="solid"
+                  icon={Icon ? <Icon /> : undefined}
+                  label={tag}
+                  variant="outline"
                   size="sm"
-                  className="flex items-center rounded-md bg-gray-100 px-2 py-1 text-xs dark:bg-gray-700"
                 />
               </Link>
             )
