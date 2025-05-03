@@ -1,6 +1,7 @@
 'use client'
 
 import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
 import type { FC } from 'react'
 
 // Use an interface for props if you want to extend in the future
@@ -8,13 +9,21 @@ export interface BackgroundWavyLinesProps {}
 
 export const BackgroundWavyLines: FC<BackgroundWavyLinesProps> = () => {
   const { theme, resolvedTheme } = useTheme()
-  const strokeColor =
-    (resolvedTheme || theme) === 'dark' ? 'var(--color-gray-100)' : 'var(--color-gray-900)'
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => setMounted(true), [])
+
+  // Always render the SVG, but use a default color before mount
+  const strokeColor = mounted
+    ? (resolvedTheme || theme) === 'dark'
+      ? 'var(--color-gray-100)'
+      : 'var(--color-gray-900)'
+    : 'var(--color-gray-900)' // match the server default
 
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 bottom-0 z-0 w-full h-[50vh] opacity-5"
+      className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[50vh] w-full opacity-5"
     >
       <svg
         width="100%"
