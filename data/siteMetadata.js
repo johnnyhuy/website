@@ -4,7 +4,7 @@ const siteMetadata = {
   author: 'Johnny Huynh',
   headerTitle: 'Johnny Huynh',
   description:
-    'Personal portfolio of Johnny Huynh, Principal Engineer with over 6 years of experience in platform engineering.',
+    'Personal digital garden of Johnny Huynh, sharing homelab adventures, web development projects, and tech explorations. An ad-free space for knowledge and experiences.',
   language: 'en',
   theme: 'system', // system, dark or light
   siteUrl: 'https://johnnyhuy.com',
