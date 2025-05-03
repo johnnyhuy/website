@@ -98,7 +98,6 @@ export default function Home() {
           <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 sm:block md:col-span-4">
             <CardContent className="flex h-full flex-row items-start gap-4 p-4">
               <DiscordPresence />
-              <SiDiscord className="mr-2 h-8 w-8" />
             </CardContent>
           </Card>
           <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 sm:block md:col-span-4">

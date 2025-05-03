@@ -57,7 +57,7 @@ const DiscordPresence = () => {
   }
 
   return (
-    <div className="flex h-full w-full flex-row justify-between gap-1 pb-2">
+    <div className="flex h-full w-full flex-row justify-between gap-1 pr-2 pb-2">
       {/* Header: Avatar, Name, Status, Discord logo */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -105,8 +105,8 @@ const DiscordPresence = () => {
               <img
                 src={`https://cdn.discordapp.com/app-assets/${mainActivity.application_id}/${mainActivity.assets.large_image}.png`}
                 alt={mainActivity.assets.large_text || mainActivity.name}
-                width={28}
-                height={28}
+                width={42}
+                height={42}
                 className="rounded-md"
               />
               {mainActivity.assets.small_image && (
@@ -117,16 +117,6 @@ const DiscordPresence = () => {
                   height={20}
                   className="border-border bg-background absolute -right-2 -bottom-2 rounded-full border shadow-sm"
                 />
-              )}
-            </div>
-            <div className="flex min-w-0 flex-col">
-              <span className="text-foreground max-w-[140px] truncate text-sm font-semibold">
-                {mainActivity.name}
-              </span>
-              {mainActivity.details && (
-                <span className="text-foreground/80 max-w-[140px] truncate text-xs">
-                  {mainActivity.details}
-                </span>
               )}
             </div>
           </>
