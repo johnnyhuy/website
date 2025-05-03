@@ -6,7 +6,6 @@ import './globals.css'
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
 import { ThemeProvider } from '@/components/theme-provider'
-import BackgroundWavyLines from '@/components/background-wavy-lines'
 import { ThemeIndicator } from '@/components/theme-indicator'
 import siteMetadata from '@/data/siteMetadata'
 

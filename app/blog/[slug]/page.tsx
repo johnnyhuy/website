@@ -11,7 +11,6 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import WavyLine from '@/components/wavy-line'
 import { FloatingThemeToggle } from '@/components/floating-theme-toggle'
 import { copyToClipboard, generateShareableUrl, generateSocialShareText } from '@/lib/copy-utils'
 import { allBlogs, allAuthors } from 'contentlayer/generated'
@@ -391,10 +390,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
             </div>
           )}
         </article>
-
-        <div className="pointer-events-none fixed inset-0 z-[-1]">
-          <WavyLine className="absolute inset-0 opacity-5" animated={false} />
-        </div>
 
         <FloatingThemeToggle position="bottom-right" />
       </div>
