@@ -22,8 +22,8 @@ import { TagIcon } from '@/components/ui/tag-icon'
 import { getTagIcon } from '@/components/ui/tag-icon'
 
 interface BlogPostProps {
-  post: any;
-  author?: any;
+  post: any
+  author?: any
 }
 
 export function BlogPost({ post, author }: BlogPostProps) {
@@ -60,7 +60,7 @@ export function BlogPost({ post, author }: BlogPostProps) {
     if (type === 'full') {
       textToCopy = generateShareableUrl(window.location.href, false)
     } else if (type === 'code') {
-      textToCopy = post.tldrCode ?? ''
+      textToCopy = post.summaryCode ?? ''
     }
 
     copyToClipboard(textToCopy).then(() => {
@@ -114,24 +114,27 @@ export function BlogPost({ post, author }: BlogPostProps) {
             </div>
 
             <div className="mb-6 flex flex-wrap gap-2 pb-2 md:mb-8">
-              {post.tags && post.tags.map((tag: string, index: number) => {
-                const IconComponent = getTagIcon(tag)
-                return (
-                  <Link
-                    href={`/blog?tag=${tag}`}
-                    key={index}
-                    className="transition-colors hover:bg-yellow-500/10"
-                  >
-                    <TagIcon
-                      icon={IconComponent ? <IconComponent className="mr-1 h-4 w-4" /> : undefined}
-                      label={tag}
-                      variant="outline"
-                      size="sm"
-                      className="bg-secondary/50 flex items-center rounded-md px-2 py-1 text-xs"
-                    />
-                  </Link>
-                )
-              })}
+              {post.tags &&
+                post.tags.map((tag: string, index: number) => {
+                  const IconComponent = getTagIcon(tag)
+                  return (
+                    <Link
+                      href={`/blog?tag=${tag}`}
+                      key={index}
+                      className="transition-colors hover:bg-yellow-500/10"
+                    >
+                      <TagIcon
+                        icon={
+                          IconComponent ? <IconComponent className="mr-1 h-4 w-4" /> : undefined
+                        }
+                        label={tag}
+                        variant="outline"
+                        size="sm"
+                        className="bg-secondary/50 flex items-center rounded-md px-2 py-1 text-xs"
+                      />
+                    </Link>
+                  )
+                })}
             </div>
           </header>
 
@@ -147,7 +150,7 @@ export function BlogPost({ post, author }: BlogPostProps) {
             </div>
           )}
 
-          {post.tldr && !showTldr && (
+          {post.summary && !showTldr && (
             <div className="bg-secondary/50 mb-6 rounded-lg border border-yellow-500/20 p-4 md:mb-8 md:p-6">
               <div className="mb-4 flex-col items-start sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                 <h2 className="mb-2 flex items-center text-xl font-bold sm:mb-0">
@@ -163,7 +166,9 @@ export function BlogPost({ post, author }: BlogPostProps) {
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </div>
-              <div className="prose prose-sm dark:prose-invert max-w-none text-sm">{post.tldr}</div>
+              <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
+                {post.summary}
+              </div>
             </div>
           )}
 
@@ -202,7 +207,7 @@ export function BlogPost({ post, author }: BlogPostProps) {
                         </Tooltip>
                       </TooltipProvider>
 
-                      {post.tldrCode && (
+                      {post.summaryCode && (
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -226,10 +231,10 @@ export function BlogPost({ post, author }: BlogPostProps) {
 
                   <div className="p-4 pt-0">
                     <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
-                      {post.tldr}
+                      {post.summary}
                     </div>
 
-                    {showCodeSnippet && post.tldrCode && (
+                    {showCodeSnippet && post.summaryCode && (
                       <div className="mt-4">
                         <div className="flex items-center justify-between">
                           <h3 className="text-sm font-medium">Code Snippet</h3>
@@ -256,7 +261,7 @@ export function BlogPost({ post, author }: BlogPostProps) {
                           </TooltipProvider>
                         </div>
                         <pre className="mt-2 overflow-x-auto rounded-md bg-gray-100 p-3 text-xs dark:bg-gray-800">
-                          <code>{post.tldrCode}</code>
+                          <code>{post.summaryCode}</code>
                         </pre>
                       </div>
                     )}
