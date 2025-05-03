@@ -117,13 +117,6 @@ export default function Home() {
                   <p className="mt-1 text-xs text-gray-400">
                     {experiences[0].startDate} - {experiences[0].endDate}
                   </p>
-                  <Link
-                    href="/resume"
-                    className="text-primary mt-2 inline-flex items-center text-xs"
-                  >
-                    View resume
-                    <LuArrowRight className="ml-1 h-3 w-3" />
-                  </Link>
                 </div>
               </div>
             </CardContent>

@@ -1,13 +1,10 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { Github, ExternalLink, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import TechStack from '@/components/tech-stack'
-import { getTagIcon } from '@/components/ui/tag-icon'
-import { TagIcon } from '@/components/ui/tag-icon'
+import { TagIcon, getTagIcon } from '@/components/ui/tag-icon'
 import { projects } from '@/data/siteData'
-import { SiReact } from 'react-icons/si'
 import React from 'react'
+import { LuCalendar, LuExternalLink, LuGithub } from 'react-icons/lu'
 
 export default function ProjectsPage() {
   return (
@@ -49,7 +46,7 @@ export default function ProjectsPage() {
                   ) : null}
                   {date && (
                     <div className="absolute top-2 right-2 flex items-center rounded-md border-1 border-gray-900 bg-white px-2 py-1 text-xs backdrop-blur-xs dark:bg-gray-700">
-                      <Calendar className="mr-1 h-3 w-3" />
+                      <LuCalendar className="mr-1 h-3 w-3" />
                       <span>{date}</span>
                     </div>
                   )}
@@ -60,16 +57,28 @@ export default function ProjectsPage() {
                   <p className="mb-4 grow text-sm text-gray-400">{project.description}</p>
 
                   {/* Tech Stack */}
-                  <div className="mb-4">
-                    <TechStack technologies={tags} size="md" />
-                  </div>
+                  {tags.length > 0 && (
+                    <div className="mb-4 flex flex-wrap gap-2">
+                      {tags.map((tag, tagIndex) => {
+                        return (
+                          <TagIcon
+                            key={tagIndex}
+                            icon={tag}
+                            label={tag}
+                            variant="outline"
+                            size="sm"
+                          />
+                        )
+                      })}
+                    </div>
+                  )}
 
                   {/* Links */}
                   <div className="mt-auto flex items-start justify-start gap-2">
                     {github && (
                       <Link href={github} target="_blank" rel="noopener noreferrer">
                         <Button variant="default" size="sm">
-                          <Github className="mr-1 h-4 w-4" />
+                          <LuGithub className="mr-1 h-4 w-4" />
                           GitHub
                         </Button>
                       </Link>
@@ -77,7 +86,7 @@ export default function ProjectsPage() {
                     {demo && (
                       <Link href={demo} target="_blank" rel="noopener noreferrer">
                         <Button variant="default" size="sm">
-                          <ExternalLink className="mr-1 h-4 w-4" />
+                          <LuExternalLink className="mr-1 h-4 w-4" />
                           Demo
                         </Button>
                       </Link>

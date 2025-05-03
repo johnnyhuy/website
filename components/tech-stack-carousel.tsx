@@ -2,7 +2,8 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { TagIcon, hasIcon } from '@/components/ui/tag-icon'
-import { experiences } from '@/data/siteData'
+import { experiences, techExperienceBlurbs } from '@/data/siteData'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 const techStackWithIcons = Array.from(
   new Set(experiences.flatMap((exp) => exp.technologies))
@@ -12,7 +13,6 @@ export default function TechStackCarousel({ direction = 'ltr' }: { direction?: '
   const scrollRef = useRef<HTMLDivElement>(null)
   const [isHovered, setIsHovered] = useState(false)
   const [isTouched, setIsTouched] = useState(false)
-  const [scrollWidth, setScrollWidth] = useState(0)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -23,12 +23,18 @@ export default function TechStackCarousel({ direction = 'ltr' }: { direction?: '
     const scrollContainer = scrollRef.current
     if (!scrollContainer) return
 
-    setScrollWidth(scrollContainer.scrollWidth)
+    const currentScrollWidth = scrollContainer.scrollWidth
 
     let animationId: number
-    let position = direction === 'rtl' ? scrollContainer.scrollWidth / 2 : 0
+    let position = direction === 'rtl' ? currentScrollWidth / 2 : 0
 
     const scroll = () => {
+      if (!scrollRef.current) {
+        cancelAnimationFrame(animationId)
+        return
+      }
+      const container = scrollRef.current
+
       if (isHovered || isTouched) {
         animationId = requestAnimationFrame(scroll)
         return
@@ -36,12 +42,12 @@ export default function TechStackCarousel({ direction = 'ltr' }: { direction?: '
 
       position += direction === 'rtl' ? -0.5 : 0.5
       if (direction === 'rtl' && position <= 0) {
-        position = scrollContainer.scrollWidth / 2
-      } else if (direction === 'ltr' && position >= scrollContainer.scrollWidth / 2) {
+        position = container.scrollWidth / 2
+      } else if (direction === 'ltr' && position >= container.scrollWidth / 2) {
         position = 0
       }
 
-      scrollContainer.scrollLeft = position
+      container.scrollLeft = position
       animationId = requestAnimationFrame(scroll)
     }
 
@@ -64,28 +70,38 @@ export default function TechStackCarousel({ direction = 'ltr' }: { direction?: '
   if (!mounted) return null
 
   return (
-    <div
-      className="align relative flex h-full flex-row items-center overflow-hidden"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      onTouchStart={() => setIsTouched(true)}
-    >
+    <TooltipProvider>
       <div
-        ref={scrollRef}
-        className="scrollbar-hide flex w-[400px] space-x-4 overflow-x-auto md:space-x-6"
-        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        className="align relative flex h-full flex-row items-center overflow-hidden"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onTouchStart={() => setIsTouched(true)}
       >
-        {techStackWithIcons.map((tech, index) => {
-          return (
-            <div key={index} className="flex items-center justify-center" title={tech}>
-              <TagIcon tag={tech} variant="outline" size="xl2" />
-            </div>
-          )
-        })}
-      </div>
+        <div
+          ref={scrollRef}
+          className="scrollbar-hide flex w-full space-x-4 overflow-x-auto px-10 md:space-x-6"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+          {[...techStackWithIcons, ...techStackWithIcons].map((tech, index) => {
+            const blurb = techExperienceBlurbs.get(tech) || tech
+            return (
+              <Tooltip key={`${tech}-${index}`}>
+                <TooltipTrigger asChild>
+                  <div className="flex flex-shrink-0 items-center justify-center">
+                    <TagIcon tag={tech} variant="outline" size="xl2" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{blurb}</p>
+                </TooltipContent>
+              </Tooltip>
+            )
+          })}
+        </div>
 
-      <div className="absolute top-0 left-0 z-10 h-full w-8 bg-linear-to-r from-white to-transparent dark:from-gray-800"></div>
-      <div className="absolute top-0 right-0 z-10 h-full w-8 bg-linear-to-l from-white to-transparent dark:from-gray-800"></div>
-    </div>
+        <div className="pointer-events-none absolute top-0 left-0 z-10 h-full w-10 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-gray-800 dark:via-gray-800/80"></div>
+        <div className="pointer-events-none absolute top-0 right-0 z-10 h-full w-10 bg-gradient-to-l from-white via-white/80 to-transparent dark:from-gray-800 dark:via-gray-800/80"></div>
+      </div>
+    </TooltipProvider>
   )
 }

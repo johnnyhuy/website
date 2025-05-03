@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { projects } from '@/data/siteData'
 import { LuArrowLeft, LuArrowRight, LuGithub } from 'react-icons/lu'
+import { TagIcon } from './ui/tag-icon'
 
 export default function ProjectCarousel() {
   const [activeIndex, setActiveIndex] = useState(0)
@@ -64,13 +65,8 @@ export default function ProjectCarousel() {
                 </div>
                 <p className="mb-3 min-h-[4rem] text-sm text-gray-500">{project.description}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {project.tags.map((tech: string) => (
-                    <span
-                      key={`${project.id}-${tech}`}
-                      className="rounded-md bg-gray-800/10 px-2 py-1 text-xs"
-                    >
-                      {tech}
-                    </span>
+                  {project.tags.map((tech: string, index: number) => (
+                    <TagIcon key={index} tag={tech} size="md" variant="outline" label={tech} />
                   ))}
                 </div>
               </div>

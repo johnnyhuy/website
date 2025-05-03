@@ -319,6 +319,53 @@ export const experiences: Experience[] = [
   },
 ]
 
+// Tech Experience Blurbs
+// Define a map to hold short descriptions for specific technologies.
+export const techExperienceBlurbs: Map<string, string> = new Map([
+  [
+    'Artificial Intelligence (AI)',
+    'Led enterprise AI MVP design and delivery, evaluated AI tools, and pioneered production-ready AI adoption.',
+  ],
+  [
+    'Backstage',
+    'Spearheaded Backstage developer platform implementation and created a standardized service documentation framework.',
+  ],
+  [
+    'Amazon Web Services (AWS)',
+    'Extensive experience managing AWS infrastructure, including cloud migration, containerization (ECS), and scalable database management.',
+  ],
+  [
+    'Kubernetes',
+    'Built, maintained, and shipped production Kubernetes clusters for major events; deployed infrastructure as code for clusters.',
+  ],
+  [
+    'ServiceNow',
+    'Pioneered ServiceNow change management automation to reduce deployment overhead.',
+  ],
+  [
+    'TypeScript',
+    'Utilized TypeScript in multiple projects, including AI tooling and personal portfolio website.',
+  ],
+  ['React', 'Developed frontend applications using React, including AI tooling.'],
+  [
+    'Node.js',
+    'Built backend services and tooling using Node.js for AI transcription and Markdown extensions.',
+  ],
+  ['Python', 'Used Python for data warehousing solutions for game server analytics.'],
+  [
+    'Tailwind CSS',
+    'Styled multiple JAM Stack websites, including personal portfolio, using Tailwind CSS.',
+  ],
+  [
+    'GitHub Actions',
+    'Migrated CI/CD infrastructure from Jenkins to GitHub Actions, implementing automated quality gates.',
+  ],
+  [
+    'Terraform',
+    'Provisioned infrastructure as code using Terraform for both AWS and Azure environments.',
+  ],
+])
+
 // Header Nav Links
 export const headerNavLinks = [
   { name: 'Projects', path: '/projects' },

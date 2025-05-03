@@ -1,11 +1,12 @@
 'use client'
 
 import { useState, useEffect, use } from 'react'
+import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useSearchParams, notFound } from 'next/navigation'
-import { ArrowLeft, Calendar, Clock, ChevronDown, Copy, Check, Code } from 'lucide-react'
-import { SiX, SiLinkedin, SiReact } from 'react-icons/si'
+import { ArrowLeft, Calendar, Clock, ChevronDown, Copy, Check, Code, Link2 } from 'lucide-react'
+import { SiBlogger } from 'react-icons/si'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
@@ -60,14 +61,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
 
     if (type === 'full') {
       textToCopy = generateShareableUrl(window.location.href, false)
-    } else if (type === 'tldr') {
-      textToCopy = generateShareableUrl(window.location.href, true)
-    } else if (type === 'twitter') {
-      textToCopy = generateSocialShareText('twitter', post.title, window.location.href)
-    } else if (type === 'linkedin') {
-      textToCopy = generateSocialShareText('linkedin', post.title, window.location.href)
-    } else if (type === 'facebook') {
-      textToCopy = generateSocialShareText('facebook', post.title, window.location.href)
     } else if (type === 'code') {
       textToCopy = post.tldrCode ?? ''
     }
@@ -97,7 +90,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
       <div className="container mx-auto px-4">
         <Link
           href="/blog"
-          className="hover:text-accent mb-6 inline-flex items-center text-sm transition-colors md:mb-8"
+          className="mb-6 inline-flex items-center text-sm transition-colors hover:text-yellow-500 md:mb-8"
         >
           <ArrowLeft className="mr-2 h-4 w-4" />
           Back to all posts
@@ -134,12 +127,12 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                   <Link
                     href={`/blog?tag=${tag}`}
                     key={index}
-                    className="hover:bg-accent/10 transition-colors"
+                    className="transition-colors hover:bg-yellow-500/10"
                   >
                     <TagIcon
                       icon={IconComponent ? <IconComponent className="mr-1 h-4 w-4" /> : undefined}
                       label={tag}
-                      variant="solid"
+                      variant="outline"
                       size="sm"
                       className="bg-secondary/50 flex items-center rounded-md px-2 py-1 text-xs"
                     />
@@ -150,25 +143,27 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
           </header>
 
           {!showTldr && (
-            <div className="border-foreground shadow-custom relative mb-6 h-[200px] w-full overflow-hidden rounded-lg border-2 sm:h-[250px] md:mb-8 md:h-[300px] lg:h-[400px]">
+            <div className="border-foreground shadow-custom relative mb-6 flex h-[250px] w-full items-center justify-center overflow-hidden rounded-lg border-2 bg-gray-100 md:mb-8 md:h-[300px] lg:h-[400px] dark:bg-gray-800">
               {post.image ? (
                 <Image src={post.image} alt={post.title} fill className="object-cover" priority />
+              ) : post.tags.length > 0 && getTagIcon(post.tags[0]) ? (
+                <TagIcon icon={post.tags[0]} size="lg" variant="ghost" />
               ) : (
-                <SiReact className="text-4xl text-gray-400" />
+                <SiBlogger className="h-24 w-24 text-gray-400" />
               )}
             </div>
           )}
 
           {post.tldr && !showTldr && (
-            <div className="border-accent/20 bg-secondary/50 mb-6 rounded-lg border p-4 md:mb-8 md:p-6">
+            <div className="bg-secondary/50 mb-6 rounded-lg border border-yellow-500/20 p-4 md:mb-8 md:p-6">
               <div className="mb-4 flex-col items-start sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                 <h2 className="mb-2 flex items-center text-xl font-bold sm:mb-0">
-                  <span className="text-accent mr-2">TLDR;</span> Summary
+                  <span className="mr-2 text-yellow-500">TLDR;</span> Summary
                 </h2>
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="hover:text-accent mt-3 flex w-full items-center self-end text-sm sm:mt-0 sm:w-auto sm:self-auto"
+                  className="mt-3 flex w-full items-center self-end text-sm hover:text-yellow-500 sm:mt-0 sm:w-auto sm:self-auto"
                   onClick={() => handleTldrToggle(true)}
                 >
                   <span className="mr-1">Show only TLDR</span>
@@ -181,30 +176,30 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
 
           {showTldr && (
             <div className="mb-8 md:mb-12">
-              <Card className="border-accent/20 overflow-hidden">
+              <Card className="overflow-hidden">
                 <CardContent className="p-0">
-                  <div className="border-accent/20 bg-secondary/50 flex items-center justify-between border-b p-3">
+                  <div className="flex items-center justify-between p-3">
                     <div className="flex items-center">
-                      <span className="text-accent mr-2 text-sm font-bold">TLDR;</span>
+                      <span className="mr-2 text-sm font-bold text-yellow-500">TLDR;</span>
                       <h2 className="max-w-[200px] truncate text-base font-medium sm:max-w-none">
                         {post.title}
                       </h2>
                     </div>
 
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center">
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="h-7 w-7"
+                              className="h-8 w-8"
                               onClick={() => handleCopy('tldr')}
                             >
                               {copied === 'tldr' ? (
-                                <Check className="h-3 w-3" />
+                                <Check className="h-4 w-4" />
                               ) : (
-                                <Copy className="h-3 w-3" />
+                                <Link2 className="h-4 w-4" />
                               )}
                             </Button>
                           </TooltipTrigger>
@@ -213,54 +208,10 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                           </TooltipContent>
                         </Tooltip>
                       </TooltipProvider>
-
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-7 w-7"
-                              onClick={() => handleCopy('twitter')}
-                            >
-                              {copied === 'twitter' ? (
-                                <Check className="h-3 w-3" />
-                              ) : (
-                                <SiX className="h-3 w-3" />
-                              )}
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent side="bottom">
-                            <p>Share on Twitter</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-7 w-7"
-                              onClick={() => handleCopy('linkedin')}
-                            >
-                              {copied === 'linkedin' ? (
-                                <Check className="h-3 w-3" />
-                              ) : (
-                                <SiLinkedin className="h-3 w-3" />
-                              )}
-                            </Button>
-                          </TooltipTrigger>
-                          <TooltipContent side="bottom">
-                            <p>Share on LinkedIn</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
                     </div>
                   </div>
 
-                  <div className="bg-background p-3 md:p-4">
+                  <div className="p-3 md:p-4">
                     <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
                       {post.tldr}
                     </div>
@@ -289,9 +240,9 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                               onClick={() => handleCopy('code')}
                             >
                               {copied === 'code' ? (
-                                <Check className="h-3 w-3" />
+                                <Check className="h-4 w-4" />
                               ) : (
-                                <Copy className="h-3 w-3" />
+                                <Copy className="h-4 w-4" />
                               )}
                             </Button>
                           </div>
@@ -300,12 +251,12 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                     )}
                   </div>
 
-                  <div className="border-accent/20 bg-secondary/50 flex justify-end border-t p-2">
+                  <div className="bg-secondary/50 flex justify-end p-2">
                     <Button
                       variant="secondary"
                       size="sm"
                       onClick={() => handleTldrToggle(false)}
-                      className="flex h-7 items-center text-xs"
+                      className="flex h-8 items-center text-xs"
                     >
                       Read Full Article
                     </Button>
@@ -343,7 +294,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                       <h3 className="mb-2 text-lg font-bold md:text-xl">
                         <Link
                           href={`/blog/${relatedPost.id}`}
-                          className="hover:text-accent transition-colors"
+                          className="transition-colors hover:text-yellow-500"
                         >
                           {relatedPost.title}
                         </Link>
@@ -356,7 +307,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ slug: strin
                             <Link
                               href={`/blog?tag=${tag}`}
                               key={index}
-                              className="hover:bg-accent/10 transition-colors"
+                              className="transition-colors hover:bg-yellow-500/10"
                             >
                               <TagIcon
                                 icon={

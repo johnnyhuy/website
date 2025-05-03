@@ -45,15 +45,15 @@ export default function ExperienceTimeline() {
         {grouped.map((group, index) => (
           <li
             key={group.company + group.roles[0].startDate}
-            className="relative border-l-2 border-l-gray-900 pb-8 pl-8 dark:border-l-gray-600"
+            className="relative border-l-2 border-l-gray-900 pb-8 pl-8 dark:border-l-gray-100"
           >
             {/* Timeline circle */}
             <div
               className={
                 `absolute top-[14px] left-[-10px] flex items-center justify-center rounded-full ` +
                 (index === 0
-                  ? 'border-2 border-gray-900 bg-yellow-500 dark:border-gray-600'
-                  : 'border-2 border-gray-900 bg-white dark:border-gray-600 dark:bg-gray-800')
+                  ? 'border-2 border-gray-900 bg-yellow-500 dark:border-gray-100'
+                  : 'border-2 border-gray-900 bg-white dark:border-gray-100 dark:bg-gray-800')
               }
               aria-hidden="true"
               style={{ width: 18, height: 18 }}
