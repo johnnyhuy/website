@@ -153,10 +153,7 @@ export const experiences: Experience[] = [
       'Amazon Web Services (AWS)',
       'Kubernetes',
       'ServiceNow',
-      'Cloud Infrastructure',
-      'Security Architecture',
       'Developer Experience',
-      'AI/ML Integration',
     ],
     description:
       'Lead engineering for platform and AI initiatives at Sportsbet, with a focus on enterprise-scale developer experience, cloud infrastructure, and security strategy.',
@@ -183,9 +180,6 @@ export const experiences: Experience[] = [
       'Backstage',
       'AWS',
       'GitHub Actions',
-      'Cloud Infrastructure',
-      'DevOps',
-      'CI/CD',
       'Sumo Logic',
       'CloudWatch',
       'New Relic',
@@ -208,15 +202,7 @@ export const experiences: Experience[] = [
     title: 'Senior Cloud Engineer',
     startDate: 'Dec 2020',
     endDate: 'Dec 2021',
-    technologies: [
-      'Amazon Web Services (AWS)',
-      'DevOps',
-      'Terraform',
-      'Amazon ECS',
-      'Confluence',
-      'Jira',
-      'Site Reliability Engineering',
-    ],
+    technologies: ['Amazon Web Services (AWS)', 'Terraform', 'Amazon ECS', 'Confluence', 'Jira'],
     description:
       'Senior engineer responsible for cloud migration and infrastructure at Afterpay, supporting enterprise payment solutions and scalable cloud services.',
     responsibilities: [
@@ -238,7 +224,6 @@ export const experiences: Experience[] = [
       'Terraform',
       'Confluence',
       'Jira',
-      'Site Reliability Engineering',
       'Kubernetes',
     ],
     description:
@@ -255,7 +240,6 @@ export const experiences: Experience[] = [
     startDate: 'Oct 2019',
     endDate: 'Oct 2020',
     technologies: [
-      'DevOps',
       'Microsoft Azure',
       'Azure DevOps',
       'Confluence',
@@ -279,7 +263,7 @@ export const experiences: Experience[] = [
     title: 'Associate Developer',
     startDate: 'Jan 2019',
     endDate: 'Sep 2019',
-    technologies: ['DevOps', 'Microsoft Azure', 'Terraform', 'Jira'],
+    technologies: ['Microsoft Azure', 'Terraform', 'Jira'],
     description:
       'Associate developer supporting DevOps initiatives and infrastructure projects for eNett International.',
     responsibilities: [
