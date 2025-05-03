@@ -60,12 +60,25 @@ import {
   SiCommonworkflowlanguage,
   SiHugo,
   SiGooglecloud,
+  SiDiscord,
 } from 'react-icons/si'
 import { VscAzure, VscAzureDevops } from 'react-icons/vsc'
-import { LuFilm, LuPersonStanding, LuPhoneCall } from 'react-icons/lu'
+import {
+  LuBook,
+  LuCodesandbox,
+  LuFilm,
+  LuPersonStanding,
+  LuPhoneCall,
+  LuServer,
+} from 'react-icons/lu'
 
 export const tagIconsMap: { [key: string]: IconType } = {
   azure: VscAzure,
+  discord: SiDiscord,
+  persona: LuPersonStanding,
+  'web development': LuCodesandbox,
+  'digital garden': LuBook,
+  homelab: LuServer,
   'microsoft azure': VscAzure,
   'azure-devops': VscAzureDevops,
   'azure devops': VscAzureDevops,
