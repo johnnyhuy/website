@@ -77,11 +77,7 @@ const Navbar: React.FC<NavbarProps> = () => {
   const navLinks = navbar.navLinks
 
   return (
-    <header
-      className={`fixed top-0 right-0 left-0 z-50 duration-300 ${
-        isScrolled ? 'glass-nav py-2' : 'bg-transparent py-4'
-      }`}
-    >
+    <header className="glass-nav fixed top-0 right-0 left-0 z-50 py-2">
       <EnhancedGlassEffect isActive={isScrolled} />
       <div className="container mx-auto flex items-center justify-between px-4">
         <Link href="/">
@@ -95,7 +91,7 @@ const Navbar: React.FC<NavbarProps> = () => {
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden items-center space-x-1 md:flex">
+        <nav className="hidden items-center space-x-1 text-sm md:flex">
           {navLinks.map((link) => (
             <Link
               key={link.path}
@@ -109,15 +105,14 @@ const Navbar: React.FC<NavbarProps> = () => {
               <span>{link.name}</span>
             </Link>
           ))}
-          <Link href={profile.linkedin} target="_blank" rel="noopener noreferrer">
-            <Button
-              variant="default"
-              size="sm"
-              className="ml-2 cursor-pointer bg-yellow-500 text-gray-900 hover:bg-yellow-400 hover:text-gray-900 focus:outline-none dark:bg-yellow-500 dark:text-gray-900 dark:hover:bg-yellow-900 dark:hover:text-gray-100"
-            >
-              <Mail className="mr-2 h-4 w-4" />
-              Contact
-            </Button>
+          <Link
+            href={profile.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex cursor-pointer items-center rounded-md bg-yellow-500 px-3 py-2 text-sm text-gray-900 hover:bg-yellow-400 hover:text-gray-900 focus:outline-none dark:bg-yellow-500 dark:text-gray-900 dark:hover:bg-yellow-900 dark:hover:text-gray-100"
+          >
+            <Mail className="mr-2 h-4 w-4" />
+            Contact
           </Link>
           <ThemeToggle />
         </nav>
@@ -138,39 +133,36 @@ const Navbar: React.FC<NavbarProps> = () => {
 
       {/* Mobile Navigation Menu - Improved for better mobile experience */}
       {isMenuOpen && (
-        <div className="fixed inset-0 top-16 z-40 bg-gray-100/95 backdrop-blur-xs md:hidden dark:bg-gray-800/95">
-          <nav className="container mx-auto flex flex-col space-y-4 py-6">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                href={link.path}
-                className={`px-4 py-3 text-center ${
-                  pathname === link.path || pathname.startsWith(`${link.path}/`)
-                    ? 'bg-secondary/70 font-medium text-gray-900 dark:text-gray-100'
-                    : 'text-gray-500 hover:bg-gray-100 hover:text-yellow-500 focus:ring-yellow-400 focus:outline-none dark:text-gray-300 dark:hover:bg-gray-200 dark:hover:text-yellow-600'
-                } `}
-                onClick={() => toggleMenu(false)}
-              >
-                {link.name}
-              </Link>
-            ))}
+        <nav className="inset-0 z-40 container flex flex-col gap-2 px-4">
+          {navLinks.map((link) => (
             <Link
-              href={profile.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-4"
+              key={link.path}
+              href={link.path}
+              className={`rounded-md px-4 py-3 text-center text-sm ${
+                pathname === link.path || pathname.startsWith(`${link.path}/`)
+                  ? 'bg-gray-100 font-medium text-gray-900 dark:text-gray-100'
+                  : 'text-gray-500 hover:bg-gray-100 hover:text-yellow-500 focus:ring-yellow-400 focus:outline-none dark:text-gray-300 dark:hover:bg-gray-200 dark:hover:text-yellow-600'
+              } `}
               onClick={() => toggleMenu(false)}
             >
-              <Button
-                variant="default"
-                className="w-full bg-yellow-500 py-3 text-gray-900 hover:bg-yellow-400 hover:text-gray-900 focus:ring-yellow-400 focus:outline-none dark:bg-yellow-500 dark:text-gray-900 dark:hover:bg-gray-100 dark:hover:text-gray-900"
-              >
-                <Mail className="mr-2 h-5 w-5" />
-                Contact
-              </Button>
+              {link.name}
             </Link>
-          </nav>
-        </div>
+          ))}
+          <Link
+            href={profile.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => toggleMenu(false)}
+          >
+            <Button
+              variant="default"
+              className="w-full bg-yellow-500 py-3 text-gray-900 hover:bg-yellow-400 hover:text-gray-900 focus:ring-yellow-400 focus:outline-none dark:bg-yellow-500 dark:text-gray-900 dark:hover:bg-gray-100 dark:hover:text-gray-900"
+            >
+              <Mail className="mr-2 h-5 w-5" />
+              Contact
+            </Button>
+          </Link>
+        </nav>
       )}
     </header>
   )
