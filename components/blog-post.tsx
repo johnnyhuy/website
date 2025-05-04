@@ -73,10 +73,21 @@ export function BlogPost({ post, author }: BlogPostProps) {
     setShowCodeSnippet(!showCodeSnippet)
   }
 
-  const mainContent = coreContent(post)
   const postDate = new Date(post.date)
   const formattedShortDate = format(postDate, 'MMM d')
-  const formattedRelativeDate = formatDistanceToNow(postDate, { addSuffix: true })
+  const [formattedRelativeDate, setFormattedRelativeDate] = useState('')
+
+  useEffect(() => {
+    // Only format the relative date on the client side to avoid hydration mismatch
+    setFormattedRelativeDate(formatDistanceToNow(postDate, { addSuffix: true }))
+
+    // Optional: Update the relative time periodically
+    const timer = setInterval(() => {
+      setFormattedRelativeDate(formatDistanceToNow(postDate, { addSuffix: true }))
+    }, 60000) // Update every minute
+
+    return () => clearInterval(timer)
+  }, [postDate])
 
   return (
     <div className="pt-20 pb-16 md:pt-24">
@@ -97,7 +108,10 @@ export function BlogPost({ post, author }: BlogPostProps) {
               <div className="mb-2 flex items-center space-x-4 sm:mb-0">
                 <div className="flex items-center">
                   <Calendar className="mr-1 h-3 w-3" />
-                  <span>{`${formattedShortDate} (${formattedRelativeDate})`}</span>
+                  <span>
+                    {formattedShortDate}
+                    {formattedRelativeDate ? ` (${formattedRelativeDate})` : ''}
+                  </span>
                 </div>
                 <div className="flex items-center">
                   <Clock className="mr-1 h-3 w-3" />
@@ -107,7 +121,7 @@ export function BlogPost({ post, author }: BlogPostProps) {
 
               <div className="flex w-full items-center space-x-2 sm:w-auto">
                 <Label htmlFor="tldr-mode" className="cursor-pointer text-sm">
-                  TLDR Mode
+                  TL;DR
                 </Label>
                 <Switch id="tldr-mode" checked={showTldr} onCheckedChange={handleTldrToggle} />
               </div>
@@ -138,50 +152,19 @@ export function BlogPost({ post, author }: BlogPostProps) {
             </div>
           </header>
 
-          {!showTldr && (
+          {!showTldr && post.image && (
             <div className="border-foreground shadow-custom relative mb-6 flex h-[250px] w-full items-center justify-center overflow-hidden rounded-lg border-2 bg-gray-100 md:mb-8 md:h-[300px] lg:h-[400px] dark:bg-gray-800">
-              {post.image ? (
-                <Image src={post.image} alt={post.title} fill className="object-cover" priority />
-              ) : post.tags && post.tags.length > 0 && getTagIcon(post.tags[0]) ? (
-                <TagIcon icon={post.tags[0]} size="lg" variant="ghost" />
-              ) : (
-                <SiBlogger className="h-24 w-24 text-gray-400" />
-              )}
-            </div>
-          )}
-
-          {post.summary && !showTldr && (
-            <div className="bg-secondary/50 mb-6 rounded-lg border border-yellow-500/20 p-4 md:mb-8 md:p-6">
-              <div className="mb-4 flex-col items-start sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
-                <h2 className="mb-2 flex items-center text-xl font-bold sm:mb-0">
-                  <span className="mr-2 text-yellow-500">TLDR;</span> Summary
-                </h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="mt-3 flex w-full items-center self-end text-sm hover:text-yellow-500 sm:mt-0 sm:w-auto sm:self-auto"
-                  onClick={() => handleTldrToggle(true)}
-                >
-                  <span className="mr-1">Show only TLDR</span>
-                  <ChevronDown className="h-4 w-4" />
-                </Button>
-              </div>
-              <div className="prose prose-sm dark:prose-invert max-w-none text-sm">
-                {post.summary}
-              </div>
+              <Image src={post.image} alt={post.title} fill className="object-cover" priority />
             </div>
           )}
 
           {showTldr && (
             <div className="mb-8 md:mb-12">
               <Card className="overflow-hidden">
-                <CardContent className="p-0">
-                  <div className="flex items-center justify-between p-3">
+                <CardContent>
+                  <div className="flex items-center justify-between py-4">
                     <div className="flex items-center">
-                      <span className="mr-2 text-sm font-bold text-yellow-500">TLDR;</span>
-                      <h2 className="max-w-[200px] truncate text-base font-medium sm:max-w-none">
-                        {post.title}
-                      </h2>
+                      <span className="mr-2 text-xl font-bold text-yellow-500">TL;DR</span>
                     </div>
 
                     <div className="flex items-center">
@@ -195,9 +178,9 @@ export function BlogPost({ post, author }: BlogPostProps) {
                               onClick={() => handleCopy('full')}
                             >
                               {copied === 'full' ? (
-                                <Check className="h-4 w-4" />
+                                <Check className="h-6 w-6 text-green-500" />
                               ) : (
-                                <Link2 className="h-4 w-4" />
+                                <Link2 className="h-6 w-6" />
                               )}
                             </Button>
                           </TooltipTrigger>
