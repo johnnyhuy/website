@@ -4,7 +4,9 @@ import { slug } from 'github-slugger'
 import { escape } from 'pliny/utils/htmlEscaper.js'
 import siteMetadata from '../data/siteMetadata.js'
 import fs from 'fs'
-const tagData = JSON.parse(fs.readFileSync(new URL('../app/tag-data.json', import.meta.url), 'utf8'))
+const tagData = JSON.parse(
+  fs.readFileSync(new URL('../app/tag-data.json', import.meta.url), 'utf8')
+)
 import { allBlogs } from '../.contentlayer/generated/index.mjs'
 import { sortPosts } from 'pliny/utils/contentlayer.js'
 
@@ -61,4 +63,5 @@ const rss = () => {
   generateRSS(siteMetadata, allBlogs)
   console.log('RSS feed generated...')
 }
-export default rss
+
+rss()
