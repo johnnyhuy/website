@@ -140,7 +140,7 @@ export default function Home() {
                 </h3>
               </div>
 
-              <div className="mt-4 divide-y divide-gray-100 rounded-lg dark:divide-gray-800">
+              <div className="divide-y divide-gray-100 rounded-lg dark:divide-gray-800">
                 {featuredPostsData.map((post) => (
                   <div key={post.slug} className="px-4 py-4">
                     <BlogPostItem post={post} />
