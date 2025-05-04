@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'remark-github-blockquote-alert/alert.css';
 
 @layer base {
   *,
@@ -41,13 +42,13 @@
     --color-gray-700: oklch(0.3 0 0);
     --color-gray-800: oklch(0.2 0 0);
     --color-gray-900: oklch(0.1 0 0);
-    --color-yellow-50:  oklch(0.22 0.04 91.08);
+    --color-yellow-50: oklch(0.22 0.04 91.08);
     --color-yellow-100: oklch(0.32 0.07 91.08);
-    --color-yellow-200: oklch(0.44 0.10 91.08);
+    --color-yellow-200: oklch(0.44 0.1 91.08);
     --color-yellow-300: oklch(0.58 0.13 91.08);
     --color-yellow-400: oklch(0.72 0.16 91.08);
     --color-yellow-500: oklch(0.87 0.18 91.08);
-    --color-yellow-600: oklch(0.80 0.17 91.08);
+    --color-yellow-600: oklch(0.8 0.17 91.08);
     --color-yellow-700: oklch(0.67 0.15 91.08);
     --color-yellow-800: oklch(0.54 0.12 91.08);
     --color-yellow-900: oklch(0.42 0.09 91.08);
@@ -143,7 +144,7 @@
   --color-gray-700: oklch(0.3 0 0);
   --color-gray-800: oklch(0.2 0 0);
   --color-gray-900: oklch(0.1 0 0);
-  --color-yellow-50:  oklch(0.97 0.04 91.08);
+  --color-yellow-50: oklch(0.97 0.04 91.08);
   --color-yellow-100: oklch(0.93 0.08 91.08);
   --color-yellow-200: oklch(0.91 0.12 91.08);
   --color-yellow-300: oklch(0.89 0.15 91.08);
@@ -661,7 +662,7 @@ input:-webkit-autofill:focus {
 }
 
 .code-line {
-  @apply text-gray-100 -mx-4 block border-l-4 border-transparent pr-4 pl-4;
+  @apply -mx-4 block border-l-4 border-transparent pr-4 pl-4 text-gray-100;
 }
 
 .code-line.inserted {
@@ -673,7 +674,7 @@ input:-webkit-autofill:focus {
 }
 
 .highlight-line {
-  @apply border-yellow-500 -mx-4 border-l-4 bg-gray-700/50;
+  @apply -mx-4 border-l-4 border-yellow-500 bg-gray-700/50;
 }
 
 .line-number::before {
@@ -828,7 +829,6 @@ html.dark .prose blockquote {
   border-color: var(--color-gray-700);
   color: var(--color-gray-400);
 }
-
 
 html.dark .prose pre {
   background-color: var(--color-gray-800);
