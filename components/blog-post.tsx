@@ -144,7 +144,7 @@ export function BlogPost({ post, author }: BlogPostProps) {
                         label={tag}
                         variant="outline"
                         size="sm"
-                        className="bg-secondary/50 flex items-center rounded-md px-2 py-1 text-xs"
+                        className="flex items-center rounded-md px-2 py-1 text-xs"
                       />
                     </Link>
                   )

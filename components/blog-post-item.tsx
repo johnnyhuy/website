@@ -32,7 +32,7 @@ export default function BlogPostItem({ post }: BlogPostItemProps) {
           </>
         )}
       </div>
-      <p className="mb-4 text-sm text-gray-400">{post.summary ?? ''}</p>
+      <p className="mb-4 max-w-prose text-sm break-words text-gray-400">{post.summary ?? ''}</p>
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-2">
           {post.tags.map((tag: string, index: number) => {
