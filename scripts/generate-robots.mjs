@@ -6,6 +6,9 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.join(__dirname, '..');
 
+// Determine output directory based on EXPORT environment variable
+const outputFolder = process.env.EXPORT ? 'out' : 'public';
+
 /**
  * Generate robots.txt file
  * @param {Object} options - Configuration options
@@ -54,8 +57,8 @@ async function generateRobots({
     });
   }
   
-  // Write the file
-  const outputPath = path.join(projectRoot, 'public', 'robots.txt');
+  // Write the file to the appropriate directory based on EXPORT environment variable
+  const outputPath = path.join(projectRoot, outputFolder, 'robots.txt');
   writeFileSync(outputPath, content);
   console.log(`Robots.txt generated successfully at ${outputPath}`);
 }
