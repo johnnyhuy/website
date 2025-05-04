@@ -77,9 +77,11 @@ export default function Home() {
           {/* GitHub Activity Graph */}
           <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 sm:block md:col-span-6">
             <CardContent className="p-4">
-              <h3 className="mb-3 flex items-center text-lg font-medium md:mb-4">
-                <SiGithub className="mr-2 h-8 w-8" />
-              </h3>
+              <Link href={profile.github} target="_blank" rel="noopener noreferrer">
+                <h3 className="mb-3 flex items-center text-lg font-medium md:mb-4">
+                  <SiGithub className="mr-2 h-8 w-8" />
+                </h3>
+              </Link>
               <div className="space-y-4">
                 <GithubCalendar />
               </div>
@@ -87,10 +89,12 @@ export default function Home() {
           </Card>
           <Card className="col-span-1 overflow-hidden sm:col-span-1 md:col-span-6">
             <CardContent className="h-full p-4">
-              <h3 className="mb-3 flex items-center text-lg font-medium">
-                <LuLaptop className="mr-2 h-8 w-8" />
-                Projects
-              </h3>
+              <Link href="/projects">
+                <h3 className="mb-3 flex items-center text-lg font-medium">
+                  <LuLaptop className="mr-2 h-8 w-8" />
+                  Projects
+                </h3>
+              </Link>
               <ProjectCarousel />
             </CardContent>
           </Card>
@@ -134,7 +138,7 @@ export default function Home() {
           {/* Blog Preview Card */}
           <Card className="col-span-1 overflow-hidden sm:col-span-2 md:col-span-12">
             <CardContent className="p-4">
-              <div className="mb-4 flex flex-wrap items-center justify-between">
+              <div className="flex flex-wrap items-center justify-between">
                 <h3 className="mb-2 flex items-center text-lg font-medium sm:mb-0">
                   <LuBookOpen className="mr-2 h-8 w-8" />
                 </h3>
