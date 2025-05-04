@@ -5,8 +5,8 @@ import mermaid from 'mermaid'
 import { useTheme } from 'next-themes'
 
 interface MermaidDiagramProps {
-  chart: string;
-  className?: string;
+  chart: string
+  className?: string
 }
 
 export function MermaidDiagram({ chart, className = '' }: MermaidDiagramProps) {
@@ -19,7 +19,7 @@ export function MermaidDiagram({ chart, className = '' }: MermaidDiagramProps) {
   useEffect(() => {
     // Configure Mermaid with theme support
     const theme = resolvedTheme === 'dark' ? 'dark' : 'default'
-    
+
     try {
       mermaid.initialize({
         startOnLoad: false,
@@ -39,16 +39,18 @@ export function MermaidDiagram({ chart, className = '' }: MermaidDiagramProps) {
 
       try {
         setError(null)
-        
+
         // Clean up the chart content
         const cleanChart = chart.trim()
-        
+
         // Render the Mermaid diagram
         const { svg } = await mermaid.render(uniqueId.current, cleanChart)
         setSvgContent(svg)
       } catch (err) {
         console.error('Mermaid rendering error:', err)
-        setError(`Failed to render diagram: ${err instanceof Error ? err.message : 'Unknown error'}`)
+        setError(
+          `Failed to render diagram: ${err instanceof Error ? err.message : 'Unknown error'}`
+        )
       }
     }
 
@@ -57,7 +59,7 @@ export function MermaidDiagram({ chart, className = '' }: MermaidDiagramProps) {
 
   if (error) {
     return (
-      <div className="rounded-md border border-red-500 bg-red-100 p-4 text-red-800 dark:bg-red-900/20 dark:text-red-300">
+      <div className="rounded-md border border-red-500 bg-red-100 p-4 text-red-800 dark:bg-red-900/20 dark:text-red-100">
         <p className="font-medium">Error rendering diagram</p>
         <pre className="mt-2 overflow-x-auto text-sm">{error}</pre>
         <pre className="mt-2 overflow-x-auto text-sm">{chart}</pre>
