@@ -40,7 +40,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Build website
-        run: pnpm build
+        run: pnpm build && pnpm postbuild
         env:
           EXPORT: 1
           UNOPTIMIZED: 1
