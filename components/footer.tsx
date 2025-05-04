@@ -68,7 +68,7 @@ const Footer = () => {
               Subscribe to my RSS feed to receive updates on new projects, blog posts, and tech
               insights.
             </p>
-            <Link href="/rss.xml">
+            <Link href="/feed.xml">
               <div className="inline-flex items-center gap-2 rounded-md bg-yellow-500 px-4 py-2 text-gray-900 hover:bg-yellow-400">
                 <LuRss className="h-4 w-4" />
                 <span>RSS Feed</span>
