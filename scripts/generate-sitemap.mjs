@@ -8,6 +8,9 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.join(__dirname, '..');
 
+// Determine output directory based on EXPORT environment variable
+const outputFolder = process.env.EXPORT ? 'out' : 'public';
+
 async function generateSitemap() {
   // Import site metadata to get the site URL
   const siteMetadataPath = path.join(projectRoot, 'data', 'siteMetadata.js');
@@ -77,8 +80,8 @@ async function generateSitemap() {
     parser: 'html',
   });
 
-  // Write the sitemap to the public directory
-  const sitemapPath = path.join(projectRoot, 'public/sitemap.xml');
+  // Write the sitemap to the appropriate directory based on EXPORT environment variable
+  const sitemapPath = path.join(projectRoot, outputFolder, 'sitemap.xml');
   writeFileSync(sitemapPath, formatted);
 
   console.log(`Sitemap generated successfully at ${sitemapPath}`);
