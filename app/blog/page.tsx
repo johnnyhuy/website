@@ -1,24 +1,18 @@
 'use client'
 
 import type React from 'react'
-import { use } from 'react'
 
 import { useState } from 'react'
-import { Tag, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import BlogPostItem from '@/components/blog-post-item'
-import { useRouter } from 'next/navigation'
 import { allBlogs } from 'contentlayer/generated'
 import type { Blog } from 'contentlayer/generated'
 import { CoreContent, allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 
 const posts: CoreContent<Blog>[] = allCoreContent(sortPosts(allBlogs))
-const allTags: string[] = Array.from(
-  new Set(posts.flatMap((post: CoreContent<Blog>) => post.tags))
-).sort()
 
 export default function BlogPage() {
-  const router = useRouter()
   const [selectedTags, setSelectedTags] = useState<string[]>([])
 
   // Filter posts based on selected tags only
