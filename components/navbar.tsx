@@ -12,9 +12,12 @@ import { navbar } from '@/data/siteData'
 import { profile } from '@/data/siteData'
 import Johnny from '@/data/images/johnny.svg'
 
-const Navbar = () => {
+interface NavbarProps {}
+
+const Navbar: React.FC<NavbarProps> = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const pathname = usePathname()
 
   useEffect(() => {
@@ -25,6 +28,51 @@ const Navbar = () => {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  // Check if mobile and handle resize
+  useEffect(() => {
+    const checkIfMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+
+    // Initial check
+    checkIfMobile()
+
+    // Handle resize events
+    const handleResize = () => {
+      checkIfMobile()
+
+      // Close menu if screen becomes desktop size
+      if (window.innerWidth >= 768 && isMenuOpen) {
+        setIsMenuOpen(false)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [isMenuOpen])
+
+  // Handle body overflow
+  useEffect(() => {
+    // Only apply overflow hidden on mobile when menu is open
+    if (isMenuOpen && isMobile) {
+      document.body.classList.add('overflow-hidden')
+    } else {
+      document.body.classList.remove('overflow-hidden')
+    }
+
+    // Cleanup function to ensure we remove the class when component unmounts
+    return () => {
+      document.body.classList.remove('overflow-hidden')
+    }
+  }, [isMenuOpen, isMobile])
+
+  const toggleMenu = (open: boolean): void => {
+    setIsMenuOpen(open)
+  }
 
   const navLinks = navbar.navLinks
 
@@ -80,7 +128,7 @@ const Navbar = () => {
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={() => toggleMenu(!isMenuOpen)}
             aria-label="Toggle menu"
           >
             {isMenuOpen ? <X /> : <Menu />}
@@ -90,43 +138,32 @@ const Navbar = () => {
 
       {/* Mobile Navigation Menu - Improved for better mobile experience */}
       {isMenuOpen && (
-        <div className="bg-background/95 animate-in fixed inset-0 top-16 z-40 backdrop-blur-xs md:hidden">
-          <nav className="container mx-auto flex flex-col space-y-4 px-4 py-6">
-            <Link
-              href="/"
-              className={`flex items-center rounded-lg px-4 py-3 duration-200 ${
-                pathname === '/'
-                  ? 'bg-secondary/70 font-medium text-gray-900 dark:text-gray-900'
-                  : 'text-gray-500 hover:bg-gray-100 hover:text-yellow-500 focus:ring-yellow-400 focus:outline-none dark:text-gray-300 dark:hover:bg-gray-200 dark:hover:text-yellow-600'
-              } `}
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <span className="">Home</span>
-            </Link>
+        <div className="fixed inset-0 top-16 z-40 bg-gray-100/95 backdrop-blur-xs md:hidden dark:bg-gray-800/95">
+          <nav className="container mx-auto flex flex-col space-y-4 py-6">
             {navLinks.map((link) => (
               <Link
                 key={link.path}
                 href={link.path}
-                className={`flex items-center rounded-lg px-4 py-3 duration-200 ${
+                className={`px-4 py-3 text-center ${
                   pathname === link.path || pathname.startsWith(`${link.path}/`)
-                    ? 'bg-secondary/70 font-medium text-gray-900 dark:text-gray-900'
+                    ? 'bg-secondary/70 font-medium text-gray-900 dark:text-gray-100'
                     : 'text-gray-500 hover:bg-gray-100 hover:text-yellow-500 focus:ring-yellow-400 focus:outline-none dark:text-gray-300 dark:hover:bg-gray-200 dark:hover:text-yellow-600'
                 } `}
-                onClick={() => setIsMenuOpen(false)}
+                onClick={() => toggleMenu(false)}
               >
-                <span className="">{link.name}</span>
+                {link.name}
               </Link>
             ))}
             <Link
               href={profile.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-4"
-              onClick={() => setIsMenuOpen(false)}
+              className="px-4"
+              onClick={() => toggleMenu(false)}
             >
               <Button
                 variant="default"
-                className="w-full bg-yellow-500 py-3 text-gray-900 hover:bg-yellow-400 hover:text-gray-900 focus:ring-yellow-400 focus:outline-none dark:bg-yellow-400 dark:text-gray-900 dark:hover:bg-yellow-500"
+                className="w-full bg-yellow-500 py-3 text-gray-900 hover:bg-yellow-400 hover:text-gray-900 focus:ring-yellow-400 focus:outline-none dark:bg-yellow-500 dark:text-gray-900 dark:hover:bg-gray-100 dark:hover:text-gray-900"
               >
                 <Mail className="mr-2 h-5 w-5" />
                 Contact

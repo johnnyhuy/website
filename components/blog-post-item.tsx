@@ -17,10 +17,10 @@ export default function BlogPostItem({ post }: BlogPostItemProps) {
 
   return (
     <div className="py-4 first:pt-0 last:pb-0">
-      <h3 className="hover:text-primary mb-1 text-lg font-medium">
+      <h3 className="hover:text-primary mb-2 text-xl font-medium">
         <Link href={`/blog/${post.slug}`}>{post.title}</Link>
       </h3>
-      <div className="mb-2 flex items-center text-sm text-gray-400">
+      <div className="mb-4 flex items-center text-sm text-gray-400">
         <CalendarIcon className="mr-1 h-3 w-3" />
         {/* Display both short and relative dates */}
         <span>{`${formattedShortDate} (${formattedRelativeDate})`}</span>
@@ -32,7 +32,7 @@ export default function BlogPostItem({ post }: BlogPostItemProps) {
           </>
         )}
       </div>
-      <p className="mb-3 text-sm text-gray-400">{post.summary ?? ''}</p>
+      <p className="mb-4 text-sm text-gray-400">{post.summary ?? ''}</p>
       <div className="flex items-center justify-between">
         <div className="flex flex-wrap gap-2">
           {post.tags.map((tag: string, index: number) => {
