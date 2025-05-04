@@ -11,9 +11,9 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "contentlayer2 build",
-    "generate-sitemap": "node scripts/generate-sitemap.mjs",
-    "generate-rss": "node scripts/rss.mjs",
-    "generate-robots": "node scripts/generate-robots.mjs"
+    "generate-sitemap": "node --no-warnings scripts/generate-sitemap.mjs",
+    "generate-rss": "node --no-warnings scripts/rss.mjs",
+    "generate-robots": "node --no-warnings scripts/generate-robots.mjs"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",
