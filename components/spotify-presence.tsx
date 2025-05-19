@@ -32,7 +32,7 @@ const SpotifyPresence = () => {
 
   if (isLoading) {
     return (
-      <div className="relative flex h-full w-full flex-col justify-between rounded-3xl p-6">
+      <div className="relative flex h-full w-full flex-col justify-between p-6">
         <Skeleton className="mb-2 h-[55%] w-[55%] rounded-xl" />
         <div className="flex min-w-0 flex-1 flex-col justify-end overflow-hidden">
           <div className="flex flex-col gap-2">
