@@ -1,15 +1,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { LuArrowRight, LuLaptop, LuBookOpen } from 'react-icons/lu'
+import { LuLaptop, LuBookOpen } from 'react-icons/lu'
 import { Card, CardContent } from '@/components/ui/card'
-import GithubCalendar from '@/components/github-calendar'
-import { DiscordPresence } from '@/components/discord-presence'
-import WakatimeGraph from '@/components/wakatime-graph'
-import BlogPostItem from '@/components/blog-post-item'
-import ExperienceTimeline from '@/components/experience-timeline'
-import TechStackCarousel from '@/components/tech-stack-carousel'
-import ProjectCarousel from '@/components/project-carousel'
-import { SiDiscord, SiGithub, SiWakatime } from 'react-icons/si'
+import { SiGithub, SiWakatime } from 'react-icons/si'
 import { allBlogs } from 'contentlayer/generated'
 import type { Blog } from 'contentlayer/generated'
 import { CoreContent, allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
@@ -18,6 +11,16 @@ import { getTagIcon } from '@/components/ui/tag-icon'
 import CloudPattern from '../components/cloud-pattern'
 import Me from '@/data/images/me.jpg'
 import { CompanyLogo } from '@/components/company-logo'
+import dynamic from 'next/dynamic'
+
+// Client components
+const BlogPostItem = dynamic(() => import('@/components/blog-post-item'))
+const ExperienceTimeline = dynamic(() => import('@/components/experience-timeline'))
+const TechStackCarousel = dynamic(() => import('@/components/tech-stack-carousel'))
+const ProjectCarousel = dynamic(() => import('@/components/project-carousel'))
+const GithubCalendar = dynamic(() => import('@/components/github-calendar'))
+const DiscordPresence = dynamic(() => import('@/components/discord-presence').then(mod => mod.DiscordPresence))
+const WakaTimeGraph = dynamic(() => import('@/components/wakatime-graph'))
 
 const sortedPosts = sortPosts(allBlogs)
 const corePosts = allCoreContent(sortedPosts)
@@ -53,7 +56,6 @@ export default function Home() {
                     const Icon = getTagIcon(link.icon)
                     return (
                       <a
-                        href={link.href}
                         key={link.label}
                         target="_blank"
                         rel="noopener noreferrer"
@@ -130,7 +132,7 @@ export default function Home() {
           </Card>
           <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 sm:block md:col-span-6">
             <CardContent className="flex flex-row gap-4 p-4">
-              <WakatimeGraph />
+              <WakaTimeGraph />
               <SiWakatime className="h-8 w-8" />
             </CardContent>
           </Card>

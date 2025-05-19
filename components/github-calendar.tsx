@@ -1,11 +1,20 @@
 'use client'
 
 import { Skeleton } from '@/components/ui/skeleton'
-import { type FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
-import Calendar, { type Props as ActivityCalendarProps } from 'react-activity-calendar'
-import { SiDiscord } from 'react-icons/si'
+import { type FunctionComponent, useCallback, useEffect, useRef, useState, Suspense } from 'react'
+import dynamic from 'next/dynamic'
+import { SiGithub } from 'react-icons/si'
 import { useTheme } from 'next-themes'
 import { profile } from '@/data/siteData'
+
+// Lazy load the heavy calendar component
+const Calendar = dynamic(() => import('react-activity-calendar').then((mod) => mod.default), {
+  ssr: false,
+  loading: () => <Skeleton className="h-[70%] w-[85%]" />,
+})
+
+// Import the type separately to avoid loading the component during SSR
+type ActivityCalendarProps = import('react-activity-calendar').Props
 
 // Adopted from https://github.com/grubersjoe/react-github-calendar & https://github.com/jktrn/enscribe.dev
 // All credit to the original authors
@@ -77,26 +86,21 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center gap-4">
-        <SiDiscord className="h-auto w-24 text-[#5865F2] sm:w-48" />
-        <p className="w-48 text-center text-sm text-gray-400 sm:w-64">
-          This component is down. Please DM me on{' '}
-          <a
-            href={profile.discord.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary underline"
-          >
-            Discord
-          </a>
-          !
+      <div className="flex flex-col items-center justify-center gap-4 p-4">
+        <SiGithub className="h-12 w-12 text-gray-400 dark:text-gray-600" />
+        <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+          Unable to load GitHub activity. Try refreshing the page.
         </p>
       </div>
     )
   }
 
   if (loading || !data) {
-    return <Skeleton className="h-[70%] w-[85%] rounded-3xl" />
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Skeleton className="h-[70%] w-[85%]" />
+      </div>
+    )
   }
 
   // Returns only the contributions from the last N months, up to but not including today
