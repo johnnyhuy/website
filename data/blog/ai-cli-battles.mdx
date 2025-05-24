@@ -9,9 +9,9 @@ tags:
 draft: false
 ---
 
-The familiar hum of terminal sessions has taken on a new character lately. Where once we typed precise commands with surgical accuracy, developers are now conversing with their command line in plain English. What sounds revolutionary is actually the maturation of an idea that's been brewing since the early days of GPT-3.5¹.
+The familiar hum of terminal sessions has taken on a new character lately. Where once we typed precise commands with surgical accuracy, developers are now conversing with their command line in plain English. What sounds revolutionary is actually the maturation of an idea that's been brewing since the early days of GPT-3.5[^1].
 
-Cast your mind back to the early days of 2023—light years ago in AI time. While everyone was marvelling at ChatGPT's conversational abilities, a handful of developers were asking a more ambitious question: what if we could delegate entire tasks to AI agents through the command line? [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT)² emerged as the proof of concept, a scrappy tool that demonstrated the tantalising possibility of autonomous AI agents executing complex development workflows.
+Cast your mind back to the early days of 2023—light years ago in AI time. While everyone was marvelling at ChatGPT's conversational abilities, a handful of developers were asking a more ambitious question: what if we could delegate entire tasks to AI agents through the command line? [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT)[^2] emerged as the proof of concept, a scrappy tool that demonstrated the tantalising possibility of autonomous AI agents executing complex development workflows.
 
 The concept was brilliant in its simplicity: give an AI agent a goal, let it break down the task, execute commands, and iterate until completion. But like many pioneering technologies, AutoGPT was more proof-of-concept than production-ready tool. The foundation models weren't quite there yet, the tooling was rough around the edges, and the developer experience left much to be desired.
 
@@ -21,7 +21,7 @@ Now, as the industry reaches critical mass, major vendors are presenting their r
 
 ### Claude Code
 
-[Claude Code](https://www.anthropic.com/claude-code)³ represents Anthropic's vision of an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows through natural language commands. What sets it apart isn't just its technical capabilities, but its philosophical approach to developer autonomy.
+[Claude Code](https://www.anthropic.com/claude-code)[^3] represents Anthropic's vision of an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows through natural language commands. What sets it apart isn't just its technical capabilities, but its philosophical approach to developer autonomy.
 
 The tool excels in several key areas:
 
@@ -31,13 +31,13 @@ The tool excels in several key areas:
 
 - **Model Flexibility**: Support for Anthropic's full model suite, plus integration with Amazon Bedrock and Google Cloud Vertex AI, makes it enterprise-ready without vendor lock-in concerns.
 
-- **Thinking Modes**: Claude Code includes specific phrases that trigger extended thinking modes—"think" provides 4,000 tokens of thinking budget, while "ultrathink" allocates up to 31,999 tokens for complex reasoning.
+- **Thinking Modes**: Claude Code includes specific phrases that trigger extended thinking modes—"think" provides 4,000 tokens of thinking budget, while "ultrathink" allocates up to 31,999 tokens for complex reasoning[^4].
 
-The downside? Cost and accessibility. API costs for a medium-sized PR typically range from $10-15⁵, making it a significant investment for frequent use.
+The downside? Cost and accessibility. API costs for a medium-sized PR typically range from $10-15[^5], making it a significant investment for frequent use.
 
 ### OpenAI's Codex CLI
 
-[OpenAI's Codex CLI](https://github.com/openai/codex)⁶ takes a different approach—it's designed to give users a minimal, transparent interface to link models directly with code and tasks. This represents a strategic shift for OpenAI, moving from closed platforms to community-driven development.
+[OpenAI's Codex CLI](https://github.com/openai/codex)[^6] takes a different approach—it's designed to give users a minimal, transparent interface to link models directly with code and tasks. This represents a strategic shift for OpenAI, moving from closed platforms to community-driven development[^7].
 
 Key differentiators include:
 
@@ -47,7 +47,7 @@ Key differentiators include:
 
 - **Sandbox Execution**: Codex runs model-generated commands in a sandbox, allowing developers to review and approve changes before execution.
 
-Early comparisons suggest performance differences. One developer noted that "Claude Code did great and wrote pretty decent docs, while Codex didn't do well—it hallucinated a bunch of stuff that wasn't in the code and completely misrepresented the architecture"⁸.
+Early comparisons suggest performance differences. One developer noted that "Claude Code did great and wrote pretty decent docs, while Codex didn't do well—it hallucinated a bunch of stuff that wasn't in the code and completely misrepresented the architecture"[^8].
 
 ### Amazon Q Developer CLI
 
@@ -82,7 +82,7 @@ The choice between CLI and IDE integration often comes down to developer prefere
 
 ## MCP
 
-The [Model Control Protocol (MCP)](https://modelcontextprotocol.io/)⁹ represents a crucial development in this space. All these CLI tools can use MCP to a degree, opening opportunities to search with engines like [Perplexity](https://www.perplexity.ai/), query databases like [PostgreSQL](https://www.postgresql.org/), or interact with task management platforms like [Jira](https://www.atlassian.com/software/jira) or [Linear](https://linear.app/).
+The [Model Control Protocol (MCP)](https://modelcontextprotocol.io/)[^9] represents a crucial development in this space. All these CLI tools can use MCP to a degree, opening opportunities to search with engines like [Perplexity](https://www.perplexity.ai/), query databases like [PostgreSQL](https://www.postgresql.org/), or interact with task management platforms like [Jira](https://www.atlassian.com/software/jira) or [Linear](https://linear.app/).
 
 This standardisation effort means that AI agents aren't limited to basic file operations and command execution. They can integrate with the full ecosystem of development tools, from version control to project management to deployment pipelines.
 
@@ -90,11 +90,11 @@ Say I want to query technical documentation on the internet, I can simply add th
 
 ## Promises vs Reality
 
-The marketing materials paint an impressive picture, but real-world usage reveals important nuances. One developer spent a week with Claude Code on Clojure projects, investing $134.79 and 12 hours, ultimately concluding that "[Cursor](https://cursor.sh/) is a much better workflow for me" and that "AI without oversight is still not there to deliver maintainable apps"¹⁰.
+The marketing materials paint an impressive picture, but real-world usage reveals important nuances. One developer spent a week with Claude Code on Clojure projects, investing $134.79 and 12 hours, ultimately concluding that "[Cursor](https://cursor.sh/) is a much better workflow for me" and that "AI without oversight is still not there to deliver maintainable apps"[^10].
 
 This highlights a crucial reality: these tools excel at the "first 90%" of development tasks but struggle with the "second 90%"—the refinement, debugging, and maintenance that transforms prototypes into production-ready applications.
 
-Another developer noted the importance of defensive coding practices: "Building in the practice to run the linter constantly has kept a lot of bugs away... Add in a good formatter and everything is beautiful. The real magic is to add these tasks to a pre-commit hook"¹¹.
+Another developer noted the importance of defensive coding practices: "Building in the practice to run the linter constantly has kept a lot of bugs away... Add in a good formatter and everything is beautiful. The real magic is to add these tasks to a pre-commit hook"[^11].
 
 One of the biggest "aha" moment for me was using Windsurf, dragging and dropping image files into the chat. It then used Puppeteer to navigate to the image and screen scrape the relevant information. It then used that information to generate a prompt for the AI to generate the code. Not sure if that's possible in an CLI, but it's the kind of tooling that I think will be game changing.
 
@@ -113,11 +113,11 @@ We're witnessing what I call the "developer experience arms race." Each tool bor
 3. **Transparency**: Whether developers can trust and verify the AI's actions
 4. **Cost Structure**: Sustainable pricing for frequent use
 
-Companies like [Cursor](https://cursor.sh/), [Cognition](https://www.cognition-labs.com/), [Vercel](https://vercel.com/), [Replit](https://replit.com/), and [Canva](https://www.canva.com/) have rigorously tested Claude's capabilities, reporting significant improvements in tool execution, production-ready code generation, and debugging efficiency¹².
+Companies like [Cursor](https://cursor.sh/), [Cognition](https://www.cognition-labs.com/), [Vercel](https://vercel.com/), [Replit](https://replit.com/), and [Canva](https://www.canva.com/) have rigorously tested Claude's capabilities, reporting significant improvements in tool execution, production-ready code generation, and debugging efficiency[^12].
 
 ## Looking Forward: Beyond the Hype Cycle
 
-As someone who's watched developer tools evolve for over a decade, I see striking parallels to the early days of containerisation. [Docker](https://www.docker.com/)¹³ seemed magical initially—a universal solution to deployment complexity. But the real value emerged through the ecosystem that developed around it: orchestration platforms, service meshes, and cloud-native architectures.
+As someone who's watched developer tools evolve for over a decade, I see striking parallels to the early days of containerisation. [Docker](https://www.docker.com/)[^13] seemed magical initially—a universal solution to deployment complexity. But the real value emerged through the ecosystem that developed around it: orchestration platforms, service meshes, and cloud-native architectures.
 
 AI CLI tools are following a similar trajectory. The initial wow factor of natural language programming is giving way to more nuanced understanding of where these tools excel and where human expertise remains irreplaceable.
 
@@ -153,28 +153,28 @@ What's your experience with AI CLI tools? Are you seeing similar patterns in you
 
 ## References
 
-¹ The GPT-3.5 model was released by OpenAI in March 2022, setting the foundation for autonomous AI agent development that culminated in tools like AutoGPT.
+[^1]: The GPT-3.5 model was released by OpenAI in March 2022, setting the foundation for autonomous AI agent development that culminated in tools like AutoGPT.
 
-² [AutoGPT GitHub Repository](https://github.com/Significant-Gravitas/AutoGPT) - The original autonomous AI agent that demonstrated task delegation capabilities.
+[^2]: [AutoGPT GitHub Repository](https://github.com/Significant-Gravitas/AutoGPT) - The original autonomous AI agent that demonstrated task delegation capabilities.
 
-³ [Claude Code Official Documentation](https://www.anthropic.com/claude-code) - Anthropic's comprehensive CLI coding assistant.
+[^3]: [Claude Code Official Documentation](https://www.anthropic.com/claude-code) - Anthropic's comprehensive CLI coding assistant.
 
-⁴ [Claude Code Best Practices - Thinking Modes](https://simonwillison.net/2025/Apr/19/claude-code-best-practices/) - Simon Willison's analysis of Claude Code's thinking budget allocation system.
+[^4]: [Claude Code Best Practices - Thinking Modes](https://simonwillison.net/2025/Apr/19/claude-code-best-practices/) - Simon Willison's analysis of Claude Code's thinking budget allocation system.
 
-⁵ [OpenAI Codex CLI vs Claude Code Comparison](https://dev.to/czmilo/whats-openai-codex-cliand-compare-with-claude-codeaidercursorwindsurf-121p) - Cost analysis and feature comparison between major AI CLI tools.
+[^5]: [OpenAI Codex CLI vs Claude Code Comparison](https://dev.to/czmilo/whats-openai-codex-cliand-compare-with-claude-codeaidercursorwindsurf-121p) - Cost analysis and feature comparison between major AI CLI tools.
 
-⁶ [OpenAI Codex CLI GitHub Repository](https://github.com/openai/codex) - OpenAI's open-source terminal-based coding agent.
+[^6]: [OpenAI Codex CLI GitHub Repository](https://github.com/openai/codex) - OpenAI's open-source terminal-based coding agent.
 
-⁷ [TechCrunch: OpenAI debuts Codex CLI](https://techcrunch.com/2025/04/16/openai-debuts-codex-cli-an-open-source-coding-tool-for-terminals/) - Coverage of OpenAI's $1 million grant initiative for Codex CLI projects.
+[^7]: [TechCrunch: OpenAI debuts Codex CLI](https://techcrunch.com/2025/04/16/openai-debuts-codex-cli-an-open-source-coding-tool-for-terminals/) - Coverage of OpenAI's $1 million grant initiative for Codex CLI projects.
 
-⁸ [Hacker News Discussion: OpenAI Codex CLI](https://news.ycombinator.com/item?id=43708025) - Community feedback comparing Claude Code and Codex CLI performance.
+[^8]: [Hacker News Discussion: OpenAI Codex CLI](https://news.ycombinator.com/item?id=43708025) - Community feedback comparing Claude Code and Codex CLI performance.
 
-⁹ [Model Control Protocol Introduction](https://modelcontextprotocol.io/) - Official documentation for the MCP standard that enables AI tool integration.
+[^9]: [Model Control Protocol Introduction](https://modelcontextprotocol.io/) - Official documentation for the MCP standard that enables AI tool integration.
 
-¹⁰ [Flexiana: Experience with Claude Code](https://flexiana.com/news/2025/03/experience-with-claude-code) - Real-world case study of Claude Code usage over one week with detailed cost and time analysis.
+[^10]: [Flexiana: Experience with Claude Code](https://flexiana.com/news/2025/03/experience-with-claude-code) - Real-world case study of Claude Code usage over one week with detailed cost and time analysis.
 
-¹¹ [Harper Reed: Basic Claude Code](https://harper.blog/2025/05/08/basic-claude-code/) - Practical workflow tips and defensive coding strategies for AI CLI tools.
+[^11]: [Harper Reed: Basic Claude Code](https://harper.blog/2025/05/08/basic-claude-code/) - Practical workflow tips and defensive coding strategies for AI CLI tools.
 
-¹² [Anthropic: Claude Code Overview](https://www.anthropic.com/claude-code) - Customer testimonials and performance data from enterprise users.
+[^12]: [Anthropic: Claude Code Overview](https://www.anthropic.com/claude-code) - Customer testimonials and performance data from enterprise users.
 
-¹³ [Docker Official Website](https://www.docker.com/) - The containerisation platform that transformed software deployment practices.
+[^13]: [Docker Official Website](https://www.docker.com/) - The containerisation platform that transformed software deployment practices.
