@@ -53,7 +53,7 @@ Key differentiators include:
 
 - **Sandbox Execution**: Codex runs model-generated commands in a sandbox, allowing developers to review and approve changes before execution.
 
-Early comparisons suggest performance differences. One developer noted that "Claude Code did great and wrote pretty decent docs, while Codex didn't do well—it hallucinated a bunch of stuff that wasn't in the code and completely misrepresented the architecture"[^8].
+Early comparisons suggest performance differences. One developer noted that "Claude Code did great and wrote pretty decent docs, while Codex didn't do well—it hallucinated a bunch of stuff that wasn't in the code and completely misrepresented the architecture"[^7].
 
 ### Amazon Q Developer CLI
 
@@ -88,7 +88,7 @@ The choice between CLI and IDE integration often comes down to developer prefere
 
 ## MCP
 
-The [Model Control Protocol (MCP)](https://modelcontextprotocol.io/)[^9] represents a crucial development in this space. All these CLI tools can use MCP to a degree, opening opportunities to search with engines like [Perplexity](https://www.perplexity.ai/), query databases like [PostgreSQL](https://www.postgresql.org/), or interact with task management platforms like [Jira](https://www.atlassian.com/software/jira) or [Linear](https://linear.app/).
+The [Model Control Protocol (MCP)](https://modelcontextprotocol.io/)[^8] represents a crucial development in this space. All these CLI tools can use MCP to a degree, opening opportunities to search with engines like [Perplexity](https://www.perplexity.ai/), query databases like [PostgreSQL](https://www.postgresql.org/), or interact with task management platforms like [Jira](https://www.atlassian.com/software/jira) or [Linear](https://linear.app/).
 
 This standardisation effort means that AI agents aren't limited to basic file operations and command execution. They can integrate with the full ecosystem of development tools, from version control to project management to deployment pipelines.
 
@@ -96,13 +96,13 @@ Say I want to query technical documentation on the internet, I can simply add th
 
 ## Promises vs Reality
 
-The marketing materials paint an impressive picture, but real-world usage reveals important nuances. One developer spent a week with Claude Code on Clojure projects, investing $134.79 and 12 hours, ultimately concluding that "[Cursor](https://cursor.sh/) is a much better workflow for me" and that "AI without oversight is still not there to deliver maintainable apps"[^10].
+The marketing materials paint an impressive picture, but real-world usage reveals important nuances. One developer spent a week with Claude Code on Clojure projects, investing $134.79 and 12 hours, ultimately concluding that "[Cursor](https://cursor.sh/) is a much better workflow for me" and that "AI without oversight is still not there to deliver maintainable apps"[^9].
 
 This highlights a crucial reality: these tools excel at the "first 90%" of development tasks but struggle with the "second 90%"—the refinement, debugging, and maintenance that transforms prototypes into production-ready applications.
 
 Tools hallucinate predictably when pushed beyond their boundaries. AWS Q Developer provided the clearest example when I requested it read external documentation for project configuration. Without MCP web request capabilities, it fabricated responses based on existing files rather than admitting limitation.
 
-Another developer noted the importance of defensive coding practices: "Building in the practice to run the linter constantly has kept a lot of bugs away... Add in a good formatter and everything is beautiful. The real magic is to add these tasks to a pre-commit hook"[^11].
+Another developer noted the importance of defensive coding practices: "Building in the practice to run the linter constantly has kept a lot of bugs away... Add in a good formatter and everything is beautiful. The real magic is to add these tasks to a pre-commit hook"[^10].
 
 One of the biggest "aha" moment for me was using Windsurf, dragging and dropping image files into the chat. It then used Puppeteer to navigate to the image and screen scrape the relevant information. It then used that information to generate a prompt for the AI to generate the code. Not sure if that's possible in an CLI, but it's the kind of tooling that I think will be game changing.
 
@@ -121,11 +121,11 @@ We're witnessing what I call the "developer experience arms race." Each tool bor
 3. **Transparency**: Whether developers can trust and verify the AI's actions
 4. **Cost Structure**: Sustainable pricing for frequent use
 
-Companies like [Cursor](https://cursor.sh/), [Cognition](https://www.cognition-labs.com/), [Vercel](https://vercel.com/), [Replit](https://replit.com/), and [Canva](https://www.canva.com/) have rigorously tested Claude's capabilities, reporting significant improvements in tool execution, production-ready code generation, and debugging efficiency[^12].
+Companies like [Cursor](https://cursor.sh/), [Cognition](https://www.cognition-labs.com/), [Vercel](https://vercel.com/), [Replit](https://replit.com/), and [Canva](https://www.canva.com/) have rigorously tested Claude's capabilities, reporting significant improvements in tool execution, production-ready code generation, and debugging efficiency[^11].
 
 ## Looking Forward: Beyond the Hype Cycle
 
-As someone who's watched developer tools evolve for over a decade, I see striking parallels to the early days of containerisation. [Docker](https://www.docker.com/)[^13] seemed magical initially—a universal solution to deployment complexity. But the real value emerged through the ecosystem that developed around it: orchestration platforms, service meshes, and cloud-native architectures.
+As someone who's watched developer tools evolve for over a decade, I see striking parallels to the early days of containerisation. [Docker](https://www.docker.com/)[^12] seemed magical initially—a universal solution to deployment complexity. But the real value emerged through the ecosystem that developed around it: orchestration platforms, service meshes, and cloud-native architectures.
 
 AI CLI tools are following a similar trajectory. The initial wow factor of natural language programming is giving way to more nuanced understanding of where these tools excel and where human expertise remains irreplaceable.
 
@@ -170,14 +170,14 @@ What's your experience with AI CLI tools? Are you seeing similar patterns in you
 
 [^6]: [OpenAI Codex CLI GitHub Repository](https://github.com/openai/codex) - OpenAI's open-source terminal-based coding agent.
 
-[^8]: [Hacker News Discussion: OpenAI Codex CLI](https://news.ycombinator.com/item?id=43708025) - Community feedback comparing Claude Code and Codex CLI performance.
+[^7]: [Hacker News Discussion: OpenAI Codex CLI](https://news.ycombinator.com/item?id=43708025) - Community feedback comparing Claude Code and Codex CLI performance.
 
-[^9]: [Model Control Protocol Introduction](https://modelcontextprotocol.io/) - Official documentation for the MCP standard that enables AI tool integration.
+[^8]: [Model Control Protocol Introduction](https://modelcontextprotocol.io/) - Official documentation for the MCP standard that enables AI tool integration.
 
-[^10]: [Flexiana: Experience with Claude Code](https://flexiana.com/news/2025/03/experience-with-claude-code) - Real-world case study of Claude Code usage over one week with detailed cost and time analysis.
+[^9]: [Flexiana: Experience with Claude Code](https://flexiana.com/news/2025/03/experience-with-claude-code) - Real-world case study of Claude Code usage over one week with detailed cost and time analysis.
 
-[^11]: [Harper Reed: Basic Claude Code](https://harper.blog/2025/05/08/basic-claude-code/) - Practical workflow tips and defensive coding strategies for AI CLI tools.
+[^10]: [Harper Reed: Basic Claude Code](https://harper.blog/2025/05/08/basic-claude-code/) - Practical workflow tips and defensive coding strategies for AI CLI tools.
 
-[^12]: [Anthropic: Claude Code Overview](https://www.anthropic.com/claude-code) - Customer testimonials and performance data from enterprise users.
+[^11]: [Anthropic: Claude Code Overview](https://www.anthropic.com/claude-code) - Customer testimonials and performance data from enterprise users.
 
-[^13]: [Docker Official Website](https://www.docker.com/) - The containerisation platform that transformed software deployment practices.
+[^12]: [Docker Official Website](https://www.docker.com/) - The containerisation platform that transformed software deployment practices.
