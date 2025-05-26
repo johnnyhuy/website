@@ -1,4 +1,18 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "markdown.marp.themes": [
+    "./competitive-advantage.css"
+  ],
+  "markdown.marp.enableHtml": true,
+  "markdown.marp.exportType": "html",
+  "markdown.marp.pdf.outlineExtension": true,
+  "chat.promptFiles": true,
+  "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+  "chat.instructionsFilesLocations": [
+    ".github/instructions"
+  ],
+  "chat.promptFilesLocations": [
+    ".github/prompts"
+  ]
 }
