@@ -1,5 +1,5 @@
 ---
-mode: 'edit'
+mode: 'agent'
 description: 'Create custom Marp theme with modern styling'
 ---
 
