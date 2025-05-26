@@ -6,7 +6,12 @@ description: 'Create a new Marp presentation from blog content'
 
 # Create Marp Presentation from Blog Content
 
-Your goal is to convert blog post content into a professional Marp presentation.
+Your goal is to convert blog post content into a professional Marp presentation and save it as a new file in the `.slides/` directory.
+
+## File Management
+- Create presentation files in `.slides/<name>.slide.md` format
+- Use descriptive names that reflect the blog post topic
+- Follow kebab-case naming convention (e.g., `web-performance-optimization.slide.md`)
 
 ## Requirements
 
@@ -58,8 +63,3 @@ Use Unsplash URLs with these parameters:
 - Avoid overly busy or distracting visuals
 
 Example background syntax:
-```markdown
-![bg right:40% opacity:0.8](https://images.unsplash.com/photo-ID?w=800)
-```
-
-Apply the [Marp presentation guidelines](../instructions/marp-presentations.instructions.md) for all styling decisions.
