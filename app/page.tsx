@@ -72,7 +72,7 @@ export default function Home() {
             </CardContent>
           </Card>
           <Card className="relative col-span-4 hidden h-auto overflow-hidden md:block">
-            <CloudPattern className="absolute" />
+            <CloudPattern className="absolute" animated />
           </Card>
 
           {/* Second Row */}
@@ -128,7 +128,7 @@ export default function Home() {
 
           {/* Fourth Row: WakaTime and Spacer */}
           <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 md:col-span-6 md:block">
-            <CloudPattern className="absolute" />
+            <CloudPattern className="absolute" animated />
           </Card>
           <Card className="col-span-1 hidden overflow-hidden sm:col-span-1 sm:block md:col-span-6">
             <CardContent className="flex flex-row gap-4 p-4">
