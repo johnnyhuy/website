@@ -55,13 +55,10 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   trailingSlash: false,
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-  eslint: {
-    dirs: ['app', 'components', 'layouts', 'scripts'],
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
+  turbopack: {},
   images: {
     remotePatterns: [
       {
@@ -71,6 +68,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'cdn.discordapp.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.scdn.co',
       },
     ],
     unoptimized,

@@ -8,7 +8,7 @@ import { useTheme } from 'next-themes'
 import { profile } from '@/data/siteData'
 
 // Lazy load the heavy calendar component
-const Calendar = dynamic(() => import('react-activity-calendar').then((mod) => mod.default), {
+const Calendar = dynamic(() => import('react-activity-calendar').then((mod) => mod.ActivityCalendar), {
   ssr: false,
   loading: () => <Skeleton className="h-[70%] w-[85%]" />,
 })
