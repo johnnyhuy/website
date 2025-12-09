@@ -155,22 +155,24 @@ export const tagIconsMap: { [key: string]: IconType } = {
   mysql: SiMysql,
 }
 
-export const tagColorMap: { [key: string]: string } = {
+export type TagColor = string | { light: string; dark: string }
+
+export const tagColorMap: { [key: string]: TagColor } = {
   azure: '#0078D4',
   discord: '#5865F2',
   'microsoft azure': '#0078D4',
   'azure-devops': '#0078D4',
   'azure devops': '#0078D4',
-  astro: '#BC52EE',
+  astro: { light: '#BC52EE', dark: '#BC52EE' },
   html: '#E34F26',
   css: '#1572B6',
   linkedin: '#0A66C2',
-  javascript: '#F7DF1E',
+  javascript: { light: '#D4B830', dark: '#F7DF1E' }, // Darker yellow for light mode
   typescript: '#3178C6',
-  react: '#61DAFB',
+  react: { light: '#00B4D8', dark: '#61DAFB' }, // Slightly darker blue for light mode
   tailwindcss: '#06B6D4',
-  python: '#3776AB',
-  c: '#A8B9CC',
+  python: { light: '#306998', dark: '#3776AB' },
+  c: { light: '#5C6BC0', dark: '#A8B9CC' },
   'c++': '#00599C',
   'c#': '#239120',
   yaml: '#CB171E',
@@ -185,22 +187,22 @@ export const tagColorMap: { [key: string]: string } = {
   githubactions: '#2088FF',
   devops: '#FC6D26',
   'ci/cd': '#D24939',
-  sumologic: '#000099',
+  sumologic: { light: '#000099', dark: '#8282FF' },
   cloudwatch: '#FF9900',
   newrelic: '#008C99',
   docker: '#2496ED',
   figma: '#F24E1E',
   git: '#F05032',
   postgresql: '#4169E1',
-  aws: '#232F3E',
-  amazonwebservicesaws: '#232F3E',
-  amazonecs: '#232F3E',
-  'amazon web services (aws)': '#232F3E',
+  aws: { light: '#232F3E', dark: '#FF9900' }, // AWS Orange for dark mode, Dark Blue for light
+  amazonwebservicesaws: { light: '#232F3E', dark: '#FF9900' },
+  amazonecs: { light: '#232F3E', dark: '#FF9900' },
+  'amazon web services (aws)': { light: '#232F3E', dark: '#FF9900' },
   kubernetes: '#326CE5',
   terraform: '#7B42BC',
   graphql: '#E10098',
   mongodb: '#47A248',
-  confluence: '#172B4D',
+  confluence: { light: '#172B4D', dark: '#2684FF' },
   jira: '#0052CC',
   grafana: '#F46800',
   prometheus: '#E6522C',
@@ -209,6 +211,9 @@ export const tagColorMap: { [key: string]: string } = {
   hugo: '#FF4088',
   gcp: '#4285F4',
   mysql: '#4479A1',
+  github: { light: '#181717', dark: '#ffffff' },
+  'next.js': { light: '#000000', dark: '#ffffff' },
+  'next js': { light: '#000000', dark: '#ffffff' },
 }
 
 export const getTagIcon = (tag: string): IconType => {
@@ -225,7 +230,7 @@ export const hasIcon = (tag: string): boolean => {
   return !!(tagIconsMap[normalizedTag] ?? tagIconsMap[lowerCaseTag])
 }
 
-export const getTagColor = (tag: string): string | undefined => {
+export const getTagColor = (tag: string): TagColor | undefined => {
   const lowerCaseTag = tag.toLowerCase()
   const normalizedTag = lowerCaseTag.replace(/ /g, '').replace('dot', '.')
   return tagColorMap[normalizedTag] ?? tagColorMap[lowerCaseTag]
@@ -285,7 +290,12 @@ export const TagIcon: React.FC<TagIconProps> = ({
   ...props
 }) => {
   const Icon = icon ?? (tag ? getTagIcon(tag) : undefined)
-  const iconColor = tag ? getTagColor(tag) : undefined
+  const tagColor = tag ? getTagColor(tag) : undefined
+
+  const lightColor =
+    typeof tagColor === 'object' ? tagColor.light : tagColor ? tagColor : undefined
+  const darkColor =
+    typeof tagColor === 'object' ? tagColor.dark : tagColor ? tagColor : undefined
 
   const sizeClasses = {
     sm: 'h-3 w-3',
@@ -303,17 +313,24 @@ export const TagIcon: React.FC<TagIconProps> = ({
       role="img"
       aria-label={label}
       title={label}
+      style={
+        {
+          '--icon-color-light': lightColor,
+          '--icon-color-dark': darkColor,
+        } as React.CSSProperties
+      }
       {...props}
     >
       {Icon && typeof Icon === 'function' && (
-        <Icon className={iconSizeClass} style={{ color: iconColor }} />
+        <Icon
+          className={`${iconSizeClass} ${lightColor ? 'text-[var(--icon-color-light)]' : ''} ${darkColor ? 'dark:text-[var(--icon-color-dark)]' : ''}`}
+        />
       )}
       {Icon &&
         typeof Icon !== 'function' &&
         React.isValidElement(Icon) &&
         React.cloneElement(Icon as React.ReactElement<any>, {
-          className: `${(Icon.props as any).className || ''} ${iconSizeClass}`.trim(),
-          style: { ...((Icon.props as any).style || {}), color: iconColor },
+          className: `${(Icon.props as any).className || ''} ${iconSizeClass} ${lightColor ? 'text-[var(--icon-color-light)]' : ''} ${darkColor ? 'dark:text-[var(--icon-color-dark)]' : ''}`.trim(),
         })}
       {label && (
         <span className={`${Icon ? 'ml-1' : ''} align-middle whitespace-nowrap`}>{label}</span>
