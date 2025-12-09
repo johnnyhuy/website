@@ -1,6 +1,6 @@
 import { ReactScan } from '@/components/react-scan'
 import type React from 'react'
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/navbar'
@@ -10,6 +10,10 @@ import { ThemeIndicator } from '@/components/theme-indicator'
 import siteMetadata from '@/data/siteMetadata'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+
+export const viewport: Viewport = {
+  themeColor: '#fff',
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteMetadata.siteUrl),
@@ -68,7 +72,6 @@ export const metadata: Metadata = {
     },
   ],
   manifest: '/favicon/site.webmanifest',
-  themeColor: '#fff',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
