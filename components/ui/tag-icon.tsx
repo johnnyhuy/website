@@ -155,6 +155,62 @@ export const tagIconsMap: { [key: string]: IconType } = {
   mysql: SiMysql,
 }
 
+export const tagColorMap: { [key: string]: string } = {
+  azure: '#0078D4',
+  discord: '#5865F2',
+  'microsoft azure': '#0078D4',
+  'azure-devops': '#0078D4',
+  'azure devops': '#0078D4',
+  astro: '#BC52EE',
+  html: '#E34F26',
+  css: '#1572B6',
+  linkedin: '#0A66C2',
+  javascript: '#F7DF1E',
+  typescript: '#3178C6',
+  react: '#61DAFB',
+  tailwindcss: '#06B6D4',
+  python: '#3776AB',
+  c: '#A8B9CC',
+  'c++': '#00599C',
+  'c#': '#239120',
+  yaml: '#CB171E',
+  ai: '#00A67E',
+  artificialintelligence: '#00A67E',
+  'artificial intelligence': '#00A67E',
+  'artificial intelligence (ai)': '#00A67E',
+  'ai/ml': '#00A67E',
+  sql: '#4479A1',
+  backstage: '#9BF0E1',
+  security: '#EB5424',
+  githubactions: '#2088FF',
+  devops: '#FC6D26',
+  'ci/cd': '#D24939',
+  sumologic: '#000099',
+  cloudwatch: '#FF9900',
+  newrelic: '#008C99',
+  docker: '#2496ED',
+  figma: '#F24E1E',
+  git: '#F05032',
+  postgresql: '#4169E1',
+  aws: '#232F3E',
+  amazonwebservicesaws: '#232F3E',
+  amazonecs: '#232F3E',
+  'amazon web services (aws)': '#232F3E',
+  kubernetes: '#326CE5',
+  terraform: '#7B42BC',
+  graphql: '#E10098',
+  mongodb: '#47A248',
+  confluence: '#172B4D',
+  jira: '#0052CC',
+  grafana: '#F46800',
+  prometheus: '#E6522C',
+  php: '#777BB4',
+  laravel: '#FF2D20',
+  hugo: '#FF4088',
+  gcp: '#4285F4',
+  mysql: '#4479A1',
+}
+
 export const getTagIcon = (tag: string): IconType => {
   const lowerCaseTag = tag.toLowerCase()
   const normalizedTag = lowerCaseTag.replace(/ /g, '').replace('dot', '.')
@@ -167,6 +223,12 @@ export const hasIcon = (tag: string): boolean => {
   const lowerCaseTag = tag.toLowerCase()
   const normalizedTag = lowerCaseTag.replace(/ /g, '').replace('dot', '.')
   return !!(tagIconsMap[normalizedTag] ?? tagIconsMap[lowerCaseTag])
+}
+
+export const getTagColor = (tag: string): string | undefined => {
+  const lowerCaseTag = tag.toLowerCase()
+  const normalizedTag = lowerCaseTag.replace(/ /g, '').replace('dot', '.')
+  return tagColorMap[normalizedTag] ?? tagColorMap[lowerCaseTag]
 }
 
 export const tagIconVariants = cva('inline-flex items-center justify-center rounded', {
@@ -223,6 +285,7 @@ export const TagIcon: React.FC<TagIconProps> = ({
   ...props
 }) => {
   const Icon = icon ?? (tag ? getTagIcon(tag) : undefined)
+  const iconColor = tag ? getTagColor(tag) : undefined
 
   const sizeClasses = {
     sm: 'h-3 w-3',
@@ -242,12 +305,15 @@ export const TagIcon: React.FC<TagIconProps> = ({
       title={label}
       {...props}
     >
-      {Icon && typeof Icon === 'function' && <Icon className={iconSizeClass} />}
+      {Icon && typeof Icon === 'function' && (
+        <Icon className={iconSizeClass} style={{ color: iconColor }} />
+      )}
       {Icon &&
         typeof Icon !== 'function' &&
         React.isValidElement(Icon) &&
         React.cloneElement(Icon as React.ReactElement<any>, {
           className: `${(Icon.props as any).className || ''} ${iconSizeClass}`.trim(),
+          style: { ...((Icon.props as any).style || {}), color: iconColor },
         })}
       {label && (
         <span className={`${Icon ? 'ml-1' : ''} align-middle whitespace-nowrap`}>{label}</span>
