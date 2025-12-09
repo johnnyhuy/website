@@ -31,14 +31,13 @@ export default function CloudPattern({ className = '', animated = false }: Cloud
       return
     }
     let rafId: number
-
-    const cycle = 7000 // 7s for a full cycle
+    const start = performance.now()
     const speed = 8 // px/sec
 
     function animate() {
       const now = performance.now()
-      const elapsed = now % cycle
-      const offsetValue = ((elapsed * speed) / 1000) % 56
+      const elapsed = now - start
+      const offsetValue = (elapsed * speed) / 1000
       setOffset(offsetValue)
       rafId = requestAnimationFrame(animate)
     }
