@@ -56,18 +56,18 @@ const GithubCalendar: FunctionComponent<Props> = (props) => {
 
   const calendarTheme = {
     dark: [
-      'var(--color-gray-700)',
       'var(--color-gray-800)',
-      'var(--color-yellow-500)',
-      'var(--color-yellow-600)',
+      'var(--color-yellow-900)',
       'var(--color-yellow-700)',
+      'var(--color-yellow-600)',
+      'var(--color-yellow-500)',
     ],
     light: [
       'var(--color-gray-100)',
-      'var(--color-gray-200)',
-      'var(--color-yellow-300)',
+      'var(--color-yellow-200)',
       'var(--color-yellow-400)',
-      'var(--color-yellow-500)',
+      'var(--color-yellow-600)',
+      'var(--color-yellow-800)',
     ],
   }
 
