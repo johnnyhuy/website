@@ -1,0 +1,89 @@
+---
+title: Just Talk To It
+summary: |
+  The highest-leverage move in agentic engineering isn't longer prompts or elaborate orchestration. It's treating your coding agent like a capable teammate you can interrupt, redirect, and ask for options. When the model is strong and the feedback loop is tight, conversation outperforms ceremony.
+date: "2026-01-26 08:00:00 +1000"
+tags:
+  - AI
+  - Developer Experience
+  - Agentic Engineering
+draft: false
+---
+
+The core idea of agentic engineering is deceptively simple: treat your coding agent like a capable teammate you can interrupt, redirect, and ask for options — not like a brittle system that needs elaborate harness rituals. If the model is strong and the workflow feedback loop is tight, "just talk to it" outperforms heavy plan mode documents, subagent choreography, and tool-driven pageantry.
+
+A useful mental shift is to stop optimising prompts and start optimising *interaction bandwidth*: rapid iteration, frequent check-ins, small reversible changes, and tight deployment cycles. In this framing, the agent is not "a code generator"; it's a high-throughput implementer whose output quality is governed by your ability to shape blast radius and maintain a clean loop between intent, change, and verification.
+
+## Blast Radius as the Unit of Work
+
+"Blast radius" is the practical unit for agent-driven coding: a change has an expected scope (files touched, time, risk). You can either throw many small "bombs" (small, isolatable diffs) or one large one. Multiple large bombs at once destroys your ability to reason, review, and recover.
+
+A simple operating rule: if progress time or touched files exceed your mental estimate, interrupt immediately and request a status update. This keeps the agent aligned and prevents it from "solving the wrong problem correctly."
+
+Useful control prompts (short, human language):
+- "What's the status and what files have you changed so far?"
+- "Give me a few options before making changes."
+- "Stop and summarise the likely blast radius."
+
+This is surprisingly similar to managing humans: the best senior engineers are interruptible, communicative, and predictable about scope. The surprise is that agent management skills map strongly to engineering management skills — expectations, scoping, feedback cadence — not to "prompt wizardry."
+
+## Parallel Agents Without Worktrees
+
+A high-output pattern is running multiple agents in parallel in the same repo folder, relying on atomic commits and strong git hygiene to keep history clean. The argument against git worktrees here is operational friction: one dev server, one evolving state, quick click-through testing across multiple changes. Branch-per-change can be slower when your validation loop is primarily "run the app and poke it."
+
+This implies two non-obvious requirements:
+1. Your agent must be able to commit *only the files it edited* (otherwise parallel work becomes self-sabotage).
+2. You need intuition for when "one more change" will spill into a new blast radius.
+
+## Prefer CLIs Over MCPs for Low Context Tax
+
+The strongest tactical argument is against defaulting to MCP servers: many MCPs are effectively "a CLI wrapped in tokens". If the model can call `gh` (or any known CLI), it can discover usage via `--help` and you avoid permanently injecting large tool descriptions into context.
+
+**Context tax:** Every token spent describing tools is a token not spent reasoning about your code. MCP definitions can be a recurring fixed cost, whereas CLI usage is often already in world knowledge and self-documenting.
+
+A practical heuristic:
+- If a tool is stable, discoverable (`--help`), and commonly known, prefer a CLI call.
+- Use MCPs only when they close a loop you can't easily close with CLI + logs (e.g. direct browser/devtools integration).
+
+## Prompting Style That Fits Strong Agents
+
+With stronger agents, prompts naturally get shorter: 1-2 sentences plus a screenshot can outperform long spec dumps, because the agent can locate code via visual strings and UI cues.
+
+Two high-leverage prompt modifiers:
+- "Read all code that could be related."
+- "Create possible hypotheses and test them."
+
+These aren't magic words; they are explicit instructions to allocate time to discovery and to avoid the first plausible fix.
+
+> [!TIP] Make tests a second step in the same context
+> After a fix/feature, ask "Now write tests for what you changed." Keeping it in the same context improves test relevance and catches mismatched intent earlier.
+
+## A Sustainable Cadence for Refactoring
+
+Agent-written code will drift towards duplication and "good enough" structures unless you deliberately schedule refactor cycles. A productive rhythm is alternating:
+- Fast feature iteration
+- Dedicated "refactor days" driven by tooling (duplication detection, dead code, lint rules, deprecations, slow tests)
+
+This flips a common fear ("AI creates slop") into an operating model: slop is a *maintenance scheduling* problem, not an inevitability.
+
+## The Comparison Table
+
+| Choice | When It Wins | Hidden Cost | Practical Default |
+|--------|-------------|-------------|-------------------|
+| Plan mode mega-spec | Very complex, high-stakes redesigns | Re-fetching context, slower iteration | Use "let's discuss options" first |
+| Subagents | True parallelism with strict context separation | Harder visibility/steering | Prefer separate terminal panes |
+| MCP | Needs tight integration loop (e.g. browser devtools) | Large context tax | Prefer CLI unless proven necessary |
+| Worktrees | Independent dev servers, isolated features | Operational overhead | Single tree if validation is click-testing |
+| Long prompts | Weak model, ambiguous product intent | Prompt becomes the "system" | Short prompt + repo reading + screenshots |
+
+## Summary
+
+- **Change control beats prompt cleverness.** Control how much code changes at once, and how quickly you can validate or revert.
+- **Use blast radius as your unit of work.** Small, isolatable diffs beat large speculative changes.
+- **Prefer CLI over MCP.** Avoid context tax unless the integration loop is genuinely unique.
+- **Short prompts + screenshots outperform long specs.** Strong agents can read and discover.
+- **Schedule refactor days.** Slop is a maintenance scheduling problem, not an inevitability.
+
+## What's Next
+
+The next time you reach for an elaborate agent harness, ask whether a simple conversation would achieve the same result faster. The answer is usually yes — if the model is strong enough and you're willing to steer.
