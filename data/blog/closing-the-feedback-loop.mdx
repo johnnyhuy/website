@@ -1,0 +1,141 @@
+---
+title: The Real AI Skill Isn't Prompting — It's Loop-Closing
+summary: |
+  Engineers try AI tools 2-3 times, hit a wall, and walk away. They declare the tool useless and go back to manual work. After watching this pattern repeat across dozens of teams, I've realised the single biggest blocker to AI adoption isn't model quality or tool selection. It's the inability to close the feedback loop.
+date: "2026-02-14 08:00:00 +1000"
+tags:
+  - AI
+  - Developer Experience
+  - Learning
+draft: false
+---
+
+Engineers try AI tools 2-3 times, hit a wall, and walk away. They declare the tool useless and go back to doing things manually. I see this pattern constantly and it's the single biggest blocker to AI adoption.
+
+The tool works fine. The skill that's missing is **closing the feedback loop**.
+
+## What Closing the Loop Means
+
+Closing the feedback loop means iteratively steering an AI conversation until you get the outcome you need, rather than accepting early failures as the final answer.
+
+```
+Initial Prompt -> AI Response -> Evaluate Output
+                                    |
+              Not Quite Right <- Identify Gap <- Refine Prompt
+                    |                                    |
+                    --------> Steer Conversation --------
+                                    |
+                              Close Enough -> Accept and Iterate -> Good Enough? -> Success
+```
+
+| Open Loop (Fails) | Closed Loop (Succeeds) |
+|-------------------|------------------------|
+| Accepts first/second attempt as final | Iterates until outcome achieved |
+| Blames the tool for poor results | Adjusts approach based on feedback |
+| Gives up after 2-3 tries | Persists through 5-10+ iterations |
+| Treats AI as a magic black box | Understands AI needs steering |
+| Vague, single-shot prompts | Specific, conversational refinement |
+
+> [!IMPORTANT] The Mental Model Shift
+> Most engineers treat AI like a search engine and expect a correct answer from a single query. AI is closer to pair programming. It requires back-and-forth conversation to refine shared understanding.
+
+## My Approach: The 30-40 Minute Yapping Session
+
+I spend 30-40 minutes yapping to an AI to work through problems. That time investment is the core skill of modern AI-assisted development.
+
+**The steering process:**
+1. **Set Context** — explain the problem space, constraints, and desired outcome
+2. **First Attempt** — let AI generate an initial solution
+3. **Evaluate** — identify what's right, what's wrong, what's missing
+4. **Steer** — provide specific feedback on gaps or errors
+5. **Refine** — AI adjusts based on feedback
+6. **Repeat** — continue until output meets requirements
+7. **Validate** — check for contradictions, edge cases, or missed requirements
+
+## Real Example: Playbook YAML Generation
+
+I used this approach to generate a platform architecture timeline. The AI, equipped with MCP tools, searched Slack, Confluence, and Jira directly, then generated YAML with timestamped events. My key instruction: *"When you create these files, capture any myths and gaps, but also contradictions."*
+
+What makes this work: MCP tool access lets the AI pull real data from Slack, Confluence, and Jira. Contradiction detection means the AI flags when sources disagree. And the iterative refinement loop means I keep correcting errors and steering until the output is accurate.
+
+## Why Engineers Fail to Close the Loop
+
+### The Persistence Gap
+
+Most engineers drop off after 2 attempts. I persist through 5-10+.
+
+| Attempt | Typical Accuracy | Most Engineers | Me |
+|---------|-----------------:|----------------|----|
+| 1 | ~60% | Continue | Continue |
+| 2 | ~75% | Continue | Continue |
+| 3 | ~85% | **Give up** | Continue |
+| 4-5 | 90-95% | Abandoned | Continue |
+| 6-10 | 98%+ | Never reached | **Success** |
+
+### The Feedback Quality Problem
+
+When AI produces suboptimal output, most engineers say "this is wrong" without articulating what or why.
+
+**Ineffective:** *"This doesn't work."*
+
+**Effective:** *"This contradicts the Slack message from 15 Jan where we decided to use TrueFoundry over LiteLLM. Can you search Slack for that decision and update the timeline accordingly? Also check if there are any other contradictions between Slack and Confluence."*
+
+Specificity is everything. You need to diagnose the gap, not just flag the symptom.
+
+### The Pressure Paradox
+
+Engineers in feature teams face sprint pressure that discourages 30-40 minute sessions. Spending 30 minutes upfront to close the loop saves hours of manual work later, but it feels like a luxury when deadlines are tight.
+
+## Teaching People to Close the Loop
+
+My goal is to make feedback loop closure a teachable, repeatable skill. The most valuable AI skill in 2026 is shifting from prompt crafting to human judgement and iterative steering within AI-assisted workflows.
+
+### Steering Language Patterns
+
+| Situation | Steering Phrase |
+|-----------|----------------|
+| Output too vague | "Be more specific about X. Include concrete examples." |
+| Missing context | "You're missing context about Y. Here's what you need to know…" |
+| Contradictory information | "This contradicts Z. Search [source] and reconcile the difference." |
+| Wrong direction | "Stop. Let's take a different approach. Instead of X, try Y." |
+| Almost there | "Good, but refine this part: [specific section]. Here's what I need…" |
+
+### Practical Teaching Methods
+
+**Demonstrate the process.** Run real-time sessions showing the first attempt failing, then steer through 5-10 iterations, highlighting what changed at each step.
+
+**Create safe practice spaces.** Set up "office hours" or pairing sessions where engineers bring real problems and work through them with someone who already knows how to close the loop.
+
+**Document case studies.** Show the full arc: initial problem, first AI attempt, steering conversation, final output, time saved. Example: *"How I Generated 3 Months of Platform Timeline in 40 Minutes."*
+
+> [!TIP] Cultural Narrative Shift
+> Change the framing from ❌ *"I tried AI and it didn't work"* to ✅ *"I iterated with AI 8 times and got exactly what I needed."* Celebrate persistence as the skill.
+
+## Measuring Success
+
+**Someone has learnt to close the loop when they:**
+- Continue past 3 attempts without frustration
+- Provide detailed feedback on what's wrong and why
+- Recognise when to steer vs when to restart entirely
+- Willingly invest 30-40 minutes for quality output
+- Trust the process even when early attempts fail
+- Can explain their steering approach to others
+
+**Someone hasn't learnt it when they:**
+- Give up early: "I tried twice, it doesn't work"
+- Give vague feedback: "This is wrong" without specifics
+- Blame the tool: "AI is useless for this"
+- Expect perfect results in 5 minutes
+- Revert to manual methods to avoid iteration
+
+## Summary
+
+- **The real AI skill is loop-closing, not prompting.** Iteration and steering beat clever one-shot prompts.
+- **Most engineers give up too early.** The 4th-5th attempt is where quality jumps from 75% to 95%.
+- **Specific feedback beats vague complaints.** Diagnose the gap, don't just flag the symptom.
+- **30-40 minutes upfront saves hours later.** The investment feels expensive but pays compound interest.
+- **Organisations need to protect iteration time.** Sprint pressure kills the skill before it develops.
+
+## What's Next
+
+The next time you hear "I tried AI and it didn't work," ask how many iterations they ran. If the answer is 2-3, the problem isn't the tool. It's the loop.
