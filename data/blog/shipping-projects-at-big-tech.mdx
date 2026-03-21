@@ -1,0 +1,85 @@
+---
+title: Shipping Projects at Big Tech Is a Social Outcome
+summary: |
+  Code in production doesn't mean a project is shipped. After watching Sean Goedecke break down how big tech actually delivers, I've reframed shipping as an organisational outcome, not a technical milestone. Here's what that means for engineers who want to see their work actually land.
+date: "2026-03-22 08:00:00 +1000"
+tags:
+  - Career
+  - Leadership
+  - Software Engineering
+draft: false
+---
+
+Successful projects have a narrow path to success and a million paths to failure. That sounds dramatic until you've watched a project you cared about drift for six months and then die in a reorg.
+
+I used to think shipping meant deploying code. Tickets closed, pull requests merged, CI green. That's the easy part. The hard part is getting the organisation to agree that what you built actually solved the problem it was meant to solve.
+
+## Shipping Is Socially Defined
+
+Sean Goedecke's core claim is simple: a project is only shipped when the relevant management chain recognises it as shipped and believes it achieved the intended business purpose.
+
+That perspective can feel uncomfortable. It shifts attention away from craftsmanship and towards business intent, audience, and perception. But in a healthy company, customer value is filtered through company context. Some projects delight users. Others unlock markets, satisfy regulation, or support an executive priority.
+
+| Lens | Engineer Instinct | Organisational Reality |
+|------|-------------------|------------------------|
+| Definition of shipped | Code deployed or tickets closed | Leadership acknowledges the outcome |
+| Success metric | Technical completeness | Business purpose achieved |
+| Common mistake | Overvaluing local quality signals | Missing what the company actually needs |
+| Practical implication | Keep polishing indefinitely | Declare victory when decision-makers are satisfied |
+
+Before leading delivery, identify what the company wants from the project in concrete terms. Phrase trade-off questions in business language rather than engineering absolutes, so product and management can answer them safely.
+
+## Projects Fail by Default
+
+The default state of a project is to fail. Projects only succeed because people drag them kicking and screaming to the finish line.
+
+Left alone, most large-company efforts drift, get blocked, or miss invisible dependencies. The job of shipping is active and continuous: surfacing risks early, keeping the project moving, and making sure a single engineer understands how the whole system fits together.
+
+One engineer usually needs the full technical picture for the project to ship well. That person is not doing all the work, but they are usually the one who notices the missing security review, the unowned dependency, the capacity mismatch, or the team assumption that turns out to be false.
+
+Rules that look fixed are often soft rules that bend when the business truly needs movement. The trick is knowing when the business truly needs movement.
+
+## Technical Strength Is the Multiplier
+
+Strong engineers can inspect unfamiliar code, validate assumptions, build demos, challenge timelines, and create contingency plans before delay compounds into project failure.
+
+The most powerful examples are practical rather than theoretical: building a demo that cuts through weeks of debate, jumping into another team's codebase to unblock a dependency, or understanding a system well enough to know when a requirement can be safely simplified.
+
+**Burning down Jira tickets is less impactful than de-risking a project that matters.** Engineers create the most leverage when they apply skill to visible business bottlenecks.
+
+Use technical strength on ambiguous or blocked work first. Talk directly with product, design, support, or leadership to find the highest-value bottleneck, then prototype or implement the smallest thing that moves the discussion into reality.
+
+## GenAI Helps Most With Speed and Unfamiliar Terrain
+
+Generative AI compresses the time needed to get from zero to something workable. It is especially useful in unfamiliar languages, repos, and support tooling, where the engineer lacks deep local knowledge but still needs to make progress quickly.
+
+At the same time, using AI is different from building AI products. Tools such as GitHub Models and coding agents make prototyping, internal admin work, and cross-domain exploration faster, but they do not remove the hard final stretch where correctness, evaluation, and judgement matter most.
+
+| Area | AI Makes Easier | Still Hard |
+|------|-----------------|------------|
+| Unfamiliar repos | First-pass code and orientation | Correct local trade-offs |
+| Glue work | Internal tools and admin pages | Production robustness |
+| Prototyping | Demos and spikes | Product fit and polish |
+| AI product work | Faster experimentation | Evals, hallucinations, moving abstractions |
+
+Faster code generation simply moves the bottleneck downstream into review, testing, and operational confidence. Keep humans focused on the final 20 percent where verification, release confidence, and product judgement dominate.
+
+## Remote Teams Work When They Are Intentionally Async
+
+Distributed teams can outperform co-located teams when they work asynchronously, hand off work cleanly across time zones, and produce written artefacts that continue moving the project forward while people sleep.
+
+The handoff cost is the critical variable. When it is low, investigations and fixes can continue almost around the clock. For users, that can feel like overnight repair. For engineers, it requires strong written context, clear artefacts, and a tolerance for less synchronous social contact.
+
+**Do not leave a single remote engineer isolated in a time zone if it can be avoided.** Build remote teams as timezone clusters rather than isolated individuals. Optimise for handoff quality with written plans, recorded demos, and explicit next steps so work can progress while one side sleeps.
+
+## Summary
+
+- **Shipping does not mean deploying code.** It means the organisation believes the intended problem was solved.
+- **Projects fail by default.** One engineer needs to hold the end-to-end technical shape and drag the project forward.
+- **Technical strength is the multiplier.** Apply it to visible business bottlenecks, not just backlog tickets.
+- **AI accelerates breadth, not depth.** Use it for unfamiliar terrain, keep humans on verification and judgement.
+- **Remote teams need intentional async.** Written artefacts and clean handoffs matter more than overlap hours.
+
+## What's Next
+
+The next time you're leading a project, ask yourself: does leadership actually believe this is shipped? If the answer is unclear, the project isn't done yet. Fix that first.
