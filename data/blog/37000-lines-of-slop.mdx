@@ -1,0 +1,75 @@
+---
+title: 37,000 Lines of Slop
+summary: |
+  Garry Tan claimed he ships 37,000 lines of AI-generated code per day. A developer audited the result. What they found should terrify anyone who thinks volume equals quality. After mapping the audit findings against my own experience reviewing AI-generated code, the pattern is clear: without human oversight, AI agents produce digital landfill.
+date: "2026-04-04 08:00:00 +1000"
+tags:
+  - AI
+  - Code Quality
+  - Software Engineering
+draft: false
+---
+
+37,000 lines of code a day isn't a flex, it's a warning.
+
+That was Garry Tan's claim — 37,000 lines of AI-generated code per day across five concurrent projects. The tech press reported it as evidence of AI's transformative power. A developer going by Gregorian actually audited one of those projects. What they found tells a very different story.
+
+## The Audit Results
+
+| Category | Finding |
+|----------|---------|
+| Test files | 28 test files bundled into the production bundle, ~300KB of test code sent to every visitor |
+| Scaffolding | A literal Rails Hello World controller shipped in production |
+| Images | One uncompressed PNG at 2MB, another at 1.99MB with no modern image handling |
+| Editor | A 520KB rich text editor speculatively shipped from backend to frontend |
+| Accessibility | 47 images with zero alt tags |
+| Rendering | Page content rendered twice in the DOM — once for mobile, once for desktop |
+
+The site loads and scores 80 on Lighthouse. But "it works" is a dangerously low bar. Users on constrained connections, screen readers, or older devices bear the real cost of this digital landfill.
+
+## Why Line Count Is a Dangerous Metric
+
+Raw line counts are meaningless without context. An AI agent that generates 37,000 lines per day is not producing 37,000 lines of validated, production-ready code — it is producing a river of text that may contain substantial quantities of dead code, duplication, accessibility failures, and architectural nonsense. Without a human reading and understanding that output, nobody knows what is actually in the codebase.
+
+> You sure as hell don't know what is going into your code base if you're not reading it.
+
+The metric of lines of code per day has become a flex in some circles. But lines of code has always been a poor measure of productivity. AI just made it possible to generate meaningless lines at industrial scale.
+
+## The Slowing Down Philosophy
+
+Mario Zechner, creator of the Pi agent framework, writes that the answer is not to abandon AI but to use it deliberately. His core argument: let the AI handle the boring, repetitive tasks that teach you nothing, then carefully evaluate what it produced.
+
+Practical guidance:
+- Set self-imposed limits on how much AI-generated code is accepted per day, calibrated to your ability to genuinely review it
+- Do not accept code that you cannot read and understand
+- Use AI as a productivity multiplier for the mechanical parts of coding, not as an autonomous agent operating without oversight
+
+## Tooling for Codebase Hygiene
+
+Static analysis tools like Fallow surface what humans miss in AI-generated codebases:
+- Dead code
+- Duplicate lines
+- Circular dependencies
+- Complexity hotspots
+
+AI coding agents have a known tendency to solve problems locally dozens of times rather than globally once. Tools like Fallow help identify where this pattern has contaminated an existing codebase.
+
+## The Core Philosophy
+
+> I'm not outsourcing my brain. I'm using my brain to outsource the work.
+
+This distinction matters. Outsourcing your brain means accepting AI output without understanding it. Using your brain to outsource work means directing the AI toward mechanical tasks while you focus on judgement, review, and architectural decisions.
+
+The first approach produces slop. The second produces leverage.
+
+## Summary
+
+- **Line count is not productivity.** 37,000 lines of unreviewed code is a liability, not an achievement.
+- **"It works" is a low bar.** Performance, accessibility, and maintainability matter.
+- **Review every line you ship.** If you can't read and understand it, don't merge it.
+- **Set daily limits on AI output.** Calibrate to your review capacity, not your generation capacity.
+- **Use tools to catch what you miss.** Static analysis finds patterns humans overlook.
+
+## What's Next
+
+The next time you see someone bragging about AI-generated line counts, ask how many of those lines were reviewed by a human who understood them. The answer will tell you whether they're building software or generating slop.
