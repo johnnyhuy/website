@@ -1,0 +1,70 @@
+---
+title: DHH's Standards Didn't Change, the Tools Did
+summary: |
+  David Heinemeier Hansson now works agent-first. But his philosophy of craft didn't flip — the tools finally got good enough to preserve taste while dramatically widening what feels economically possible to build. After mapping his latest thinking against my own experience with Claude Code, the inflection point wasn't model quality alone. It was the shift from intrusive autocomplete to delegation-based harnesses.
+date: "2026-04-10 08:00:00 +1000"
+tags:
+  - AI
+  - Software Craft
+  - Product Engineering
+draft: false
+---
+
+The narrative around DHH and AI has been oversimplified. Headlines frame it as "DHH changed his mind on AI." The stronger reading is that his standards did not change, his philosophy of craft did not change, and his suspicion of bad ergonomics did not change. What changed is that agent harnesses and stronger models became good enough to preserve taste while dramatically widening what feels economically possible to build.
+
+This is a description of a new equilibrium. Code generation is cheaper, but judgement is not. Exploration is cheaper, but prioritisation is not. More people can draft implementation, but fewer people can reliably decide what should be merged, what should be cut, and what is worth doing at all.
+
+## The Inflection Point Was Workflow Plus Model Quality
+
+DHH's earlier resistance to AI coding tools was not mainly ideological. He found autocomplete ergonomically hostile because it constantly interrupted the act of thinking. Autocomplete tried to finish his sentence. Agent harnesses let him define work, hand it off, and review the result.
+
+The second piece was model quality. He repeatedly returns to the idea that older systems could be impressive in demos yet still fail the merge test. The real threshold was reached when models became able to produce code that often required little or no alteration and could learn from corrections instead of repeating the same mistake every cycle.
+
+```
+Pre 2025:    AI feels important but coding UX is irritating
+Early phase: Chat interfaces useful for tutoring and explanation
+Autocomplete: Tab completion feels intrusive and low trust
+Late 2025:   Agent harnesses become viable, terminal workflow clicks
+Inflection:   Stronger models produce code worth reviewing and merging
+2026:        Agent first becomes the default for new work
+```
+
+- DHH distinguishes between believing the technology matters and enjoying the way it is used
+- Autocomplete failed because it broke concentration and produced too much low-confidence noise
+- Agent harnesses succeeded because they enable chunked delegation, tool use, and explicit review
+- Model quality mattered only when it crossed the threshold of producing reviewable code
+
+## 37signals Already Had the Organisational Shape AI Rewards
+
+One of the most useful parts of the conversation is not about models at all. It's about how 37signals thinks about building products. Their designers are not downstream spec-polishers. They help decide what should be built, how it should work, and often implement HTML, CSS, and some behaviour themselves. Their early product teams are tiny, often one programmer plus one or two designers, until the shape of the thing becomes clear.
+
+That model matters because AI seems to reward exactly this kind of organisation. When the cost of implementation falls, people who can move fluidly between product judgement, interface design, and code become unusually powerful. DHH's point is not merely that designers should learn to code. It is that people who understand the material they are working in tend to design better things, just as an architect benefits from understanding structure or a jeweller benefits from understanding metal.
+
+## The New Scarcity Stack
+
+| Theme | DHH's Claim | Practical Implication |
+|-------|-------------|----------------------|
+| AI adoption | The philosophy did not flip, the tools got better | Re-evaluate workflows, not just models |
+| Productivity | The big win is tackling work that previously felt uneconomic | Use agents to widen ambition, not only shorten ticket time |
+| Craft | Beauty, readability, and coherent design still matter | Review becomes a first-class engineering skill |
+| Org design | Small teams and builder-designers gain leverage | Product and implementation boundaries blur further |
+| Career impact | Seniors benefit first because they can validate output | Judgment-heavy roles gain, execution-only roles face pressure |
+| Sustainability | The dopamine loop is real | Protect sleep and pacing or the gains turn corrosive |
+
+## The Gains Accrue Unevenly
+
+The sharpest organisational implication is not that all programmers are suddenly obsolete. It is that the gains accrue unevenly. Senior engineers, designers who can implement, and generalists who can validate output become more leveraged first. Junior-heavy pipelines and execution-only roles look more fragile.
+
+At the same time, DHH is explicit that this acceleration is intoxicating enough to create burnout risk. The conversation ends on sleep, sustainability, and not treating the current moment as a one-off sale.
+
+## Summary
+
+- **DHH didn't flip on AI.** He flipped on interaction design. Autocomplete was intrusive; agents are delegative.
+- **The merge test is the real threshold.** Models matter when they produce code a high-bar reviewer might want to merge.
+- **Small teams and builder-designers win.** When implementation is cheap, taste and judgement become the scarce resources.
+- **Seniors benefit first.** Validation and review skills become more valuable, not less.
+- **Protect your pace.** The dopamine loop of rapid agentic output is real and corrosive without boundaries.
+
+## What's Next
+
+The next time you evaluate an AI coding tool, ask not just whether the model is good, but whether the interaction design preserves your ability to think. A strong model inside a bad workflow can still be unusable for experienced engineers.
