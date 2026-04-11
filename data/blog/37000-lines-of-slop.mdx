@@ -2,7 +2,7 @@
 title: 37,000 Lines of Slop
 summary: |
   Garry Tan claimed he ships 37,000 lines of AI-generated code per day. A developer audited the result. What they found should terrify anyone who thinks volume equals quality. After mapping the audit findings against my own experience reviewing AI-generated code, the pattern is clear: without human oversight, AI agents produce digital landfill.
-date: "2026-04-04 08:00:00 +1000"
+date: "2026-04-05 15:10:00 +1000"
 tags:
   - AI
   - Code Quality
@@ -12,20 +12,20 @@ draft: false
 
 37,000 lines of code a day isn't a flex, it's a warning.
 
-That was Garry Tan's claim — 37,000 lines of AI-generated code per day across five concurrent projects. The tech press reported it as evidence of AI's transformative power. A developer going by Gregorian actually audited one of those projects. What they found tells a very different story.
+That was [Garry Tan](https://blog.garrytan.com/)'s claim — 37,000 lines of AI-generated code per day across five concurrent projects. The tech press reported it as evidence of AI's transformative power. A developer going by Gregorian actually audited one of those projects. What they found tells a very different story.
 
 ## The Audit Results
 
 | Category | Finding |
 |----------|---------|
 | Test files | 28 test files bundled into the production bundle, ~300KB of test code sent to every visitor |
-| Scaffolding | A literal Rails Hello World controller shipped in production |
+| Scaffolding | A literal [Rails](https://rubyonrails.org/) Hello World controller shipped in production |
 | Images | One uncompressed PNG at 2MB, another at 1.99MB with no modern image handling |
 | Editor | A 520KB rich text editor speculatively shipped from backend to frontend |
 | Accessibility | 47 images with zero alt tags |
 | Rendering | Page content rendered twice in the DOM — once for mobile, once for desktop |
 
-The site loads and scores 80 on Lighthouse. But "it works" is a dangerously low bar. Users on constrained connections, screen readers, or older devices bear the real cost of this digital landfill.
+The site loads and scores 80 on [Lighthouse](https://developer.chrome.com/docs/lighthouse). But "it works" is a dangerously low bar. Users on constrained connections, screen readers, or older devices bear the real cost of this digital landfill.
 
 ## Why Line Count Is a Dangerous Metric
 
@@ -37,7 +37,7 @@ The metric of lines of code per day has become a flex in some circles. But lines
 
 ## The Slowing Down Philosophy
 
-Mario Zechner, creator of the Pi agent framework, writes that the answer is not to abandon AI but to use it deliberately. His core argument: let the AI handle the boring, repetitive tasks that teach you nothing, then carefully evaluate what it produced.
+[Mario Zechner](https://www.badlogicgames.com/), creator of the [Pi agent framework](https://pi.athlon.app/), writes that the answer is not to abandon AI but to use it deliberately. His core argument: let the AI handle the boring, repetitive tasks that teach you nothing, then carefully evaluate what it produced.
 
 Practical guidance:
 - Set self-imposed limits on how much AI-generated code is accepted per day, calibrated to your ability to genuinely review it
@@ -46,7 +46,7 @@ Practical guidance:
 
 ## Tooling for Codebase Hygiene
 
-Static analysis tools like Fallow surface what humans miss in AI-generated codebases:
+Static analysis tools like [Fallow](https://fallow.app/) surface what humans miss in AI-generated codebases:
 - Dead code
 - Duplicate lines
 - Circular dependencies
