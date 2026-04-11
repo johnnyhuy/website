@@ -2,7 +2,7 @@
 title: The Anthropic Study Does Not Prove AI Makes Devs Dumb
 summary: |
   Anthropic's paper on AI and skill formation has been weaponised by both sides of the AI debate. After reading the study, watching Theo's breakdown, and cross-referencing Sean Goedecke's critique, the actual finding is narrower and more useful than the headlines suggest. Here's what it actually measures, and what it means for how you should use AI.
-date: "2026-03-26 08:00:00 +1000"
+date: "2026-03-26 19:45:00 +1000"
 tags:
   - AI
   - Developer Experience
@@ -10,15 +10,15 @@ tags:
 draft: false
 ---
 
-Anthropic published a study titled *How AI Impacts Skill Formation*. Within days, both AI skeptics and AI evangelists claimed it proved their point. It does neither.
+[Anthropic](https://www.anthropic.com/) published a study titled *How AI Impacts Skill Formation*. Within days, both AI skeptics and AI evangelists claimed it proved their point. It does neither.
 
 The central finding is more specific and more practical than the headlines suggest. It matters because it tells us something important about how junior developers learn unfamiliar tools, not because it settles the broader question of whether AI makes engineers worse.
 
 ## What the Study Actually Measured
 
-The experiment compared 52 mostly junior developers learning Trio, a Python async library unfamiliar to participants, with and without an AI assistant. The post-task quiz tested debugging, code reading, code writing, and general concepts.
+The experiment compared 52 mostly junior developers learning [Trio](https://trio.readthedocs.io/), a Python async library unfamiliar to participants, with and without an AI assistant. The post-task quiz tested debugging, code reading, code writing, and general concepts.
 
-| Measure | AI Group | No-AI Group | Theo's Read |
+| Measure | AI Group | No-AI Group | [Theo](https://t3.gg/)'s Read |
 |---------|---------:|------------:|-------------|
 | Completion time | Slightly faster | Slightly slower | Too noisy to generalise |
 | Quiz score | 50% | 67% | Material learning gap |
@@ -27,13 +27,13 @@ The experiment compared 52 mostly junior developers learning Trio, a Python asyn
 
 The most concerning drop appeared in debugging ability. The AI cohort finished only about two minutes faster on average, without statistical significance. The quiz gap was large enough to look like nearly two letter grades.
 
-**The paper studies skill acquisition on a new library, not broad real-world software delivery.** A constrained browser-based task with unfamiliar tooling is a poor proxy for a tuned local workflow using tools such as Claude Code, Cursor, or Codex-style agents.
+**The paper studies skill acquisition on a new library, not broad real-world software delivery.** A constrained browser-based task with unfamiliar tooling is a poor proxy for a tuned local workflow using tools such as [Claude Code](https://www.anthropic.com/claude-code), [Cursor](https://www.cursor.com/), or [Codex](https://openai.com/index/introducing-codex/)-style agents.
 
 ## Why the Productivity Headline Is Weak
 
-Theo's main pushback is methodological rather than ideological. Participants were encouraged to work quickly in a short window, while also knowing a quiz was coming later. Time spent learning the interface, framing prompts, and adapting to a strange environment can overwhelm any real code-generation gain.
+[Theo](https://t3.gg/)'s main pushback is methodological rather than ideological. Participants were encouraged to work quickly in a short window, while also knowing a quiz was coming later. Time spent learning the interface, framing prompts, and adapting to a strange environment can overwhelm any real code-generation gain.
 
-Sean Goedecke's critique adds another layer. Many AI users in the study spent their time **retyping generated code** rather than copy-pasting or using agent-style workflows. That behaviour makes the study more about novice tool use than about the ceiling of AI-assisted development.
+[Sean Goedecke](https://www.seangoedecke.com/)'s critique adds another layer. Many AI users in the study spent their time **retyping generated code** rather than copy-pasting or using agent-style workflows. That behaviour makes the study more about novice tool use than about the ceiling of AI-assisted development.
 
 ```
 Short timed task

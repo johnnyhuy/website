@@ -2,7 +2,7 @@
 title: The Real AI Skill Isn't Prompting — It's Loop-Closing
 summary: |
   Engineers try AI tools 2-3 times, hit a wall, and walk away. They declare the tool useless and go back to manual work. After watching this pattern repeat across dozens of teams, I've realised the single biggest blocker to AI adoption isn't model quality or tool selection. It's the inability to close the feedback loop.
-date: "2026-02-14 08:00:00 +1000"
+date: "2026-02-15 18:00:00 +1000"
 tags:
   - AI
   - Developer Experience
@@ -54,7 +54,7 @@ I spend 30-40 minutes yapping to an AI to work through problems. That time inves
 
 ## Real Example: Playbook YAML Generation
 
-I used this approach to generate a platform architecture timeline. The AI, equipped with MCP tools, searched Slack, Confluence, and Jira directly, then generated YAML with timestamped events. My key instruction: *"When you create these files, capture any myths and gaps, but also contradictions."*
+I used this approach to generate a platform architecture timeline. The AI, equipped with [MCP](https://modelcontextprotocol.io/) tools, searched [Slack](https://slack.com/), [Confluence](https://www.atlassian.com/software/confluence), and [Jira](https://www.atlassian.com/software/jira) directly, then generated YAML with timestamped events. My key instruction: *"When you create these files, capture any myths and gaps, but also contradictions."*
 
 What makes this work: MCP tool access lets the AI pull real data from Slack, Confluence, and Jira. Contradiction detection means the AI flags when sources disagree. And the iterative refinement loop means I keep correcting errors and steering until the output is accurate.
 
@@ -78,7 +78,7 @@ When AI produces suboptimal output, most engineers say "this is wrong" without a
 
 **Ineffective:** *"This doesn't work."*
 
-**Effective:** *"This contradicts the Slack message from 15 Jan where we decided to use TrueFoundry over LiteLLM. Can you search Slack for that decision and update the timeline accordingly? Also check if there are any other contradictions between Slack and Confluence."*
+**Effective:** *"This contradicts the [Slack](https://slack.com/) message from 15 Jan where we decided to use [TrueFoundry](https://www.truefoundry.com/) over [LiteLLM](https://www.litellm.ai/). Can you search Slack for that decision and update the timeline accordingly? Also check if there are any other contradictions between Slack and Confluence."*
 
 Specificity is everything. You need to diagnose the gap, not just flag the symptom.
 

@@ -2,7 +2,7 @@
 title: Just Talk To It
 summary: |
   The highest-leverage move in agentic engineering isn't longer prompts or elaborate orchestration. It's treating your coding agent like a capable teammate you can interrupt, redirect, and ask for options. When the model is strong and the feedback loop is tight, conversation outperforms ceremony.
-date: "2026-01-26 08:00:00 +1000"
+date: "2026-01-27 13:50:00 +1000"
 tags:
   - AI
   - Developer Experience
@@ -37,7 +37,7 @@ This implies two non-obvious requirements:
 
 ## Prefer CLIs Over MCPs for Low Context Tax
 
-The strongest tactical argument is against defaulting to MCP servers: many MCPs are effectively "a CLI wrapped in tokens". If the model can call `gh` (or any known CLI), it can discover usage via `--help` and you avoid permanently injecting large tool descriptions into context.
+The strongest tactical argument is against defaulting to [MCP](https://modelcontextprotocol.io/) servers: many MCPs are effectively "a CLI wrapped in tokens". If the model can call `gh` (or any known CLI), it can discover usage via `--help` and you avoid permanently injecting large tool descriptions into context.
 
 **Context tax:** Every token spent describing tools is a token not spent reasoning about your code. MCP definitions can be a recurring fixed cost, whereas CLI usage is often already in world knowledge and self-documenting.
 
