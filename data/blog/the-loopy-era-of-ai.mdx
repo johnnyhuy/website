@@ -16,6 +16,10 @@ That's Andrej Karpathy describing his workflow from around December 2025. Sounds
 
 The deeper idea: the most valuable pattern isn't one helpful model. It's autonomous systems that keep working while you're not watching.
 
+The shift from single-session to orchestration is gradual then sudden. You start with one agent walking through features line by line. Eventually you have multiple sessions running: one researching documentation, one implementing a feature, one writing tests. You bounce between them like a conductor, except the musicians keep playing when you look away.
+
+Leave an agent running overnight on a refactoring task and come back to find completed work, passed tests, edge cases handled, and a detailed summary of changes. Not perfect — some optimisations unnecessarily complex — but done overnight what would have taken a full day. The feeling is simultaneously exhilarating and slightly disorienting. You're no longer the one doing the work. You're the one directing it.
+
 ## Agentic Engineering Is Now Orchestration
 
 Karpathy describes a sharp shift where manual coding fell away and agent delegation became default. The skill isn't writing every line anymore. It's expressing intent clearly, splitting work into macro actions, and managing multiple agents across repos and tools.
@@ -56,6 +60,12 @@ flowchart TD
 Remove the human from the inner loop when the objective and metric are explicit. AutoResearch surprised Karpathy by finding useful optimisations in an already well-tuned repo.
 
 Use autonomous loops where metrics are clean, verification is cheap, and risk is bounded. Keep the editable surface small. Treat agent instructions as first-class artefacts — iterate, version, benchmark them.
+
+Persistent loops work where the objective and metric are explicit. A test suite with a clear goal — reduce runtime without decreasing coverage — and an unambiguous metric — total seconds — is ideal. The loop modifies setup code, runs a subset, measures time, keeps improvements.
+
+Over a weekend, it might find optimisations you wouldn't have considered: parallelising test data setup, replacing database fixtures with in-memory mocks, subtle changes to state cleanup between runs. The total improvement might be 30-40% faster tests. Review each change on Monday morning. Some straightforward merges. Some requiring adjustment because the loop optimised for the metric in ways that harm readability.
+
+This is where persistent loops get interesting. Not for replacing human judgement, but for exploring the solution space while humans sleep. The loop generates hypotheses. The human validates and refines. The combination is more powerful than either alone.
 
 ## Model Progress Is Jagged
 
