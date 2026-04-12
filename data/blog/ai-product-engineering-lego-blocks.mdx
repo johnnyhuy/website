@@ -98,6 +98,16 @@ The reinvention trap usually looks like this: a team spends months building a cu
 
 The demoralisation is real. But the mistake happened earlier — nobody asked "what's the marginal value of building this ourselves?" They'd assumed custom meant better. Sometimes it does. Usually it doesn't. The question isn't whether you can build it. It's whether building it creates value that buying it doesn't.
 
+### Platform Primitives in Practice
+
+When building an AI platform, we faced the reinvention question directly. Do we build a custom gateway, or buy one? Do we write our own model routing, or use an existing solution? The temptation to build was strong — we understood the problem deeply, and off-the-shelf solutions never fit perfectly.
+
+We chose a hybrid: buy the gateway, build the SDK. The gateway handled model routing, failover, cost tracking — commodity capabilities where buying beat building. The SDK abstracted sessions, memory, tracing, and agent patterns — our unique layer that absorbed vendor pivots without rewriting applications.
+
+This proved valuable when we later switched gateway vendors. The applications on top didn't change. The SDK absorbed the migration. The primitive — a consistent interface for AI interactions — outlasted the implementation.
+
+The lesson: build where your unique context matters. Buy where the problem is already solved. The boundary moves as the market matures.
+
 ### The Copy-Paste Trap in Practice
 
 Copy-paste competition is everywhere in AI right now. Same GPT-4 backend. Same "rewrite this paragraph" feature. Same Chrome extension. Same pricing. The only differentiation is landing page colour and founder Twitter following.

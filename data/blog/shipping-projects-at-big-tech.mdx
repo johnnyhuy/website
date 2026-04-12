@@ -68,11 +68,25 @@ But faster code just moves the bottleneck downstream. Review, testing, operation
 
 Keep humans focused on the final 20 percent where verification and judgement matter most.
 
+## Internal Platforms Need Shipping Discipline Too
+
+Shipping discipline applies to internal tools, not just customer-facing products. I learned this building a developer experience platform — essentially an internal portal for engineering teams.
+
+The first version had a service catalog, some onboarding docs, and a few software templates. Technically deployed. But engineers didn't use it. It wasn't "shipped" because the org hadn't agreed it solved a real problem.
+
+The shift came when we stopped adding features and started measuring outcomes. Time-to-first-commit for new engineers. Number of teams self-servicing provisioning instead of opening tickets. Scorecard adoption rates. Once we had metrics tied to real engineering pain, leadership recognised it as shipped. Same codebase, different framing.
+
+Internal platforms die from feature bloat and unclear ownership. The ones that survive ship incrementally and measure obsessively. Each small release proves value. Each metric tells a story the org can understand.
+
+Another lesson from platform work: keeping scope bounded is harder than it sounds. A platform migration I was involved with kept growing — new requirements, new stakeholders, new edge cases. The breakthrough came when we explicitly defined what was *out* of scope and stuck to it. A green-field module with solid tests shipped faster than the grand rewrite that was still being designed six months later.
+
+**For platform teams: ship a thin slice that solves one real problem, then measure.** The org will believe in the platform when they see a team save hours, not when they see a architecture diagram.
+
 ## Remote Teams Work When Handoffs Are Clean
 
 Distributed teams can outperform co-located teams if they work async and hand off work cleanly across time zones.
 
-Teams that hand off cleanly write context down. The Sydney engineer leaves a Slack post: found the root cause, branch name, test status, next step. The San Francisco engineer picks it up nine hours later, runs the integration test, deploys to staging, monitors. By the time Sydney wakes up, the fix is validated. One day of work, zero meetings, two detailed handoff notes.
+Teams that hand off cleanly write context down. The engineer in one timezone leaves a detailed post: found the root cause, branch name, test status, next step. The engineer in another timezone picks it up hours later, runs the integration test, deploys to staging, monitors. By the time the first engineer is back, the fix is validated. One day of work, zero meetings, two detailed handoff notes.
 
 Compare that to the team with one remote engineer alone in a timezone. No handoff notes. No async context. Mornings spent waiting for answers. Afternoons trying to reconstruct what was learned. Productive for three hours a day. The rest is waiting and context-switching.
 
