@@ -1,7 +1,7 @@
 ---
 title: The Loopy Era of AI
 summary: |
-  Andrej Karpathy argues that coding has shifted from typing code to orchestrating multiple agents. After mapping his latest thinking against my own experience with [Claude Code](https://www.anthropic.com/claude-code) and [Cursor](https://www.cursor.com/), the most valuable pattern is no longer a single helpful model, but autonomous systems that can keep working without a human in the loop. Here's what that means for engineers in 2026.
+  Andrej Karpathy argues that coding has shifted from typing code to orchestrating multiple agents. After mapping his latest thinking against my own experience with Claude Code and Cursor, the most valuable pattern is no longer a single helpful model, but autonomous systems that can keep working without a human in the loop. Here's what that means for engineers in 2026.
 date: "2026-03-28 10:15:51 +1000"
 tags:
   - AI
@@ -10,17 +10,17 @@ tags:
 draft: false
 ---
 
-Code's not even the right verb anymore. I have to express my will to my agents for most of the day.
+"Code's not even the right verb anymore. I have to express my will to my agents for most of the day."
 
-That is [Andrej Karpathy](https://karpathy.ai/)'s description of his own workflow shift beginning around December 2025. It sounds extreme until you've spent a week running multiple agent sessions in parallel, each handling a discrete chunk of work, while you review and redirect.
+That's Andrej Karpathy describing his workflow from around December 2025. Sounds extreme until you've spent a week running multiple agent sessions in parallel, each on a different chunk of work, while you review and redirect.
 
-The deeper thesis is that the most valuable pattern is no longer a single helpful model, but autonomous systems that can keep working without a human in the loop. That idea shows up in coding agents, home automation, AutoResearch, distributed experiment swarms, and even a new model of education where humans contribute the sparse conceptual breakthroughs and agents handle explanation, iteration, and execution.
+The deeper idea: the most valuable pattern isn't one helpful model. It's autonomous systems that keep working while you're not watching.
 
-## Agentic Software Engineering Becomes Orchestration
+## Agentic Engineering Is Now Orchestration
 
-Karpathy describes a sharp personal workflow shift where manual coding fell away and agent delegation became the default. The relevant skill is no longer writing every line, but expressing intent clearly, splitting work into macro actions, and managing multiple agents across different repos and tools.
+Karpathy describes a sharp shift where manual coding fell away and agent delegation became default. The skill isn't writing every line anymore. It's expressing intent clearly, splitting work into macro actions, and managing multiple agents across repos and tools.
 
-The limiting factor is increasingly the operator rather than raw compute access. Mastery looks like running multiple agents in parallel, each handling an isolated macro task such as research, planning, or implementation.
+The limiting factor is increasingly you, not compute access. Mastery looks like running multiple agents in parallel — one on research, one on planning, one on implementation.
 
 ```mermaid
 flowchart LR
@@ -31,19 +31,19 @@ flowchart LR
     E --> F[Human review and redirection]
 ```
 
-Token throughput now plays the psychological role that GPU utilisation once played in research settings. Increased leverage also increases operator anxiety because unused model capacity feels like wasted opportunity. Review remains the hard boundary because a large diff can still bottleneck on human verification.
+Token throughput is the new GPU utilisation. More leverage means more anxiety — unused model capacity feels like wasted opportunity. Review is still the bottleneck. A big diff still needs human eyes.
 
-Karpathy frames many agent failures as a skill issue in instructions, memory, or decomposition rather than a hard model ceiling. Everything is skill issue, as he puts it.
+Karpathy says many agent failures are skill issues in instructions, memory, or decomposition rather than model limits. "Everything is skill issue," as he puts it.
 
-## Claws and AutoResearch Push Toward Persistent Loops
+## Persistent Loops: The Next Frontier
 
-Karpathy distinguishes ordinary agent sessions from more persistent claw-like systems that keep looping in their own sandbox, accumulate memory, and keep acting while the human is away.
+Karpathy distinguishes ordinary agent sessions from "claw" systems — persistent loops that keep running in their own sandbox, accumulating memory, acting while you're away.
 
-[AutoResearch](https://github.com/karpathy/autoresearch) applies this pattern to AI research by letting agents modify training code, run experiments, and retain only improvements.
+AutoResearch applies this to AI research: agents modify training code, run experiments, keep only improvements.
 
 ```mermaid
 flowchart TD
-    A[Objective and metric] --> B[Agent edits code or instructions]
+    A[Objective and metric] --> B[Agent edits code]
     B --> C[Run experiment]
     C --> D[Evaluate result]
     D -->|Improves metric| E[Keep change]
@@ -53,54 +53,56 @@ flowchart TD
     G --> B
 ```
 
-The core design move is to remove the human from the inner loop when the objective and metric are explicit. AutoResearch surprised Karpathy by finding useful hyperparameter and optimisation changes in an already well-tuned repo. `program.md` is treated as research-organisation code, meaning the instructions themselves become an optimisation surface.
+Remove the human from the inner loop when the objective and metric are explicit. AutoResearch surprised Karpathy by finding useful optimisations in an already well-tuned repo.
 
-Use autonomous loops first in domains with clean metrics, cheap verification, and bounded risk. Keep the editable surface area small so diffs remain understandable and evaluation remains comparable. Treat agent instructions as first-class artefacts that deserve iteration, versioning, and benchmarking.
+Use autonomous loops where metrics are clean, verification is cheap, and risk is bounded. Keep the editable surface small. Treat agent instructions as first-class artefacts — iterate, version, benchmark them.
 
-## Model Progress Is Real but Jagged
+## Model Progress Is Jagged
 
-Frontier models are not improving uniformly. They are becoming dramatically better in verifiable domains such as coding and optimisation, while staying oddly static in softer areas such as humour, nuance, and when to ask clarifying questions. That leads to an expectation of eventual model speciation rather than one perfectly general monoculture.
+Frontier models aren't improving evenly. They're getting dramatically better at verifiable things like coding and optimisation. Staying weirdly static at humour, nuance, and knowing when to ask clarifying questions.
 
-| Theme | Karpathy's Point | Implication |
+| Theme | Karpathy's Point | What It Means |
 |-------|-----------------|-------------|
-| Verifiable tasks | RL strongly improves domains with objective rewards | Coding and optimisation race ahead |
-| Soft tasks | Non-verifiable domains improve less reliably | Nuance, humour, and intent-reading stay uneven |
-| Jaggedness | Models can feel like a brilliant PhD and a ten-year-old at once | Human supervision stays necessary |
-| Speciation | Smaller specialised models should emerge over time | Efficiency and task fit may beat one giant model |
-| Fine-tuning limits | Weight-level steering remains immature | Context windows still do most of the customisation work |
+| Verifiable tasks | RL works great with objective rewards | Coding and optimisation race ahead |
+| Soft tasks | Non-verifiable domains improve less reliably | Nuance and humour stay uneven |
+| Jaggedness | Brilliant PhD and ten-year-old at once | Human supervision stays necessary |
+| Speciation | Smaller specialised models should emerge | Task fit may beat one giant model |
+| Fine-tuning limits | Weight-level steering is still immature | Context windows do most customisation |
 
-Current labs still pursue a monoculture model strategy because they serve unknown user demand across many tasks. Speciation becomes more likely where the task is narrow, valuable, and benefits from lower latency or lower cost. Context windows are currently a much safer and cheaper control surface than deep weight manipulation.
+Labs still chase one general model because they serve unknown demand. Speciation makes sense where the task is narrow, valuable, and benefits from lower latency or cost.
 
-## Jobs, Research and Open Source Shift Toward New Power Balances
+## Jobs and Open Source: New Power Balances
 
-Karpathy treats AI's labour impact as a restructuring of digitally mediated work rather than a simple replacement story. Software demand may rise because software becomes cheaper to produce, while autonomous research loops may compress the need for humans in the inner loop of frontier labs.
+Karpathy sees AI's labour impact as restructuring digitally mediated work, not simple replacement.
 
 | Area | Main Claim | Strategic Takeaway |
 |------|------------|-------------------|
-| Digital jobs | Work that manipulates digital information changes first | Learn to use AI as a tool rather than avoid it |
-| Software demand | Lower cost can increase demand through Jevons-style effects | Engineering may expand before it contracts |
-| Frontier labs | Employees gain access to the edge but lose some independence | Impact exists both inside and outside labs |
-| Open source | Open models remain slightly behind but structurally important | Healthy ecosystems need a shared common layer |
-| Centralisation risk | Too few frontier actors creates systemic risk | More labs and more open capability improve balance |
+| Digital jobs | Information manipulation changes first | Learn to use AI, don't avoid it |
+| Software demand | Lower cost can increase demand (Jevons effect) | Engineering may expand before it contracts |
+| Frontier labs | Employees get edge access, lose some independence | Impact exists inside and outside labs |
+| Open source | Open models stay slightly behind but matter structurally | Healthy ecosystems need a shared base |
+| Centralisation risk | Too few frontier actors is risky | More labs and open capability improve balance |
 
-Jobs are bundles of tasks, and AI currently works best as an amplifier across parts of those bundles. Karpathy is cautiously optimistic that software demand rises as software creation becomes radically cheaper. Independent ecosystem work can matter because people outside frontier labs retain more freedom to speak and experiment.
+Software demand might rise as creation gets cheaper. People outside frontier labs retain more freedom to speak and experiment.
 
-## Robotics Lags Digital Systems While Education Gets Agentified
+## Robotics Lags, Education Gets Agentified
 
-Karpathy expects digital work to transform faster than robotics because bits are easier to copy, test, and optimise than atoms. The near-term bridge is the interface layer where sensors feed real-world data into models and actuators or humans carry instructions back into the world.
+Digital work transforms faster than robotics because bits are easier to copy and test than atoms.
 
-On education, he argues that explanatory work will increasingly be routed through agents, with humans contributing the irreducible insights, curriculum shape, and conceptual compression behind things like [microgpt](https://karpathy.github.io/2026/02/12/microgpt/).
+On education: explanatory work increasingly routes through agents. Humans contribute the irreducible insights, curriculum shape, and conceptual compression.
 
-Build for agent consumption as well as human consumption, especially in docs, APIs, and teaching materials. Focus human effort on the irreducible insight or simplification that agents cannot yet discover for themselves.
+Build for agent consumption as well as human consumption — docs, APIs, teaching materials. Focus human effort on the insight agents can't discover themselves.
 
 ## Summary
 
-- **Agentic engineering is orchestration, not typing.** The skill is expressing intent, splitting work, and managing parallel loops.
-- **Persistent autonomy is the next frontier.** AutoResearch-style loops that keep running while you sleep.
-- **Model progress is jagged, not uniform.** Coding races ahead. Nuance stays flat. Expect speciation.
-- **Software demand may rise, not fall.** Jevons-style effects mean cheaper creation can expand the market.
-- **Build for agents as well as humans.** Docs, APIs, and teaching materials should be agent-readable.
+- **Agentic engineering is orchestration, not typing.** Express intent, split work, manage parallel loops.
+- **Persistent autonomy is next.** Loops that keep running while you sleep.
+- **Model progress is jagged.** Coding races ahead. Nuance stays flat. Expect speciation.
+- **Software demand may rise, not fall.** Cheaper creation can expand the market.
+- **Build for agents too.** Docs, APIs, teaching materials should be agent-readable.
 
 ## What's Next
 
-The name of the game is how can you get more agents running for longer periods of time without your involvement, doing stuff on your behalf. Start with one persistent loop in a domain you understand well. Measure the output. Iterate the instructions. That's the new skill.
+"The name of the game is how can you get more agents running for longer periods of time without your involvement."
+
+Start with one persistent loop in a domain you know well. Measure the output. Iterate the instructions. That's the new skill.
