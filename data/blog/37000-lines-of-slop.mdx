@@ -10,66 +10,70 @@ tags:
 draft: false
 ---
 
-37,000 lines of code a day isn't a flex, it's a warning.
+37,000 lines of code a day isn't a flex. It's a warning.
 
-That was [Garry Tan](https://blog.garrytan.com/)'s claim — 37,000 lines of AI-generated code per day across five concurrent projects. The tech press reported it as evidence of AI's transformative power. A developer going by Gregorian actually audited one of those projects. What they found tells a very different story.
+Garry Tan claimed that number across five concurrent projects. Tech press reported it as proof of AI's power. A developer called Gregorian actually audited one project. Found something very different.
 
 ## The Audit Results
 
-| Category | Finding |
-|----------|---------|
-| Test files | 28 test files bundled into the production bundle, ~300KB of test code sent to every visitor |
-| Scaffolding | A literal [Rails](https://rubyonrails.org/) Hello World controller shipped in production |
-| Images | One uncompressed PNG at 2MB, another at 1.99MB with no modern image handling |
-| Editor | A 520KB rich text editor speculatively shipped from backend to frontend |
-| Accessibility | 47 images with zero alt tags |
-| Rendering | Page content rendered twice in the DOM — once for mobile, once for desktop |
+| Category | What They Found |
+|----------|-----------------|
+| Test files | 28 test files bundled into production bundle, ~300KB sent to every visitor |
+| Scaffolding | A literal Rails Hello World controller shipped in production |
+| Images | One PNG at 2MB, another at 1.99MB, zero modern image handling |
+| Editor | 520KB rich text editor speculatively shipped backend to frontend |
+| Accessibility | 47 images with no alt tags |
+| Rendering | Page content rendered twice — once mobile, once desktop |
 
-The site loads and scores 80 on [Lighthouse](https://developer.chrome.com/docs/lighthouse). But "it works" is a dangerously low bar. Users on constrained connections, screen readers, or older devices bear the real cost of this digital landfill.
+Site loads. Scores 80 on Lighthouse. But "it works" is a dangerously low bar.
 
-## Why Line Count Is a Dangerous Metric
+Users on slow connections, screen readers, older devices — they bear the real cost. Digital landfill.
 
-Raw line counts are meaningless without context. An AI agent that generates 37,000 lines per day is not producing 37,000 lines of validated, production-ready code — it is producing a river of text that may contain substantial quantities of dead code, duplication, accessibility failures, and architectural nonsense. Without a human reading and understanding that output, nobody knows what is actually in the codebase.
+## Line Count Is a Terrible Metric
+
+Raw line counts are meaningless without context. 37,000 lines per day isn't 37,000 lines of validated, production-ready code. It's a river of text containing dead code, duplication, accessibility failures, architectural nonsense. Without human review, nobody knows what's actually in there.
 
 > You sure as hell don't know what is going into your code base if you're not reading it.
 
-The metric of lines of code per day has become a flex in some circles. But lines of code has always been a poor measure of productivity. AI just made it possible to generate meaningless lines at industrial scale.
+Lines of code has always been a poor productivity measure. AI just made it possible to generate meaningless lines at industrial scale.
 
-## The Slowing Down Philosophy
+## Slow Down and Review
 
-[Mario Zechner](https://www.badlogicgames.com/), creator of the [Pi agent framework](https://pi.athlon.app/), writes that the answer is not to abandon AI but to use it deliberately. His core argument: let the AI handle the boring, repetitive tasks that teach you nothing, then carefully evaluate what it produced.
+Mario Zechner, creator of the Pi agent framework, says the answer isn't abandoning AI. It's using it deliberately.
+
+His argument: let AI handle the boring, repetitive stuff that teaches you nothing. Then carefully evaluate what it produced.
 
 Practical guidance:
-- Set self-imposed limits on how much AI-generated code is accepted per day, calibrated to your ability to genuinely review it
-- Do not accept code that you cannot read and understand
-- Use AI as a productivity multiplier for the mechanical parts of coding, not as an autonomous agent operating without oversight
+- Set daily limits on how much AI-generated code you accept, calibrated to your actual review capacity
+- Don't accept code you can't read and understand
+- Use AI for mechanical coding, not as an autonomous agent without oversight
 
-## Tooling for Codebase Hygiene
+## Tooling for Hygiene
 
-Static analysis tools like [Fallow](https://fallow.app/) surface what humans miss in AI-generated codebases:
+Static analysis tools like Fallow surface what humans miss:
 - Dead code
 - Duplicate lines
 - Circular dependencies
 - Complexity hotspots
 
-AI coding agents have a known tendency to solve problems locally dozens of times rather than globally once. Tools like Fallow help identify where this pattern has contaminated an existing codebase.
+AI agents tend to solve problems locally dozens of times rather than globally once. Tools like Fallow identify where this pattern contaminated the codebase.
 
 ## The Core Philosophy
 
 > I'm not outsourcing my brain. I'm using my brain to outsource the work.
 
-This distinction matters. Outsourcing your brain means accepting AI output without understanding it. Using your brain to outsource work means directing the AI toward mechanical tasks while you focus on judgement, review, and architectural decisions.
+Outsourcing your brain = accepting AI output without understanding it. Using your brain to outsource work = directing AI toward mechanical tasks while you handle judgement, review, architecture.
 
-The first approach produces slop. The second produces leverage.
+First approach produces slop. Second produces leverage.
 
 ## Summary
 
-- **Line count is not productivity.** 37,000 lines of unreviewed code is a liability, not an achievement.
-- **"It works" is a low bar.** Performance, accessibility, and maintainability matter.
-- **Review every line you ship.** If you can't read and understand it, don't merge it.
-- **Set daily limits on AI output.** Calibrate to your review capacity, not your generation capacity.
+- **Line count ≠ productivity.** 37,000 unreviewed lines is liability, not achievement.
+- **"It works" is a low bar.** Performance, accessibility, maintainability matter.
+- **Review every line.** If you can't understand it, don't merge it.
+- **Set daily AI limits.** Calibrate to review capacity, not generation capacity.
 - **Use tools to catch what you miss.** Static analysis finds patterns humans overlook.
 
 ## What's Next
 
-The next time you see someone bragging about AI-generated line counts, ask how many of those lines were reviewed by a human who understood them. The answer will tell you whether they're building software or generating slop.
+Next time you see someone bragging about AI line counts, ask how many lines were reviewed by a human who understood them. The answer tells you whether they're building software or generating slop.

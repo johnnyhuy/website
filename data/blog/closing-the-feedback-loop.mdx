@@ -10,13 +10,13 @@ tags:
 draft: false
 ---
 
-Engineers try AI tools 2-3 times, hit a wall, and walk away. They declare the tool useless and go back to doing things manually. I see this pattern constantly and it's the single biggest blocker to AI adoption.
+Engineers try AI twice, it doesn't work, they declare it useless. I see this constantly.
 
-The tool works fine. The skill that's missing is **closing the feedback loop**.
+The tool is fine. The missing skill is **closing the feedback loop**.
 
 ## What Closing the Loop Means
 
-Closing the feedback loop means iteratively steering an AI conversation until you get the outcome you need, rather than accepting early failures as the final answer.
+Iteratively steering the conversation until you get what you need. Not accepting early failures as final.
 
 ```
 Initial Prompt -> AI Response -> Evaluate Output
@@ -31,32 +31,34 @@ Initial Prompt -> AI Response -> Evaluate Output
 | Open Loop (Fails) | Closed Loop (Succeeds) |
 |-------------------|------------------------|
 | Accepts first/second attempt as final | Iterates until outcome achieved |
-| Blames the tool for poor results | Adjusts approach based on feedback |
+| Blames the tool | Adjusts approach based on feedback |
 | Gives up after 2-3 tries | Persists through 5-10+ iterations |
-| Treats AI as a magic black box | Understands AI needs steering |
+| Treats AI as magic black box | Understands AI needs steering |
 | Vague, single-shot prompts | Specific, conversational refinement |
 
 > [!IMPORTANT] The Mental Model Shift
-> Most engineers treat AI like a search engine and expect a correct answer from a single query. AI is closer to pair programming. It requires back-and-forth conversation to refine shared understanding.
+> Most engineers treat AI like a search engine. Expect a correct answer from one query. AI is closer to pair programming. Needs back-and-forth to refine shared understanding.
 
-## My Approach: The 30-40 Minute Yapping Session
+## My Approach: The 30-40 Minute Yap Session
 
-I spend 30-40 minutes yapping to an AI to work through problems. That time investment is the core skill of modern AI-assisted development.
+I spend 30-40 minutes talking to an AI to work through problems. That time investment is the core skill.
 
 **The steering process:**
-1. **Set Context** — explain the problem space, constraints, and desired outcome
-2. **First Attempt** — let AI generate an initial solution
-3. **Evaluate** — identify what's right, what's wrong, what's missing
-4. **Steer** — provide specific feedback on gaps or errors
-5. **Refine** — AI adjusts based on feedback
-6. **Repeat** — continue until output meets requirements
-7. **Validate** — check for contradictions, edge cases, or missed requirements
+1. **Set context** — problem space, constraints, desired outcome
+2. **First attempt** — let it generate something
+3. **Evaluate** — what's right, wrong, missing
+4. **Steer** — specific feedback on gaps
+5. **Refine** — AI adjusts
+6. **Repeat** — until output meets requirements
+7. **Validate** — check contradictions, edge cases, missed requirements
 
 ## Real Example: Playbook YAML Generation
 
-I used this approach to generate a platform architecture timeline. The AI, equipped with [MCP](https://modelcontextprotocol.io/) tools, searched [Slack](https://slack.com/), [Confluence](https://www.atlassian.com/software/confluence), and [Jira](https://www.atlassian.com/software/jira) directly, then generated YAML with timestamped events. My key instruction: *"When you create these files, capture any myths and gaps, but also contradictions."*
+I used this to generate a platform architecture timeline. AI with MCP tools searched Slack, Confluence, and Jira directly, then generated YAML with timestamped events.
 
-What makes this work: MCP tool access lets the AI pull real data from Slack, Confluence, and Jira. Contradiction detection means the AI flags when sources disagree. And the iterative refinement loop means I keep correcting errors and steering until the output is accurate.
+My instruction: *"When you create these files, capture myths, gaps, and contradictions."*
+
+What makes it work: real data from Slack/Confluence/Jira. Contradiction detection flags when sources disagree. Iterative refinement means I keep correcting until it's accurate.
 
 ## Why Engineers Fail to Close the Loop
 
@@ -74,54 +76,54 @@ Most engineers drop off after 2 attempts. I persist through 5-10+.
 
 ### The Feedback Quality Problem
 
-When AI produces suboptimal output, most engineers say "this is wrong" without articulating what or why.
+Most engineers say "this is wrong" without saying what or why.
 
 **Ineffective:** *"This doesn't work."*
 
-**Effective:** *"This contradicts the [Slack](https://slack.com/) message from 15 Jan where we decided to use [TrueFoundry](https://www.truefoundry.com/) over [LiteLLM](https://www.litellm.ai/). Can you search Slack for that decision and update the timeline accordingly? Also check if there are any other contradictions between Slack and Confluence."*
+**Effective:** *"This contradicts the Slack message from 15 Jan where we decided TrueFoundry over LiteLLM. Search Slack for that decision and update the timeline. Also check for other contradictions between Slack and Confluence."*
 
-Specificity is everything. You need to diagnose the gap, not just flag the symptom.
+Specificity is everything. Diagnose the gap, don't just flag the symptom.
 
 ### The Pressure Paradox
 
-Engineers in feature teams face sprint pressure that discourages 30-40 minute sessions. Spending 30 minutes upfront to close the loop saves hours of manual work later, but it feels like a luxury when deadlines are tight.
+Sprint pressure discourages 30-40 minute sessions. But spending 30 minutes upfront saves hours later. Feels like a luxury when deadlines are tight.
 
-## Teaching People to Close the Loop
+## Teaching Loop-Closing
 
-My goal is to make feedback loop closure a teachable, repeatable skill. The most valuable AI skill in 2026 is shifting from prompt crafting to human judgement and iterative steering within AI-assisted workflows.
+Goal: make it teachable and repeatable.
 
-### Steering Language Patterns
+### Steering Language
 
 | Situation | Steering Phrase |
 |-----------|----------------|
 | Output too vague | "Be more specific about X. Include concrete examples." |
 | Missing context | "You're missing context about Y. Here's what you need to know…" |
-| Contradictory information | "This contradicts Z. Search [source] and reconcile the difference." |
-| Wrong direction | "Stop. Let's take a different approach. Instead of X, try Y." |
+| Contradictory info | "This contradicts Z. Search [source] and reconcile." |
+| Wrong direction | "Stop. Let's try a different approach. Instead of X, try Y." |
 | Almost there | "Good, but refine this part: [specific section]. Here's what I need…" |
 
-### Practical Teaching Methods
+### How to Teach It
 
-**Demonstrate the process.** Run real-time sessions showing the first attempt failing, then steer through 5-10 iterations, highlighting what changed at each step.
+**Demonstrate.** Run real-time sessions showing first attempt failing, then steering through 5-10 iterations. Show what changed at each step.
 
-**Create safe practice spaces.** Set up "office hours" or pairing sessions where engineers bring real problems and work through them with someone who already knows how to close the loop.
+**Create safe practice.** "Office hours" where engineers bring real problems and work through them with someone who knows how to close the loop.
 
-**Document case studies.** Show the full arc: initial problem, first AI attempt, steering conversation, final output, time saved. Example: *"How I Generated 3 Months of Platform Timeline in 40 Minutes."*
+**Document case studies.** Full arc: initial problem, first attempt, steering conversation, final output, time saved. Example: *"How I generated 3 months of platform timeline in 40 minutes."*
 
 > [!TIP] Cultural Narrative Shift
-> Change the framing from ❌ *"I tried AI and it didn't work"* to ✅ *"I iterated with AI 8 times and got exactly what I needed."* Celebrate persistence as the skill.
+> Change from ❌ "I tried AI and it didn't work" to ✅ "I iterated 8 times and got exactly what I needed." Celebrate persistence as the skill.
 
 ## Measuring Success
 
-**Someone has learnt to close the loop when they:**
+**Someone has learned it when they:**
 - Continue past 3 attempts without frustration
 - Provide detailed feedback on what's wrong and why
-- Recognise when to steer vs when to restart entirely
-- Willingly invest 30-40 minutes for quality output
-- Trust the process even when early attempts fail
+- Know when to steer vs restart
+- Willingly invest 30-40 minutes
+- Trust the process when early attempts fail
 - Can explain their steering approach to others
 
-**Someone hasn't learnt it when they:**
+**Someone hasn't when they:**
 - Give up early: "I tried twice, it doesn't work"
 - Give vague feedback: "This is wrong" without specifics
 - Blame the tool: "AI is useless for this"
@@ -132,10 +134,10 @@ My goal is to make feedback loop closure a teachable, repeatable skill. The most
 
 - **The real AI skill is loop-closing, not prompting.** Iteration and steering beat clever one-shot prompts.
 - **Most engineers give up too early.** The 4th-5th attempt is where quality jumps from 75% to 95%.
-- **Specific feedback beats vague complaints.** Diagnose the gap, don't just flag the symptom.
-- **30-40 minutes upfront saves hours later.** The investment feels expensive but pays compound interest.
+- **Specific feedback beats vague complaints.** Diagnose the gap.
+- **30-40 minutes upfront saves hours later.** Expensive-feeling investment with compound returns.
 - **Organisations need to protect iteration time.** Sprint pressure kills the skill before it develops.
 
 ## What's Next
 
-The next time you hear "I tried AI and it didn't work," ask how many iterations they ran. If the answer is 2-3, the problem isn't the tool. It's the loop.
+Next time you hear "I tried AI and it didn't work," ask how many iterations they ran. If the answer is 2-3, the problem isn't the tool. It's the loop.
