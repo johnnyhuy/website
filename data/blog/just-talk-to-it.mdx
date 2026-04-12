@@ -12,13 +12,21 @@ draft: false
 
 Stop overthinking prompts. Treat your agent like a teammate you can interrupt, redirect, and ask for options. If the model is strong and the feedback loop is tight, "just talk to it" beats elaborate plan documents and orchestration theatre.
 
+The temptation to craft elaborate prompts is real. Describe the feature, specify file structure, outline edge cases, define error handling. The prompt becomes longer than the code it produces. And half the time, the agent does something slightly different because the important constraint was buried in paragraph three.
+
+Compare that to starting with "build me a form that validates email and password" and letting the agent ask clarifying questions. Five minutes of conversation often produces better code than forty-five minutes of monologue. The agent asks about validation rules you hadn't considered. It suggests patterns you didn't know existed. The conversation surfaces requirements that elaborate prompts bury.
+
+The difference isn't prompt quality. It's interaction bandwidth. Dialogue beats specification.
+
 Stop optimising prompts. Start optimising *interaction bandwidth*: rapid iteration, frequent check-ins, small reversible changes, tight deploy cycles. The agent isn't a "code generator." It's a high-throughput implementer. Quality depends on your ability to control blast radius and keep the loop tight between intent, change, and verification.
 
 ## Blast Radius Is Your Unit of Work
 
 Blast radius = expected scope of a change (files touched, time, risk). Throw many small bombs or one big one. Multiple big bombs at once destroys your ability to reason, review, and recover.
 
-Simple rule: if progress time or touched files exceed your mental estimate, interrupt immediately and ask for a status update. Keeps the agent aligned. Prevents it from "solving the wrong problem correctly."
+Blast radius gets out of control fast. Ask an agent to "refactor the authentication system" and three hours later it's touched seventeen files, renamed functions that other services depend on, introduced subtle bugs that tests don't catch. The changes can't be reviewed meaningfully because the blast radius is too large. The only option is to revert and start over with smaller, scoped requests.
+
+The rule: if progress time or touched files exceed your mental estimate, interrupt immediately and ask for a status update. Keeps the agent aligned. Prevents it from "solving the wrong problem correctly."
 
 Useful control prompts (short, human language):
 - "What's the status and what files have you changed so far?"
@@ -65,6 +73,10 @@ Not magic words. Explicit instructions to allocate time to discovery and avoid t
 Agent-written code drifts toward duplication and "good enough" unless you deliberately refactor. Productive rhythm:
 - Fast feature iteration
 - Dedicated "refactor days" driven by tooling (duplication detection, dead code, lint rules, deprecations, slow tests)
+
+Agent-written code drifts toward duplication and "good enough" unless you deliberately refactor. After months of heavy agent use, codebases accumulate multiple implementations of the same logic. None wrong. Each good enough for its feature. Collectively, a maintenance burden.
+
+The fix is scheduling: declare "refactor Fridays" — no new features, just cleanup. Consolidate duplication, remove dead code, fix lint rules, address deprecations. The agents do most of the refactoring work. You just decide what good looks like.
 
 Flips a common fear ("AI creates slop") into an operating model: slop is a *scheduling* problem, not inevitability.
 

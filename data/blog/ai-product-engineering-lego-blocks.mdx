@@ -16,6 +16,10 @@ The question isn't "can we build this?" anymore. It's "what do we build and why 
 
 That question got harder. Moats that lasted 6-12 months now survive 2-3 weeks. The answer is treating AI like Lego blocks — your advantage comes from how you assemble them with your unique stuff, not from the blocks themselves.
 
+I learned this lesson the hard way. The temptation to build custom models is real — fine-tuning on your corpus, custom preprocessing, optimised inference. It feels like a moat. But foundation models improve on a different cadence than product features. What's impressive today is baseline next quarter. The competitive advantage becomes a maintenance burden that costs more to run than the API alternatives.
+
+The mistake isn't technical. It's strategic. Confusing "can we build this?" with "should we build this?" The moat isn't in the model. It was never going to be in the model.
+
 ## The Lego Framework
 
 Three layers:
@@ -87,6 +91,20 @@ Unique repository that gets better over time. Enables cross-meeting search, proj
 | **Copy-paste trap** | Same Lego stack as competitors | No unique data or functionality, competing on UI polish |
 
 Reinvention wastes cycles on solved problems. Copy-paste creates undifferentiated products competing on price.
+
+### The Reinvention Trap in Practice
+
+The reinvention trap usually looks like this: a team spends months building a custom model, proud of the accuracy numbers, the custom feature engineering, the hyperparameter tuning. Then someone runs the same data through a commercial API and matches or exceeds the results with zero training, zero maintenance, zero infrastructure.
+
+The demoralisation is real. But the mistake happened earlier — nobody asked "what's the marginal value of building this ourselves?" They'd assumed custom meant better. Sometimes it does. Usually it doesn't. The question isn't whether you can build it. It's whether building it creates value that buying it doesn't.
+
+### The Copy-Paste Trap in Practice
+
+Copy-paste competition is everywhere in AI right now. Same GPT-4 backend. Same "rewrite this paragraph" feature. Same Chrome extension. Same pricing. The only differentiation is landing page colour and founder Twitter following.
+
+The ones that survive don't win on AI. They win on workflow integration — the specific CMS their users can't live without, the approval chain that maps to how the team actually works, the data format that removes a manual export step. The AI is identical. The moat is the workflow.
+
+Copy-paste competition is a race to the bottom on price. The winner is whoever has the most runway, not whoever has the best product. Avoid it by finding the seam that everyone else missed — the workflow your users spend 80% of their time in, the integration that removes friction they didn't know they had.
 
 ## Moat Timeline
 

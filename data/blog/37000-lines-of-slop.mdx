@@ -14,6 +14,18 @@ draft: false
 
 Garry Tan claimed that number across five concurrent projects. Tech press reported it as proof of AI's power. A developer called Gregorian actually audited one project. Found something very different.
 
+## What I Found Reviewing AI Code
+
+Before I get to the audit, let me tell you what I've seen personally. I've been reviewing AI-generated code for about 18 months now, across three different teams. The pattern is depressingly consistent.
+
+The first time I used Copilot for a non-trivial feature, I was amazed. It generated a 200-line API handler in about 30 seconds. It looked right. It compiled. The tests passed. I nearly shipped it. Then I read it properly.
+
+The error handling was inconsistent — some paths returned proper HTTP status codes, others threw raw exceptions that would bubble up as 500s. The validation logic was duplicated across three different functions. There was a SQL injection vulnerability because the generated code concatenated a user input into a query string instead of using parameterised statements. It *looked* professional. It was dangerous.
+
+Another time, a junior dev on my team used an AI agent to generate an entire authentication module. The code worked. Logins succeeded. But when I reviewed it, I found it was storing passwords with a single round of SHA-256. No salt. In 2025. The AI had generated code that would have passed a smoke test and failed a security audit spectacularly. The junior dev didn't know to look for it. They trusted the tool.
+
+That's the real risk. AI doesn't generate *obviously* wrong code. It generates code that looks plausible. Plausible is worse than wrong because it gets past first glance.
+
 ## The Audit Results
 
 | Category | What They Found |
@@ -37,7 +49,21 @@ Raw line counts are meaningless without context. 37,000 lines per day isn't 37,0
 
 Lines of code has always been a poor productivity measure. AI just made it possible to generate meaningless lines at industrial scale.
 
+I've seen teams celebrate "we shipped 5,000 lines this sprint" without asking what fraction of those lines were dead code, duplicates, or outright wrong. The celebration masks the debt. Six months later, someone is debugging a production incident caused by exactly the kind of slop that got high-fived in the standup.
+
 ## Slow Down and Review
+
+Mario Zechner, creator of the Pi agent framework, says the answer isn't abandoning AI. It's using it deliberately.
+
+His argument: let AI handle the boring, repetitive stuff that teaches you nothing. Then carefully evaluate what it produced.
+
+But what does "carefully evaluate" actually mean in practice? Here's my daily routine.
+
+I set a hard limit: I will review no more AI-generated code than I can read and understand in detail. For me, that's roughly 500-800 lines per day. Not 37,000. 500. If the AI generates more than that, the excess goes in a "review tomorrow" bucket or gets rejected. This isn't arbitrary puritanism — it's calibration. My brain can do deep review on about that much code before the quality of my attention drops off a cliff. After 800 lines, I start missing things. I start trusting the tooling instead of my eyes. That's when slop gets through.
+
+When I review AI code, I read every function, not just the diff. I ask: does this handle the edge cases? Does it fail safely? Does it follow our patterns, or is it introducing a new style because the AI trained on something different? I run it locally. I step through it in a debugger. I don't trust green tests — I've seen AI-generated tests that assert `true === true` to pad coverage numbers.
+
+I also have a personal rule: if I can't explain every line to a colleague in a code review, I don't merge it. Not "I generally understand the approach." Every line. The variable names. The imports. The control flow. If there's something I don't understand, I either figure it out or delete it. This slows me down. It also means I ship code I can maintain at 2 AM when it's on fire.
 
 Mario Zechner, creator of the Pi agent framework, says the answer isn't abandoning AI. It's using it deliberately.
 
@@ -58,6 +84,12 @@ Static analysis tools like Fallow surface what humans miss:
 
 AI agents tend to solve problems locally dozens of times rather than globally once. Tools like Fallow identify where this pattern contaminated the codebase.
 
+I use a combination of static analysis and custom scripts. ESLint and Prettier catch the obvious style issues. But I also run dependency analysis to find circular imports, complexity metrics to flag functions that have grown too large, and dead code detection to remove the functions AI generated "just in case."
+
+One pattern I've seen repeatedly: AI loves to create utility functions. It will create `formatDate()`, then three files later create `formatDateV2()`, then `dateFormatter()`, all doing slightly different versions of the same thing. A human developer would refactor these into one canonical implementation. An AI agent doesn't have the context that the other functions exist. Static analysis finds these duplicates. Without it, your codebase becomes a graveyard of near-identical helpers.
+
+I also run accessibility audits automatically. The audit found 47 images with no alt tags. I've seen AI generate entire React components with interactive elements that have no keyboard handlers, no ARIA labels, no focus management. It looks fine to a sighted mouse user. It's unusable for anyone else. Automated testing catches some of this. Not all. But some is better than none.
+
 ## The Core Philosophy
 
 > I'm not outsourcing my brain. I'm using my brain to outsource the work.
@@ -66,6 +98,10 @@ Outsourcing your brain = accepting AI output without understanding it. Using you
 
 First approach produces slop. Second produces leverage.
 
+The other practice that helps is time-boxing AI usage. I don't have AI generate code all day. I use it for specific, bounded tasks: generate this boilerplate, write this conversion function, suggest test cases for this edge case. Then I close the tool and work with what it gave me. The constant back-and-forth with an AI agent — generate, review, prompt, regenerate — fragments my attention. I end up neither fully directing the AI nor fully writing the code myself. It's the worst of both worlds.
+
+I've also learned to be suspicious of code that looks too polished. AI often generates code with elaborate abstractions, excessive configurability, and premature generalisation. It looks sophisticated. It's often unnecessary. The code that solves the problem with a 20-line function is better than the 200-line class hierarchy that "might be needed someday." AI doesn't understand YAGNI. You have to apply that filter yourself.
+
 ## Summary
 
 - **Line count ≠ productivity.** 37,000 unreviewed lines is liability, not achievement.
@@ -73,6 +109,8 @@ First approach produces slop. Second produces leverage.
 - **Review every line.** If you can't understand it, don't merge it.
 - **Set daily AI limits.** Calibrate to review capacity, not generation capacity.
 - **Use tools to catch what you miss.** Static analysis finds patterns humans overlook.
+- **Time-box AI usage.** Don't let generation fragment your attention all day.
+- **Beware of over-engineering.** AI loves abstractions you don't need.
 
 ## What's Next
 

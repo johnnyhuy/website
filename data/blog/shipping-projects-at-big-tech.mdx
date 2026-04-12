@@ -33,7 +33,9 @@ That feels weird at first. We want to believe clean code and green tests are eno
 
 Left alone, every project drifts, gets blocked, or hits an invisible dependency you didn't know existed.
 
-Someone has to drag it across the line. Usually one engineer who holds the whole picture in their head — not doing all the work, but noticing the missing security review, the unowned dependency, the team that assumed someone else was handling it.
+This pattern repeats everywhere. A project looks simple on paper. Three sprints. One engineer. Straightforward. Then you discover the security review wasn't scheduled, the dependency team has a six-week backlog, and the RFC never reached the people who needed to see it. Assumptions live in different Slack channels until someone asks the obvious question three weeks in.
+
+Someone has to drag it across the line. Usually one engineer who holds the whole picture in their head — not doing all the work, but noticing the missing review, the unowned dependency, the team that assumed someone else was handling it.
 
 Rules that look rigid bend when the business actually needs movement. The trick is knowing when the business actually needs movement.
 
@@ -41,9 +43,15 @@ Rules that look rigid bend when the business actually needs movement. The trick 
 
 Strong engineers can jump into unfamiliar code, build a demo that kills three weeks of debate, or spot a requirement that can be safely simplified.
 
+I've seen teams spend months debating infrastructure choices with slide decks and benchmark data, neither side budging. The breakthrough usually comes from someone who stops talking and starts showing — a working prototype with real load tests, a demo that makes the trade-offs visible, a spike that answers the question in days instead of weeks.
+
+The engineer who builds the prototype rarely gets credit in the project update. But people remember who moved things forward. The next time a hard project needs leadership, that's who gets asked.
+
 **Burning down Jira tickets is less impactful than de-risking a project that matters.** Find the bottleneck that's blocking everyone, then prototype the smallest thing that moves the conversation forward.
 
 Talk to product. Talk to design. Find where the project is actually stuck and apply your skill there.
+
+The pattern applies beyond software. Any complex project with multiple stakeholders, invisible dependencies, and unclear ownership follows the same dynamics. The code — or the document, or the campaign, or the product spec — is the easy part. The hard part is the organisational agreement that the problem is solved.
 
 ## AI Helps Most With Speed and Unfamiliar Code
 
@@ -63,6 +71,10 @@ Keep humans focused on the final 20 percent where verification and judgement mat
 ## Remote Teams Work When Handoffs Are Clean
 
 Distributed teams can outperform co-located teams if they work async and hand off work cleanly across time zones.
+
+Teams that hand off cleanly write context down. The Sydney engineer leaves a Slack post: found the root cause, branch name, test status, next step. The San Francisco engineer picks it up nine hours later, runs the integration test, deploys to staging, monitors. By the time Sydney wakes up, the fix is validated. One day of work, zero meetings, two detailed handoff notes.
+
+Compare that to the team with one remote engineer alone in a timezone. No handoff notes. No async context. Mornings spent waiting for answers. Afternoons trying to reconstruct what was learned. Productive for three hours a day. The rest is waiting and context-switching.
 
 **Don't leave one remote engineer alone in a timezone.** Build clusters, not isolated individuals. Write down context. Record demos. Make the next steps explicit so work keeps moving while someone sleeps.
 

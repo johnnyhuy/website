@@ -29,6 +29,10 @@ The AI group finished about two minutes faster — not statistically significant
 
 **The biggest drop was debugging ability.** That's the part that should worry us. Human oversight still matters, and debugging is where humans catch what AI misses.
 
+The debugging gap shows up in real work too. You describe what you want, review the output, ship it. The code works. Tests pass. Three weeks later something breaks in production — an edge case the agent hadn't considered — and you find yourself staring at error traces without a complete mental model. The agent built it, but you didn't build the understanding of how it works.
+
+The response isn't to avoid agents. It's to change how you use them. Ask for explanations before implementation. Make them walk through control flow. If they use a pattern you don't recognise, stop and ask why. The conversation takes longer. The output is better. And when things break, you can actually fix them.
+
 The study measures learning a new library in 30-35 minutes. That's not your daily workflow with Claude Code or Cursor.
 
 ## Why the Speed Headline Is Weak
@@ -43,6 +47,10 @@ Familiarity with the environment and workflow is a huge missing variable. Theo s
 
 The useful part of the paper is the behaviour breakdown. Heavy delegation and AI-led debugging correlated with the worst quiz scores. Asking for explanations and writing code manually preserved more learning.
 
+The pattern shows up everywhere. One engineer treats the agent like a senior dev to delegate to. "Build me a user authentication flow." Working code ships. The engineer moves on. Three months later, they can describe what authentication is but struggle to debug why a session isn't persisting across subdomains.
+
+Another engineer treats the agent like a tutor. "Explain how JWT tokens work. Now show me how to implement refresh tokens. Now explain why we need a blacklist for revoked tokens." Initial velocity is slower. But three months later, they can trace a token through the entire lifecycle, identify why an edge case fails, explain the security trade-offs. Same tool. Different posture. Different outcomes.
+
 | Pattern | What It Looks Like | Speed | Learning |
 |---------|-------------------|-------|----------|
 | AI delegation | "Do most of it for me" | Fastest | Worst |
@@ -55,6 +63,10 @@ The useful part of the paper is the behaviour breakdown. Heavy delegation and AI
 The study encouraged speed, which probably discouraged the slower, more educational habits. Ask follow-ups. Request explanations. Validate understanding before moving on.
 
 The practical line: using AI to skip thinking versus using AI to sharpen thinking.
+
+This distinction isn't just about learning. It's about long-term capability. The engineer who delegates everything might ship faster this quarter. But the engineer who engages deeply will ship faster next year, because she'll have built the intuition that lets her spot problems before they become bugs. She'll know which corners can be cut and which can't. She'll have the taste that tells her when something is subtly wrong, even when all the tests pass.
+
+That kind of judgement doesn't come from delegation. It comes from struggle.
 
 ## The Skateboard Analogy
 
