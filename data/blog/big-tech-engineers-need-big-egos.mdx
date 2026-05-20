@@ -12,86 +12,68 @@ draft: false
 
 You need ego to work in big tech. Not the loud kind. The quiet kind that says "I can figure this out" even when the evidence says you can't.
 
-## Why Ego Matters
+[Sean Goedecke](https://www.seangoedecke.com/big-tech-needs-big-egos/) argues this is not arrogance in the bully sense. It's a durable self-belief that survives constant confusion, incomplete knowledge, technical disagreement, and organisational friction. The kind that lets you act despite ignorance instead of freezing in it.
 
-Large-scale engineering is humbling. You're wrong most of the time. The codebase is too big to understand. You still have to move forward.
+## Why Ego Matters in Engineering
 
-That quiet ego is what keeps you investigating when nothing makes sense. It's what lets you take a position in a room full of senior people who disagree. It's what stops you from hedging forever.
+Large-scale software engineering is inherently humbling. Engineers work inside codebases too large to fully understand, spend much of their time being wrong, and still need to move forward anyway.
 
-I learned this during a three-week outage investigation. A payment processing system was failing intermittently. Seven engineers had looked at it. Everyone had a theory. None of them matched the data. The team lead wanted to rollback the last three deployments and hope for the best.
+In that environment, a strong ego functions as a stabiliser. It supports the belief that a path through the ambiguity can be found, even when there is no immediate evidence that the problem is tractable.
 
-I didn't have a better theory. But I had a strong hunch that the rollback wouldn't help. The failure pattern didn't match deployment times. I said so in the incident channel. Got pushback from two senior engineers who were convinced it was a recent change. I held my position — not because I was sure I was right, but because I was sure the rollback was wrong. We kept investigating. Six hours later we found a race condition in a library that had been in production for eight months. The recent deployments were a red herring.
+This same ego is required in large companies because decisions do not make themselves. Senior engineers need to take positions, challenge incorrect assumptions, and absorb the social cost of making changes that some people will dislike.
 
-If I'd stayed quiet, we'd have rolled back, seen no improvement, and spent another day chasing our tails. My ego — my belief that I could see something the room was missing — saved us that day. It wasn't arrogance. It was the willingness to be wrong in public rather than let a worse decision happen by default.
+| Situation | Low-ego failure mode | Useful ego response |
+|-----------|---------------------|---------------------|
+| Confusing system behaviour | Hesitation and self-doubt | Keep investigating until the problem emerges |
+| Architecture debate | Endless hedging | Take a position with acknowledged trade-offs |
+| Bad assumption in a meeting | Stay silent | Correct the claim clearly and early |
+| Org-wide change | Avoid conflict | Proceed knowing some disagreement is inevitable |
 
-| Situation | Low-ego Move | Useful Ego Move |
-|-----------|-------------|-----------------|
-| Confusing system behaviour | Freeze up, wait for permission | Keep digging until the problem reveals itself |
-| Architecture debate | "Both options have pros and cons" | Take a position, name the trade-offs |
-| Bad assumption in a meeting | Stay silent | Correct it clearly and early |
-| Org-wide change | Avoid the conflict | Push through knowing some people will hate it |
+A low-ego culture can become passive if nobody is willing to say "this is the right call." Productive engineers need an almost unreasonable belief that they can still find the answer, even in systems they helped build that they no longer fully understand.
 
-## Big Tech Needs It Even More
+## Why Big Tech Needs It Even More
 
-In large orgs, decisions don't make themselves. Someone has to fill the vacuum or a less-informed person will.
+In large organisations, decisions don't make themselves. Someone has to fill the vacuum or a less-informed person will.
 
-Three behaviours that matter:
+Goedecke identifies three behaviours that matter:
 
-1. **Take positions.** Endless nuance just lets worse decisions happen.
-2. **Tolerate making enemies.** Useful change usually annoys someone.
-3. **Interrupt bad reasoning early.** Silence lets bad assumptions turn into funded work.
+1. **Take positions.** Endless nuance just lets worse decisions happen. Taking positions is a duty because otherwise less-informed decision makers fill the vacuum.
+
+2. **Tolerate making enemies.** Useful change in large companies often annoys someone, so conflict avoidance becomes a delivery constraint. Senior engineers need enough ego to believe they may be the only person in the room seeing the problem correctly.
+
+3. **Interrupt bad reasoning early.** Silence in leadership meetings can turn bad assumptions into months of wasted engineering effort. Silence lets bad assumptions calcify into funded work.
 
 Sometimes you're the only person in the room seeing the problem clearly. You need enough ego to believe that might be true.
 
 ## The Counterweight: Organisational Humility
 
-Same engineer, different context. When exec priorities shift, you need to drop the ego fast.
+The same engineer who needs a strong ego in technical work also needs to suppress it when executive priorities shift. Engineers usually have latitude on implementation, but very little on strategy. Confusing those layers is a common source of pain and burnout.
 
-You can be right, do excellent work, and still lose because of politics three levels up. Projects get canned. Priorities reverse. Strong effort goes unrewarded.
+An engineer may do excellent work, be correct on the merits, and still lose due to political context several layers above them. Projects can be cancelled late, priorities can reverse suddenly, and strong effort may go unrewarded.
 
-I spent four months leading a migration to a new service mesh. Built the roadmap. Got buy-in from three teams. Wrote the RFC. Started the implementation. Two weeks before the first production rollout, the VP of Engineering decided we were standardising on a different vendor's solution. The decision came from a partnership negotiation I had no visibility into. My work wasn't wrong. It just wasn't the company's priority anymore.
+> At the end of the day, your job — the reason the company pays you — is to execute on your boss's and your boss's boss's plans, whether you agree with them or not.
+>
+> Sean Goedecke
 
-The first time this happened to me, I took it personally. I was angry. I felt disrespected. I vented to my manager about the wasted effort. He listened patiently, then said: "Johnny, you built the right thing at the wrong time. The company doesn't owe you a victory lap for that." He was right. I'd confused technical correctness with organisational alignment. They are not the same thing.
+Remaining effective requires the ability to absorb that without treating every organisational setback as a personal injustice. The skill is separating technical conviction from status attachment.
 
-The skill is absorbing that without treating every setback as a personal injustice.
-
-```
-High ego in technical work
-    -> Strong positions -> Drives decisions
-        -> Execs align? -> Project advances
-        -> Execs don't align? -> Project dies
-            -> Low ego response -> Don't take it personally -> Move on
-```
-
-We're paid to execute, not to unilaterally set strategy. Separating those two is how you avoid burnout.
-
-I've watched engineers burn out because they couldn't make this separation. They'd fight every priority shift. They'd argue with directors about strategy. They'd treat every cancelled project as a betrayal. Those engineers were often technically excellent. But they exhausted themselves trying to win battles that weren't theirs to fight.
-
-The ones who lasted? They had a simple rule: fight hard for technical decisions within your scope. Accept strategic decisions outside your scope. Know which is which.
+Engineers are paid mainly to execute plans, not to unilaterally redefine them. Hard work that is punished or discarded is especially burnout-inducing because the expected reward never arrives. Emotional resilience in big tech depends on this separation.
 
 ## The Chameleon Model
 
-Effective staff engineers aren't always humble or always forceful. They're adaptive.
+Highly effective engineers are neither uniformly humble nor uniformly forceful. They are adaptive.
 
-High ego when ambiguity or weak reasoning needs pushing. Low ego when the company makes a strategic call you don't control.
+They show high ego when ambiguity, weak reasoning, or delivery inertia need to be overcome. They show low ego when the company makes a strategic call they do not control.
 
-I watched a staff engineer, let's call her Priya, navigate this perfectly. In a technical review, she tore apart a proposed architecture. Pointed out the single points of failure. Questioned the cost projections. Pushed back on the timeline. She was forceful, direct, unapologetic. The room listened. The architecture changed.
+That creates a difficult profile to emulate. Engineers who are too soft cannot drive change. Engineers who are too proud cannot survive large-company reality. The effective middle is psychologically demanding because it asks for confidence without entitlement.
 
-Two weeks later, the same VP who'd cancelled my service mesh project announced a reorg that moved her team under a different director. Priya's first question in the team meeting wasn't "why wasn't I consulted?" It was "what does this change about our priorities, and how do I help the team transition?" No resentment. No performative disagreement. Just practical adaptation.
+| Pattern | Result |
+|---------|--------|
+| Uniform humility | No one drives difficult decisions through ambiguity |
+| Uniform ego | Executives and politics eventually crush it |
+| Situational switching | Drives change when needed, adapts when overruled |
 
-That's the chameleon. She could be the most forceful person in the room when the topic was technical. And the most cooperative person in the room when the topic was organisational. She knew which layer she was operating in.
-
-Not everyone gets this right. I've seen two failure modes repeatedly:
-
-**The permanently humble engineer.** Always agreeable. Always accommodating. Never takes a position that might upset someone. These engineers are lovely to work with. They're also invisible in promotion cycles. When leadership discusses who to advance, nobody remembers them because they never stood for anything. They become professional yes-people. Nice, competent, and stuck.
-
-**The permanently forceful engineer.** Always has a position. Always pushes back. Always corrects. These engineers get labelled as difficult. As "not a team player." As someone who "doesn't know how to pick their battles." Eventually they're managed out or sidelined. The org doesn't crush them dramatically. It just stops inviting them to important conversations.
-
-- Too soft? Nothing gets decided.
-- Too proud? The org eventually crushes you.
-- The middle ground is psychologically demanding — confidence without entitlement.
-
-That's why strong staff engineers are rare. The switching is exhausting. You have to believe you're right enough to argue. And believe you might be wrong enough to let go. Both at the same time.
+This helps explain why strong big-tech staff engineers are rare. The switching is exhausting. You have to believe you're right enough to argue. And believe you might be wrong enough to let go. Both at the same time.
 
 ## Summary
 
@@ -103,3 +85,8 @@ That's why strong staff engineers are rare. The switching is exhausting. You hav
 ## What's Next
 
 Next time you feel hesitation in a technical debate, ask: is my silence helping the project, or just protecting my comfort? The answer usually tells you whether you need more ego in that room, not less.
+
+## References
+
+- [Sean Goedecke - Big tech engineers need big egos](https://www.seangoedecke.com/big-tech-needs-big-egos/)
+- [Matt Hogg - A unified theory of ego, empathy and humility at work](https://matthogg.fyi/a-unified-theory-of-ego-empathy-and-humility-at-work/)
