@@ -11,11 +11,11 @@ draft: false
 
 The familiar hum of terminal sessions has taken on a new character lately. Where once we typed precise commands with surgical accuracy, developers are now conversing with their command line in plain English. What sounds revolutionary is actually the maturation of an idea that's been brewing since the early days of GPT-3.5[^1].
 
-Cast your mind back to the early days of 2023—light years ago in AI time. While everyone was marvelling at ChatGPT's conversational abilities, a handful of developers were asking a more ambitious question: what if we could delegate entire tasks to AI agents through the command line? [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT)[^2] emerged as the proof of concept, a scrappy tool that demonstrated the tantalising possibility of autonomous AI agents executing complex development workflows.
+Cast your mind back to the early days of 2023-light years ago in AI time. While everyone was marvelling at ChatGPT's conversational abilities, a handful of developers were asking a more ambitious question: what if we could delegate entire tasks to AI agents through the command line? [AutoGPT](https://github.com/Significant-Gravitas/AutoGPT)[^2] emerged as the proof of concept, a scrappy tool that demonstrated the tantalising possibility of autonomous AI agents executing complex development workflows.
 
 The concept was brilliant in its simplicity: give an AI agent a goal, let it break down the task, execute commands, and iterate until completion. But like many pioneering technologies, AutoGPT was more proof-of-concept than production-ready tool. The foundation models weren't quite there yet, the tooling was rough around the edges, and the developer experience left much to be desired.
 
-Now, as the industry reaches critical mass, major vendors are presenting their refined versions of this same core concept. The question isn't whether AI-powered CLI tools will transform development workflows—it's which approach will define the next decade of software engineering.
+Now, as the industry reaches critical mass, major vendors are presenting their refined versions of this same core concept. The question isn't whether AI-powered CLI tools will transform development workflows-it's which approach will define the next decade of software engineering.
 
 ## The Testing Ground
 
@@ -31,13 +31,13 @@ The Laravel project became my primary testing ground - getting dev containers co
 
 The tool excels in several key areas:
 
-- **Codebase Intelligence**: Claude Code maps and explains entire codebases in a few seconds, using agentic search to understand project structure and dependencies without manual context selection. This "soft-cache" approach—essentially generating markdown documentation that explains your codebase—has become a defining pattern across AI CLI tools.
+- **Codebase Intelligence**: Claude Code maps and explains entire codebases in a few seconds, using agentic search to understand project structure and dependencies without manual context selection. This "soft-cache" approach-essentially generating markdown documentation that explains your codebase-has become a defining pattern across AI CLI tools.
 
 - **IDE Integration**: Rather than forcing developers to abandon their preferred environments, Claude Code offers extensions for VS Code, JetBrains, and Neovim. These extensions bridge the gap between terminal-based AI assistance and the rich context available through IDE APIs.
 
 - **Model Flexibility**: Support for Anthropic's full model suite, plus integration with Amazon Bedrock and Google Cloud Vertex AI, makes it enterprise-ready without vendor lock-in concerns.
 
-- **Thinking Modes**: Claude Code includes specific phrases that trigger extended thinking modes—"think" provides 4,000 tokens of thinking budget, while "ultrathink" allocates up to 31,999 tokens for complex reasoning[^4].
+- **Thinking Modes**: Claude Code includes specific phrases that trigger extended thinking modes-"think" provides 4,000 tokens of thinking budget, while "ultrathink" allocates up to 31,999 tokens for complex reasoning[^4].
 
 The downside? Cost and accessibility. API costs for a medium-sized PR typically range from $10-15[^5], making it a significant investment for frequent use.
 
@@ -53,11 +53,11 @@ Key differentiators include:
 
 - **Sandbox Execution**: Codex runs model-generated commands in a sandbox, allowing developers to review and approve changes before execution.
 
-Early comparisons suggest performance differences. One developer noted that "Claude Code did great and wrote pretty decent docs, while Codex didn't do well—it hallucinated a bunch of stuff that wasn't in the code and completely misrepresented the architecture"[^7].
+Early comparisons suggest performance differences. One developer noted that "Claude Code did great and wrote pretty decent docs, while Codex didn't do well-it hallucinated a bunch of stuff that wasn't in the code and completely misrepresented the architecture"[^7].
 
 ### Amazon Q Developer CLI
 
-Amazon's entry into this space reflects their cloud-first, enterprise-focused philosophy. The tool integrates deeply with AWS services but suffers from what I'd call "enterprise bloat"—requiring a desktop application for configuration and complex OAuth flows through IAM Identity Centre.
+Amazon's entry into this space reflects their cloud-first, enterprise-focused philosophy. The tool integrates deeply with AWS services but suffers from what I'd call "enterprise bloat"-requiring a desktop application for configuration and complex OAuth flows through IAM Identity Centre.
 
 > [!WARNING]
 > The concerning aspect is the proprietary model approach, I'm going to safely assume they're using Claude Sonnet 3.7 or 4. Without transparency into the underlying foundation models, developers face context management uncertainties.
@@ -76,7 +76,7 @@ The process is surprisingly straightforward:
 3. It generates a comprehensive markdown document explaining the codebase
 4. This documentation becomes the foundation for all subsequent interactions
 
-What's particularly clever is that this "soft-cache" can be portable between tools. You can use Claude Code to generate initial codebase documentation, then leverage that same understanding with OpenAI's Codex CLI or other tools. The pattern isn't proprietary—it's a natural evolution of how AI agents need to contextualise large codebases.
+What's particularly clever is that this "soft-cache" can be portable between tools. You can use Claude Code to generate initial codebase documentation, then leverage that same understanding with OpenAI's Codex CLI or other tools. The pattern isn't proprietary-it's a natural evolution of how AI agents need to contextualise large codebases.
 
 ## The IDE Integrations
 
@@ -98,7 +98,7 @@ Say I want to query technical documentation on the internet, I can simply add th
 
 The marketing materials paint an impressive picture, but real-world usage reveals important nuances. One developer spent a week with Claude Code on Clojure projects, investing $134.79 and 12 hours, ultimately concluding that "[Cursor](https://cursor.sh/) is a much better workflow for me" and that "AI without oversight is still not there to deliver maintainable apps"[^9].
 
-This highlights a crucial reality: these tools excel at the "first 90%" of development tasks but struggle with the "second 90%"—the refinement, debugging, and maintenance that transforms prototypes into production-ready applications.
+This highlights a crucial reality: these tools excel at the "first 90%" of development tasks but struggle with the "second 90%"-the refinement, debugging, and maintenance that transforms prototypes into production-ready applications.
 
 Tools hallucinate predictably when pushed beyond their boundaries. AWS Q Developer provided the clearest example when I requested it read external documentation for project configuration. Without MCP web request capabilities, it fabricated responses based on existing files rather than admitting limitation.
 
@@ -125,7 +125,7 @@ Companies like [Cursor](https://cursor.sh/), [Cognition](https://www.cognition-l
 
 ## Looking Forward: Beyond the Hype Cycle
 
-As someone who's watched developer tools evolve for over a decade, I see striking parallels to the early days of containerisation. [Docker](https://www.docker.com/)[^12] seemed magical initially—a universal solution to deployment complexity. But the real value emerged through the ecosystem that developed around it: orchestration platforms, service meshes, and cloud-native architectures.
+As someone who's watched developer tools evolve for over a decade, I see striking parallels to the early days of containerisation. [Docker](https://www.docker.com/)[^12] seemed magical initially-a universal solution to deployment complexity. But the real value emerged through the ecosystem that developed around it: orchestration platforms, service meshes, and cloud-native architectures.
 
 AI CLI tools are following a similar trajectory. The initial wow factor of natural language programming is giving way to more nuanced understanding of where these tools excel and where human expertise remains irreplaceable.
 
@@ -137,7 +137,7 @@ The most successful teams will likely adopt a hybrid approach:
 
 ## The Paradox of Choice
 
-Developers are now spoiled for choice when it comes to AI-powered development tools. The question isn't whether to adopt these technologies—it's which combination of tools provides the best fit for your specific context.
+Developers are now spoiled for choice when it comes to AI-powered development tools. The question isn't whether to adopt these technologies-it's which combination of tools provides the best fit for your specific context.
 
 Consider your development environment:
 - **For rapid prototyping**: Claude Code's comprehensive codebase understanding shines
@@ -145,7 +145,7 @@ Consider your development environment:
 - **For enterprise environments**: Amazon Q Developer provides AWS integration at the cost of transparency
 - **For IDE-centric workflows**: Cursor, Windsurf, or GitHub Copilot might be more natural fits
 
-The key insight is that this isn't a zero-sum game. The underlying patterns—codebase contextualisation, natural language interfaces, and agentic task delegation—are becoming table stakes across the industry.
+The key insight is that this isn't a zero-sum game. The underlying patterns-codebase contextualisation, natural language interfaces, and agentic task delegation-are becoming table stakes across the industry.
 
 ## Bottom Line
 
