@@ -24,17 +24,17 @@ A socio-technical system combines people and technology. [Conway's Law](https://
 
 An ecosystem is a dynamic network of interdependent actors characterised by emergent behaviour - properties visible only when the whole system is assembled, not in individual components. This means you cannot manage a forest by looking at individual trees. You have to see it as an ecosystem.
 
-The implication: changing technology without changing organisational structure has limited impact. And changing structure without understanding the technical consequences is equally flawed.
+Changing technology without changing organisational structure has limited impact. Changing structure without understanding the technical consequences is equally flawed.
 
 ## Google's Case Study: Culture and Infrastructure as One System
 
 Google's developer ecosystem cannot be understood through technical choices alone. The culture is deeply engineering-led: transparency, helpfulness, blameless postmortems, standardisation, continuous improvement, automation over toil.
 
-The technical side: a [monorepo](https://research.google/pubs/large-scale-software-development-at-google/) with over two billion lines of code, [trunk-based development](https://abseil.io/resources/swe-book/html/ch16.html) with no branches, a universal build toolchain (Blaze), a global test automation platform running billions of tests daily, uniform compute environments, and a small set of core languages.
+The technical side is a [monorepo](https://research.google/pubs/large-scale-software-development-at-google/) with over two billion lines of code, [trunk-based development](https://abseil.io/resources/swe-book/html/ch16.html) with no branches, a universal build toolchain (Blaze), a global test automation platform running billions of tests daily, uniform compute environments, and a small set of core languages.
 
 The principle of **shared fate** guides this: all code in one repository means a security patch propagates to every application within a week. This enables large-scale changes (LSCs), where a single developer can modify millions of lines of code - a capability Google has had for over 15 years, predating AI.
 
-Key insight: the [Software Engineering at Google](https://abseil.io/resources/swe-book/) book dedicates its first half to engineering culture because the technical choices cannot be understood without cultural context. Trade-offs reveal what an organisation actually values, not what it claims to value.
+The [Software Engineering at Google](https://abseil.io/resources/swe-book/) book dedicates its first half to engineering culture because the technical choices cannot be understood without cultural context. Trade-offs reveal what an organisation actually values, not what it claims to value.
 
 A five-person startup would optimise differently - prioritising velocity and agility over extreme scale. Google's choices are not universal recommendations. They are manifestations of Google's specific constraints and values.
 
