@@ -1,5 +1,5 @@
 ---
-title: The Real AI Skill Isn't Prompting — It's Loop-Closing
+title: The Real AI Skill Isn't Prompting - It's Loop-Closing
 summary: |
   Engineers try AI tools 2-3 times, hit a wall, and walk away. They declare the tool useless and go back to manual work. After watching this pattern repeat across dozens of teams, I've realised the single biggest blocker to AI adoption isn't model quality or tool selection. It's the inability to close the feedback loop.
 date: "2026-02-15 18:00:44 +1000"
@@ -44,13 +44,13 @@ Initial Prompt -> AI Response -> Evaluate Output
 I spend 30-40 minutes talking to an AI to work through problems. That time investment is the core skill.
 
 **The steering process:**
-1. **Set context** — problem space, constraints, desired outcome
-2. **First attempt** — let it generate something
-3. **Evaluate** — what's right, wrong, missing
-4. **Steer** — specific feedback on gaps
-5. **Refine** — AI adjusts
-6. **Repeat** — until output meets requirements
-7. **Validate** — check contradictions, edge cases, missed requirements
+1. **Set context** - problem space, constraints, desired outcome
+2. **First attempt** - let it generate something
+3. **Evaluate** - what's right, wrong, missing
+4. **Steer** - specific feedback on gaps
+5. **Refine** - AI adjusts
+6. **Repeat** - until output meets requirements
+7. **Validate** - check contradictions, edge cases, missed requirements
 
 ## Real Example: Playbook YAML Generation
 
@@ -60,9 +60,9 @@ My instruction: *"When you create these files, capture myths, gaps, and contradi
 
 The first attempt is usually wrong in multiple ways. Events in the wrong order. Decisions attributed to the wrong people. Gaps where nothing happened but politics. Meetings that were cancelled. Similarly-named projects confused. A mess.
 
-Most people stop there. "AI can't do this kind of research." But the first attempt is never the final attempt. The next thirty minutes are steering: "This event is out of order — check the ticket dates." "That's the wrong person — search for the other one." "There's a gap between March and June. Search Slack for what happened during that period."
+Most people stop there. "AI can't do this kind of research." But the first attempt is never the final attempt. The next thirty minutes are steering: "This event is out of order - check the ticket dates." "That's the wrong person - search for the other one." "There's a gap between March and June. Search Slack for what happened during that period."
 
-By the seventh iteration, the timeline is accurate. By the ninth, it includes context you'd forgotten — a thread where the team discussed an approach and rejected it, which explains why the architecture looks the way it does. The final output isn't just correct. It's useful in ways you hadn't anticipated.
+By the seventh iteration, the timeline is accurate. By the ninth, it includes context you'd forgotten - a thread where the team discussed an approach and rejected it, which explains why the architecture looks the way it does. The final output isn't just correct. It's useful in ways you hadn't anticipated.
 
 Total time: 40 minutes. Manual research would have taken a day. The AI doesn't replace judgement. It amplifies the ability to apply that judgement across a large information space.
 
@@ -96,7 +96,7 @@ Specificity is everything. Diagnose the gap, don't just flag the symptom.
 
 Sprint pressure discourages 30-40 minute sessions. But spending 30 minutes upfront saves hours later. Feels like a luxury when deadlines are tight.
 
-The paradox is real. When you're busiest, you have the least time to invest in the skill that would save you time. But that's exactly when the payoff is highest. A production issue needs root cause analysis by Friday. The temptation is to just write it yourself — you know the system, two hours max. Or spend forty minutes with an agent: setting context, iterating, steering. The final output often catches edge cases you'd forgotten, structures the timeline more clearly, and takes forty minutes instead of two hours.
+The paradox is real. When you're busiest, you have the least time to invest in the skill that would save you time. But that's exactly when the payoff is highest. A production issue needs root cause analysis by Friday. The temptation is to just write it yourself - you know the system, two hours max. Or spend forty minutes with an agent: setting context, iterating, steering. The final output often catches edge cases you'd forgotten, structures the timeline more clearly, and takes forty minutes instead of two hours.
 
 ## Teaching Loop-Closing At Scale
 
@@ -120,7 +120,7 @@ Goal: make it teachable and repeatable.
 
 **Document case studies.** Full arc: initial problem, first attempt, steering conversation, final output, time saved. Example: *"How I generated 3 months of platform timeline in 40 minutes."*
 
-Teaching loop-closing works best through demonstration. Show the full arc: first attempt failing, steering through iterations, final success. Some adopt it immediately. Some take weeks to build the habit. Some never get it — they still treat AI like a search engine, expecting correct answers from single queries.
+Teaching loop-closing works best through demonstration. Show the full arc: first attempt failing, steering through iterations, final success. Some adopt it immediately. Some take weeks to build the habit. Some never get it - they still treat AI like a search engine, expecting correct answers from single queries.
 
 The difference isn't intelligence or technical skill. It's patience. The engineers who succeed are willing to be wrong five times before they're right. The ones who don't give up after the second attempt, every time. Loop-closing is a patience skill as much as a technical one.
 
@@ -128,9 +128,9 @@ The difference isn't intelligence or technical skill. It's patience. The enginee
 
 I've taught this pattern to groups of engineers through a structured enablement programme. The most effective format was hands-on workshops where participants brought their own problems and worked through them in real time.
 
-One pattern emerged consistently: the participants who struggled most were those who expected a "correct" way to prompt. They wanted the magic phrase that would make AI work perfectly. The ones who succeeded fastest were those who treated it as a conversation — trying, failing, adjusting, trying again.
+One pattern emerged consistently: the participants who struggled most were those who expected a "correct" way to prompt. They wanted the magic phrase that would make AI work perfectly. The ones who succeeded fastest were those who treated it as a conversation - trying, failing, adjusting, trying again.
 
-The programme proved something important: loop-closing can be taught, but not through documentation alone. It requires live demonstration, safe practice environments, and repeated exposure to the full arc of failure → steering → success. After running multiple sessions, we found that showing the full feedback loop in real-time — first attempt through iterative steering to final output — was more effective than any slide deck.
+The programme proved something important: loop-closing can be taught, but not through documentation alone. It requires live demonstration, safe practice environments, and repeated exposure to the full arc of failure → steering → success. After running multiple sessions, we found that showing the full feedback loop in real-time - first attempt through iterative steering to final output - was more effective than any slide deck.
 
 The metric that mattered wasn't how many people attended. It was how many kept using the tools after the session ended. The ones who internalised loop-closing stayed. The ones who didn't went back to manual methods within a week.
 

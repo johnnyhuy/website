@@ -18,11 +18,11 @@ The argument isn't that AI replaces developers. It's that AI applies 10x pressur
 
 ## Software Ecology: The Lens That Matters
 
-Bender introduces "software ecology" — the study of socio-technical ecosystems that produce software. The term matters because it forces systems-level thinking.
+Bender introduces "software ecology" - the study of socio-technical ecosystems that produce software. The term matters because it forces systems-level thinking.
 
 A socio-technical system combines people and technology. [Conway's Law](https://en.wikipedia.org/wiki/Conway%27s_law) states that organisations build technologies mirroring their internal communication structures. Engineering culture and technical choices are interlinked. They cannot be evaluated separately.
 
-An ecosystem is a dynamic network of interdependent actors characterised by emergent behaviour — properties visible only when the whole system is assembled, not in individual components. This means you cannot manage a forest by looking at individual trees. You have to see it as an ecosystem.
+An ecosystem is a dynamic network of interdependent actors characterised by emergent behaviour - properties visible only when the whole system is assembled, not in individual components. This means you cannot manage a forest by looking at individual trees. You have to see it as an ecosystem.
 
 The implication: changing technology without changing organisational structure has limited impact. And changing structure without understanding the technical consequences is equally flawed.
 
@@ -32,11 +32,11 @@ Google's developer ecosystem cannot be understood through technical choices alon
 
 The technical side: a [monorepo](https://research.google/pubs/large-scale-software-development-at-google/) with over two billion lines of code, [trunk-based development](https://abseil.io/resources/swe-book/html/ch16.html) with no branches, a universal build toolchain (Blaze), a global test automation platform running billions of tests daily, uniform compute environments, and a small set of core languages.
 
-The principle of **shared fate** guides this: all code in one repository means a security patch propagates to every application within a week. This enables large-scale changes (LSCs), where a single developer can modify millions of lines of code — a capability Google has had for over 15 years, predating AI.
+The principle of **shared fate** guides this: all code in one repository means a security patch propagates to every application within a week. This enables large-scale changes (LSCs), where a single developer can modify millions of lines of code - a capability Google has had for over 15 years, predating AI.
 
 Key insight: the [Software Engineering at Google](https://abseil.io/resources/swe-book/) book dedicates its first half to engineering culture because the technical choices cannot be understood without cultural context. Trade-offs reveal what an organisation actually values, not what it claims to value.
 
-A five-person startup would optimise differently — prioritising velocity and agility over extreme scale. Google's choices are not universal recommendations. They are manifestations of Google's specific constraints and values.
+A five-person startup would optimise differently - prioritising velocity and agility over extreme scale. Google's choices are not universal recommendations. They are manifestations of Google's specific constraints and values.
 
 ## The 10x Problem: What Happens When Productivity Jumps
 
@@ -71,7 +71,7 @@ Beyond capacity, several deeper problems emerge:
 
 **Integration testing** becomes the most critical quality strategy, yet most organisations remain dissatisfied with their integration testing setup.
 
-The "conjunction of booleans" — requiring every test to pass before shipping — becomes infeasible at million-test scale. Organisations will need statistical test selection strategies.
+The "conjunction of booleans" - requiring every test to pass before shipping - becomes infeasible at million-test scale. Organisations will need statistical test selection strategies.
 
 **Internal APIs** require hardening equivalent to public-facing systems because agents will discover and access whatever data is available. If internal APIs are not treated with public-level security, agentic systems will expose vulnerabilities.
 
@@ -83,7 +83,7 @@ The "conjunction of booleans" — requiring every test to pass before shipping �
 
 [DORA research on AI development](https://dora.dev/) found that AI amplifies existing fundamentals rather than replacing them.
 
-Teams with strong practices — good decision-making culture, solid technical strategies, effective collaboration, healthy codebases, clean release processes — apply AI amplification productively. Teams with weak fundamentals amplify their dysfunction at equal speed.
+Teams with strong practices - good decision-making culture, solid technical strategies, effective collaboration, healthy codebases, clean release processes - apply AI amplification productively. Teams with weak fundamentals amplify their dysfunction at equal speed.
 
 AI generates more of everything: more tests, more documentation, more code, and also more confusion. Amplification is a magnitude, not a direction.
 
@@ -111,7 +111,7 @@ Build good frameworks for agents to operate within. Prevent bad choices at scale
 
 Engineering is programming integrated over time. AI makes programming faster. It does not automatically make engineering faster.
 
-The organisations that win will not be those with the best AI tools. They will be those with the strongest fundamentals that AI can amplify. Culture, technical strategy, collaboration, security posture, code health, release process — these determine whether AI becomes a multiplier or a megaphone for dysfunction.
+The organisations that win will not be those with the best AI tools. They will be those with the strongest fundamentals that AI can amplify. Culture, technical strategy, collaboration, security posture, code health, release process - these determine whether AI becomes a multiplier or a megaphone for dysfunction.
 
 Focus on fundamentals first. Then deploy AI at scale.
 
