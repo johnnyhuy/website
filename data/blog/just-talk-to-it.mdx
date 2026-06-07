@@ -26,7 +26,7 @@ Blast radius = expected scope of a change (files touched, time, risk). Throw man
 
 Blast radius gets out of control fast. Ask an agent to "refactor the authentication system" and three hours later it's touched seventeen files, renamed functions that other services depend on, introduced subtle bugs that tests don't catch. The changes can't be reviewed meaningfully because the blast radius is too large. The only option is to revert and start over with smaller, scoped requests.
 
-The rule: if progress time or touched files exceed your mental estimate, interrupt immediately and ask for a status update. Keeps the agent aligned. Prevents it from "solving the wrong problem correctly."
+If progress time or touched files exceed your mental estimate, interrupt immediately and ask for a status update. Keeps the agent aligned. Prevents it from "solving the wrong problem correctly."
 
 Useful control prompts (short, human language):
 - "What's the status and what files have you changed so far?"
