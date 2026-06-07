@@ -49,7 +49,7 @@ Two requirements:
 
 Strongest tactical argument: many MCPs are "a CLI wrapped in tokens." If the model can call `gh` or any known CLI, it discovers usage via `--help` and you avoid injecting large tool descriptions into context.
 
-**Context tax:** Every token describing tools is a token not spent reasoning about your code. MCP definitions are recurring fixed cost. CLI usage is often in world knowledge already.
+Every token describing tools is a token not spent reasoning about your code. MCP definitions are recurring fixed cost. CLI usage is often in world knowledge already.
 
 Heuristic:
 - Stable, discoverable (`--help`), commonly known tool? Prefer CLI.
