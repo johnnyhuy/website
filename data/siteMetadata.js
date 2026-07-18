@@ -4,7 +4,7 @@ const siteMetadata = {
   author: 'Johnny Huynh',
   headerTitle: 'Johnny Huynh',
   description:
-    'Personal digital garden of Johnny Huynh, sharing homelab adventures, web development projects, and tech explorations. An ad-free space for knowledge and experiences.',
+    'Lingering thoughts of Johnny Huynh, a builder of platforms, tools and the occasional website.',
   language: 'en',
   theme: 'system', // system, dark or light
   siteUrl: 'https://johnnyhuy.com',

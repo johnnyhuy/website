@@ -132,8 +132,10 @@
 @theme {
   /* Font families */
   --font-sans:
-    var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    var(--font-inter), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-mono:
+    var(--font-plex-mono), ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
 
   --color-gray-100: oklch(0.95 0 0);
   --color-gray-200: oklch(0.85 0 0);
@@ -226,6 +228,14 @@
 }
 
 @layer utilities {
+  .mono-label {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-gray-500);
+  }
+
   .prose {
     & a {
       color: var(--color-gray-900);
@@ -383,7 +393,7 @@
 
 .prose pre {
   background-color: var(--color-gray-900);
-  @apply mb-4 overflow-x-auto rounded-md p-3 text-sm md:p-4;
+  @apply mb-4 overflow-x-auto p-3 text-sm md:p-4;
 }
 
 .prose code {
@@ -649,11 +659,11 @@ input:-webkit-autofill:focus {
 
 /* Code title styles */
 .remark-code-title {
-  @apply rounded-t-lg bg-gray-800 px-5 py-3 font-mono text-sm font-bold text-gray-200;
+  @apply bg-gray-800 px-5 py-3 font-mono text-sm font-bold text-gray-200;
 }
 
 .remark-code-title + div > pre {
-  @apply mt-0 rounded-t-none;
+  @apply mt-0;
 }
 
 /* Code block styles */

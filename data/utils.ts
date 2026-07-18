@@ -50,9 +50,6 @@ export function formatDuration(start: string, end: string, now: Date = new Date(
   const normStart = normalizeDate(start)
   const normEnd = normalizeDate(end)
   if (!normStart) return ''
-  // Parse start
-  let startDate: Date | undefined
-  let endDate: Date | undefined
   // Try parsing as "Mon YYYY" or "YYYY"
   const parse = (str: string): Date | undefined => {
     if (str === 'Present') return undefined
@@ -62,14 +59,14 @@ export function formatDuration(start: string, end: string, now: Date = new Date(
     if (year) return new Date(`${year[1]}-01-01`)
     return undefined
   }
-  startDate = parse(normStart)
-  endDate = normEnd === 'Present' ? now : parse(normEnd ?? '')
+  const startDate = parse(normStart)
+  const endDate = normEnd === 'Present' ? now : parse(normEnd ?? '')
   if (!startDate || !endDate) return ''
   // Calculate diff
   let months =
     (endDate.getFullYear() - startDate.getFullYear()) * 12 +
     (endDate.getMonth() - startDate.getMonth())
-  let years = Math.floor(months / 12)
+  const years = Math.floor(months / 12)
   months = months % 12
   if (years >= 3 && months === 0) return `>${years} years`
   if (years >= 2) return `${years} yrs${months > 0 ? ` ${months} mos` : ''}`

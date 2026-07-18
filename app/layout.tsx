@@ -1,15 +1,19 @@
 import { ReactScan } from '@/components/react-scan'
 import type React from 'react'
 import type { Metadata, Viewport } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
 import { ThemeProvider } from '@/components/theme-provider'
-import { ThemeIndicator } from '@/components/theme-indicator'
 import siteMetadata from '@/data/siteMetadata'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500', '600'],
+  variable: '--font-plex-mono',
+})
 
 export const viewport: Viewport = {
   themeColor: '#fff',
@@ -78,7 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <ReactScan />
-      <body className={`${inter.variable} transition-color font-sans`}>
+      <body className={`${inter.variable} ${plexMono.variable} transition-color font-sans`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
@@ -90,7 +94,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
-          <ThemeIndicator />
         </ThemeProvider>
       </body>
     </html>
