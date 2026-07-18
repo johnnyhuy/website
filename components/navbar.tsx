@@ -24,13 +24,10 @@ const Navbar = () => {
   const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`)
 
   return (
-    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/80 fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-sm">
-      <div className="mx-auto flex h-14 max-w-3xl items-center justify-between border-x px-6">
-        <Link href="/" className="flex items-center gap-2.5" aria-label="Home">
+    <header className="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky top-0 z-50 border-b backdrop-blur-sm">
+      <div className="flex h-14 items-center justify-between px-6">
+        <Link href="/" aria-label="Home">
           <span className="block h-3 w-3 bg-yellow-500" aria-hidden="true" />
-          <span className="font-mono text-sm font-medium tracking-widest uppercase">
-            Johnny Huy
-          </span>
         </Link>
 
         {/* Desktop Navigation */}

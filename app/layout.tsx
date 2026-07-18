@@ -89,7 +89,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           enableSystem
           disableTransitionOnChange={false}
         >
-          <div className="flex min-h-screen flex-col">
+          <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col border-x">
             <Navbar />
             <main className="flex-1">{children}</main>
             <Footer />

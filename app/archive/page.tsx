@@ -34,8 +34,7 @@ const versions = [
 
 export default function ArchivePage() {
   return (
-    <div className="pt-14">
-      <div className="mx-auto max-w-3xl border-x px-6 py-16">
+    <div className="px-6 py-16">
         <div className="mb-4 flex items-baseline justify-between">
           <h1 className="mono-label">Archive</h1>
           <span className="mono-label">{versions.length} versions</span>
@@ -75,10 +74,7 @@ export default function ArchivePage() {
           ))}
         </ul>
 
-        <p className="mono-label mt-8">
-          Current: v4, the one you are looking at
-        </p>
-      </div>
+        <p className="mono-label mt-8">Current: v4, the one you are looking at</p>
     </div>
   )
 }
