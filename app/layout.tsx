@@ -6,6 +6,7 @@ import './globals.css'
 import Navbar from '@/components/navbar'
 import Footer from '@/components/footer'
 import { ThemeProvider } from '@/components/theme-provider'
+import { Analytics, type AnalyticsConfig } from 'pliny/analytics'
 import siteMetadata from '@/data/siteMetadata'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -100,6 +101,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <main id="main-content" className="flex-1">{children}</main>
             <Footer />
           </div>
+          <Analytics analyticsConfig={siteMetadata.analytics as AnalyticsConfig} />
         </ThemeProvider>
       </body>
     </html>
