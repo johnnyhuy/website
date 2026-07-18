@@ -64,7 +64,7 @@ async function generateRobots({
 }
 
 // Generate robots.txt with default settings
-generateRobots().catch(error => {
+generateRobots({ disallowPaths: ['/archive/v1/', '/archive/v2/', '/archive/v3/'] }).catch(error => {
   console.error('Error generating robots.txt:', error);
   process.exit(1);
 });
