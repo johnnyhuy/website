@@ -9,7 +9,7 @@
     "postbuild": "pnpm generate-sitemap && pnpm generate-rss && pnpm generate-robots",
     "contentlayer": "contentlayer2 build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "postinstall": "contentlayer2 build",
     "generate-sitemap": "node --no-warnings scripts/generate-sitemap.mjs",
     "generate-rss": "node --no-warnings scripts/rss.mjs",
@@ -100,12 +100,16 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.6",
     "@tailwindcss/postcss": "^4.3.0",
     "@types/mdx": "^2.0.13",
     "@types/node": "^25.9.1",
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "concurrently": "^10.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.6",
+    "lint-staged": "^17.0.8",
     "postcss": "^8.5.15",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "tailwindcss": "^4.3.0",
@@ -117,5 +121,8 @@
       "uuid": ">=11.1.1",
       "postcss": ">=8.5.10"
     }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,css,md,mdx,json}": "prettier --write"
   }
 }
