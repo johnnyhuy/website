@@ -27,8 +27,7 @@ function BlogIndex() {
   }
 
   return (
-    <div className="pt-14">
-      <div className="mx-auto max-w-3xl border-x px-6 py-16">
+    <div className="px-6 py-16">
         <div className="mb-8 flex items-baseline justify-between">
           <h1 className="mono-label">Lingering thoughts</h1>
           <span className="mono-label">{filteredPosts.length} posts</span>
@@ -62,7 +61,6 @@ function BlogIndex() {
             No posts found for this filter.
           </p>
         )}
-      </div>
     </div>
   )
 }
