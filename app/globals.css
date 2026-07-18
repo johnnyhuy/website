@@ -439,6 +439,50 @@
   border-bottom: none;
 }
 
+.prose img {
+  border: 1px solid var(--color-border);
+  @apply my-6;
+}
+
+.prose div:has(> img) {
+  margin: 1.5rem 0 0.5rem;
+}
+
+.prose div:has(> img) > img {
+  margin: 0;
+}
+
+.prose div:has(> img) + p {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+}
+
+.step-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.step-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  border: 1px solid var(--color-gray-400);
+  color: var(--color-yellow-600);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+html.dark .step-icon {
+  border-color: var(--color-gray-600);
+  color: var(--color-yellow-500);
+}
+
 .copy-button:hover {
   background-color: var(--color-gray-300) / 0.2;
   cursor: pointer;
