@@ -29,6 +29,10 @@ public/feed.xml
 # search
 public/search.json
 
+# llms.txt and markdown post copies
+public/llms.txt
+public/blog/
+
 # misc
 .DS_Store
 

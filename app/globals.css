@@ -416,7 +416,8 @@
 }
 
 .prose table {
-  @apply mb-6 w-full border-collapse text-sm md:text-base;
+  @apply mb-6 w-full border-collapse;
+  font-size: inherit;
 }
 
 .prose thead th {
@@ -835,6 +836,17 @@ textarea:focus,
 textarea:focus-visible {
   --tw-ring-shadow: 0 0 #0000 !important;
   box-shadow: none !important;
+}
+
+/* Restore a visible focus indicator for keyboard users */
+a:focus-visible,
+button:focus-visible,
+[role='button']:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-yellow-500) !important;
+  outline-offset: 2px !important;
 }
 
 /* --- Dark mode prose inversion --- */
