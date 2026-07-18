@@ -36,6 +36,7 @@ const Navbar = () => {
             <Link
               key={link.path}
               href={link.path}
+              aria-current={isActive(link.path) ? 'page' : undefined}
               className={`font-mono text-sm tracking-wide lowercase transition-colors ${
                 isActive(link.path)
                   ? 'text-gray-900 dark:text-gray-100'
