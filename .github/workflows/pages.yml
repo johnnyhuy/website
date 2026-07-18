@@ -22,11 +22,11 @@ jobs:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9.3.0
           run_install: false
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'pnpm'
       - id: configurepages
         uses: actions/configure-pages@v5
@@ -38,7 +38,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
       - name: Build website
         run: pnpm build && pnpm postbuild
         env:
