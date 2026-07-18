@@ -1,81 +1,76 @@
 'use client'
 
 import type React from 'react'
-
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import BlogPostItem from '@/components/blog-post-item'
+import PostList from '@/components/post-list'
 import { allBlogs } from 'contentlayer/generated'
 import type { Blog } from 'contentlayer/generated'
 import { CoreContent, allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 
 const posts: CoreContent<Blog>[] = allCoreContent(sortPosts(allBlogs))
 
-export default function BlogPage() {
-  const [selectedTags, setSelectedTags] = useState<string[]>([])
-
-  // Filter posts based on selected tags only
-  const filteredPosts = posts.filter((post: CoreContent<Blog>) => {
-    const matchesTags =
-      selectedTags.length === 0 || selectedTags.some((tag: string) => post.tags.includes(tag))
-    return matchesTags
+function BlogIndex() {
+  const searchParams = useSearchParams()
+  const [selectedTags, setSelectedTags] = useState<string[]>(() => {
+    const tag = searchParams.get('tag')
+    return tag ? [tag] : []
   })
 
-  const addTag = (tag: string) => {
-    if (!selectedTags.includes(tag)) setSelectedTags([...selectedTags, tag])
-  }
+  const filteredPosts = posts.filter((post: CoreContent<Blog>) => {
+    return selectedTags.length === 0 || selectedTags.some((tag: string) => post.tags.includes(tag))
+  })
 
   const removeTag = (tagToRemove: string) => {
     setSelectedTags(selectedTags.filter((tag: string) => tag !== tagToRemove))
   }
 
   return (
-    <div className="pt-20 md:pt-24">
-      <div className="container mx-auto px-4 py-8 md:py-12">
-        {/* Tag filter section */}
+    <div className="pt-14">
+      <div className="mx-auto max-w-3xl border-x px-6 py-16">
+        <div className="mb-8 flex items-baseline justify-between">
+          <h1 className="mono-label">Lingering thoughts</h1>
+          <span className="mono-label">{filteredPosts.length} posts</span>
+        </div>
+
         {selectedTags.length > 0 && (
-          <div className="mb-6 flex flex-wrap gap-2 md:mb-8">
+          <div className="mb-8 flex flex-wrap items-center gap-2">
             {selectedTags.map((tag) => (
-              <div
+              <button
                 key={tag}
-                className="bg-secondary flex items-center gap-1 rounded-full px-3 py-1"
+                onClick={() => removeTag(tag)}
+                className="flex items-center gap-1.5 border px-2 py-1 font-mono text-xs hover:border-yellow-500"
               >
                 {tag}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="ml-1 h-4 w-4 p-0"
-                  onClick={() => removeTag(tag)}
-                >
-                  <X className="h-3 w-3" />
-                </Button>
-              </div>
+                <X className="h-3 w-3" />
+              </button>
             ))}
-            {selectedTags.length > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-xs"
-                onClick={() => setSelectedTags([])}
-              >
-                Clear all
-              </Button>
-            )}
+            <button
+              onClick={() => setSelectedTags([])}
+              className="mono-label underline underline-offset-4 hover:text-gray-900 dark:hover:text-gray-100"
+            >
+              clear
+            </button>
           </div>
         )}
 
-        {/* Blog posts list */}
-        <div className="space-y-6">
-          {filteredPosts.length > 0 ? (
-            filteredPosts.map((post) => <BlogPostItem key={post.slug} post={post} />)
-          ) : (
-            <div className="py-12 text-center">
-              <p className="text-gray-400">No posts found matching your filter criteria.</p>
-            </div>
-          )}
-        </div>
+        {filteredPosts.length > 0 ? (
+          <PostList posts={filteredPosts} />
+        ) : (
+          <p className="py-12 text-center font-mono text-sm text-gray-500">
+            No posts found for this filter.
+          </p>
+        )}
       </div>
     </div>
+  )
+}
+
+export default function BlogPage() {
+  return (
+    <Suspense>
+      <BlogIndex />
+    </Suspense>
   )
 }

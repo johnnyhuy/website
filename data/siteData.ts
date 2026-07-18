@@ -17,16 +17,16 @@ export interface Project {
 export const profile = {
   name: 'Johnny Huynh',
   avatar: '/images/me.jpg',
-  company: 'Independent',
+  company: 'Sportsbet',
   email: '',
   twitter: '',
   linkedin: 'https://linkedin.com/in/johnnyhuy',
   github: 'https://github.com/johnnyhuy',
   description:
-    "After over 6 years in the tech wilderness, I've found myself gravitating toward being the person who gets thrown into the deep end of complex problems. Not because I'm some tech wizard, but because I enjoy piecing together knowledge from different domains to build something that actually works. These days, I focus on creating systems that help my teammates succeed and sharing what I've learned along the way.",
+    'Builder of platforms, tools and the occasional website. Currently leading platform and AI engineering at Sportsbet. This is where my lingering thoughts end up.',
   siteRepo: 'https://github.com/johnnyhuy/website',
-  bio: "Engineer who thrives on challenges and building tools that actually make a difference. I've spent years collecting knowledge across platform engineering and infrastructure, but what really drives me is seeing others succeed with solutions we build together.",
-  title: 'Principal Engineer',
+  bio: "I'm a builder by nature. Platforms, tools, and the odd website rewrite. These days I lead platform and AI engineering at Sportsbet, and this is where my lingering thoughts end up.",
+  title: 'Builder',
   discord: {
     username: 'johnnyhuy',
     userId: '183829779810615297',
@@ -362,8 +362,8 @@ export const techExperienceBlurbs: Map<string, string> = new Map([
 
 // Header Nav Links
 export const headerNavLinks = [
-  { name: 'Projects', path: '/projects' },
   { name: 'Blog', path: '/blog' },
+  { name: 'Archive', path: '/archive' },
 ]
 
 // Navbar Data (migrated from navbar.ts)
