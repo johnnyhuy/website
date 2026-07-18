@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { MDXLayoutRenderer } from 'pliny/mdx-components.js'
 import { components } from '@/components/mdx-components'
+import HeroPattern from '@/components/hero-pattern'
 import { format, formatDistanceToNow, parseISO } from 'date-fns'
 import type { Blog, Authors } from 'contentlayer/generated'
 
@@ -41,32 +42,40 @@ export function BlogPost({ post }: BlogPostProps) {
       </Link>
 
       <article itemScope itemType="https://schema.org/BlogPosting">
-        <header className="mb-10 border-b pb-10 md:mb-12">
-          <h1 itemProp="headline" className="mb-6 text-3xl font-bold tracking-tight md:text-4xl">
-            {post.title}
-          </h1>
+        <header className="relative mb-10 border-b pb-10 md:mb-12">
+          <div
+            aria-hidden="true"
+            className="absolute inset-x-0 top-0 h-28 text-gray-800 opacity-25 [mask-image:linear-gradient(to_bottom,black,transparent)] dark:text-gray-200"
+          >
+            <HeroPattern seed={post.slug} className="absolute inset-0" />
+          </div>
+          <div className="relative pt-20">
+            <h1 itemProp="headline" className="mb-6 text-3xl font-bold tracking-tight md:text-4xl">
+              {post.title}
+            </h1>
 
-          <p className="mono-label mb-6">
-            <time dateTime={post.date} itemProp="datePublished">
-              {isoDate}
-            </time>
-            {formattedRelativeDate ? ` · ${formattedRelativeDate}` : ''}
-            {post.readingTime?.text ? ` · ${post.readingTime.text}` : ''}
-          </p>
+            <p className="mono-label mb-6">
+              <time dateTime={post.date} itemProp="datePublished">
+                {isoDate}
+              </time>
+              {formattedRelativeDate ? ` · ${formattedRelativeDate}` : ''}
+              {post.readingTime?.text ? ` · ${post.readingTime.text}` : ''}
+            </p>
 
-          {post.tags && post.tags.length > 0 && (
-            <div className="flex flex-wrap gap-x-4 gap-y-2">
-              {post.tags.map((tag: string, index: number) => (
-                <Link
-                  href={`/blog?tag=${tag}`}
-                  key={index}
-                  className="font-mono text-xs text-gray-500 underline decoration-yellow-500 underline-offset-4 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                >
-                  {tag}
-                </Link>
-              ))}
-            </div>
-          )}
+            {post.tags && post.tags.length > 0 && (
+              <div className="flex flex-wrap gap-x-4 gap-y-2">
+                {post.tags.map((tag: string, index: number) => (
+                  <Link
+                    href={`/blog?tag=${tag}`}
+                    key={index}
+                    className="font-mono text-xs text-gray-500 underline decoration-yellow-500 underline-offset-4 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                  >
+                    {tag}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </header>
 
         {post.image && (
