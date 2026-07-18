@@ -4,7 +4,7 @@ import { profile } from '@/data/siteData'
 const Footer = () => {
   return (
     <footer className="border-t">
-      <div className="mx-auto flex max-w-3xl flex-col gap-3 border-x px-6 py-8 md:flex-row md:items-center md:justify-between">
+      <div className="flex flex-col gap-3 px-6 py-8 md:flex-row md:items-center md:justify-between">
         <p className="mono-label">
           &copy; {new Date().getFullYear()} {profile.name}
         </p>
