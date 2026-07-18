@@ -40,12 +40,16 @@ export function BlogPost({ post }: BlogPostProps) {
         all posts
       </Link>
 
-      <article>
+      <article itemScope itemType="https://schema.org/BlogPosting">
         <header className="mb-10 border-b pb-10 md:mb-12">
-          <h1 className="mb-6 text-3xl font-bold tracking-tight md:text-4xl">{post.title}</h1>
+          <h1 itemProp="headline" className="mb-6 text-3xl font-bold tracking-tight md:text-4xl">
+            {post.title}
+          </h1>
 
           <p className="mono-label mb-6">
-            <time dateTime={post.date}>{isoDate}</time>
+            <time dateTime={post.date} itemProp="datePublished">
+              {isoDate}
+            </time>
             {formattedRelativeDate ? ` · ${formattedRelativeDate}` : ''}
             {post.readingTime?.text ? ` · ${post.readingTime.text}` : ''}
           </p>
@@ -71,7 +75,10 @@ export function BlogPost({ post }: BlogPostProps) {
           </div>
         )}
 
-        <div className="prose prose-lg dark:prose-invert prose-headings:scroll-mt-20 max-w-none">
+        <div
+          itemProp="articleBody"
+          className="prose prose-lg dark:prose-invert prose-headings:scroll-mt-20 max-w-none"
+        >
           <MDXLayoutRenderer code={post.body.code} components={components} />
         </div>
       </article>

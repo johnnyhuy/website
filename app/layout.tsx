@@ -90,8 +90,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           disableTransitionOnChange={false}
         >
           <div className="mx-auto flex min-h-screen w-full max-w-3xl flex-col border-x">
+            <a
+              href="#main-content"
+              className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[100] focus:bg-yellow-500 focus:px-4 focus:py-2 focus:font-mono focus:text-sm focus:text-gray-900"
+            >
+              Skip to content
+            </a>
             <Navbar />
-            <main className="flex-1">{children}</main>
+            <main id="main-content" className="flex-1">{children}</main>
             <Footer />
           </div>
         </ThemeProvider>

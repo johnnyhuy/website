@@ -52,6 +52,17 @@ The steering process:
 6. **Repeat** - until output meets requirements
 7. **Validate** - check contradictions, edge cases, missed requirements
 
+```mermaid
+flowchart LR
+    A[Set context] --> B[First attempt]
+    B --> C[Evaluate]
+    C --> D[Steer]
+    D --> E[Refine]
+    E -->|not there yet| C
+    E -->|meets requirements| F[Validate]
+    F --> G[Ship it]
+```
+
 ## Real Example: Playbook YAML Generation
 
 I used this to generate a platform architecture timeline. AI with MCP tools searched Slack, Confluence, and Jira directly, then generated YAML with timestamped events.

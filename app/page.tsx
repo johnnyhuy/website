@@ -26,17 +26,14 @@ export default function Home() {
           <CloudPattern className="absolute inset-0" animated />
         </div>
         <div className="relative px-6 pt-20 pb-16 md:pt-24">
-          <div className="mb-8 flex items-center gap-5">
+          <div className="mb-8 flex items-center gap-4">
             <Image
               src={Me}
               alt={profile.name}
-              className="h-10 w-10 border object-cover grayscale md:h-12 md:w-12"
+              className="h-10 w-10 rounded-full border object-cover grayscale md:h-12 md:w-12"
               priority
             />
-            <div>
-              <p className="mono-label mb-1">{profile.title}</p>
-              <h1 className="text-3xl font-bold tracking-tight md:text-4xl">{profile.name}</h1>
-            </div>
+            <h1 className="text-3xl font-bold tracking-tight md:text-4xl">{profile.name}</h1>
           </div>
           <p className="mb-8 max-w-prose text-lg leading-relaxed text-gray-600 dark:text-gray-300">
             {profile.bio}
