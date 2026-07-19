@@ -214,6 +214,22 @@ The site renders these automatically; write to take advantage of them:
 - **Tables**: plain markdown tables, styling is automatic.
 - Full design rules live in `skills/site-conventions/SKILL.md`.
 
+## Illustration Tooling
+
+Fetch comics and memes with `scripts/blog-image.mjs` (no dependencies, run with the repo-pinned node):
+
+```bash
+node scripts/blog-image.mjs xkcd 927 xkcd-standards       # downloads comic + prints MDX snippet
+node scripts/blog-image.mjs xkcd-search machine learning  # find comic IDs by title keyword
+node scripts/blog-image.mjs meme buzz my-meme "top text" "bottom text"  # memegen.link
+```
+
+Rules:
+
+- xkcd is CC BY-NC 2.5 - fine for this non-commercial blog, attribution caption is mandatory (the script generates it).
+- Only embed when the comic genuinely illustrates the argument. One per post is usually enough.
+- xkcd data source: `https://xkcd.com/<id>/info.0.json` (title, image URL, alt text). Memes: `https://api.memegen.link`, free and keyless.
+
 ## Additional Resources
 
 ### Reference Files
