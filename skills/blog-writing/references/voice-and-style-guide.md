@@ -60,14 +60,16 @@ Every post ends with something the reader can do. Not philosophy. Action.
 ### Don't
 
 - Use formal transitions ("Furthermore", "Moreover", "It is worth noting")
-- Use generic AI filler ("In today's fast-paced world", "It's important to remember")
+- Use generic AI filler ("In today's fast-paced world", "It's important to remember", "seamless", "robust", "cutting-edge", "transformative", "game-changing", "landscape")
 - Use passive voice ("It was observed that" → "Research shows")
 - Write long dense paragraphs
 - Make vague claims ("AI is interesting" → "AI degrades rather than replaces")
 - Use "In this post I will..." openings
-- End with philosophical summaries
+- End with philosophical summaries or engagement-bait questions ("What's your experience with...?")
+- End with a `## References` dump - use footnotes instead
 - Use jargon without explanation
 - Fabricate specific scenarios or stories
+- Use unspaced hyphen-dashes (`workflows-it's`) - use ` - ` or restructure
 
 ## Paragraph Structure
 
