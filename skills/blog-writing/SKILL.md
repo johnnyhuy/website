@@ -203,6 +203,17 @@ Tag conventions:
 - 2-4 tags maximum
 - Prefer: AI, Career, Leadership, Productivity, Software Engineering, Health, Future of Work
 
+## Rendering Features to Use
+
+The site renders these automatically; write to take advantage of them:
+
+- **Step sections**: `### 1. Title` headings render a boxed step icon. Use numbered h3s for pillars, steps, or dimensions.
+- **Key:value pairs**: always as `- **Key:** value` bullet lists, never bold lead-in paragraphs.
+- **Mermaid**: ```mermaid blocks render in the site theme. Use `flowchart LR/TD`, short node labels, for loops and pipelines.
+- **Images**: files go in `public/images/blog/`; add an italic caption with author + license on the next line (styles automatically). Wikimedia Commons CC/PD sources preferred.
+- **Tables**: plain markdown tables, styling is automatic.
+- Full design rules live in `skills/site-conventions/SKILL.md`.
+
 ## Additional Resources
 
 ### Reference Files

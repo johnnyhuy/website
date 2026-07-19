@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Package Manager**: Use `pnpm` (required for this project)
 
+**Toolchain**: Node 22.14.0 (`.tool-versions`) and `corepack pnpm@9.3.0` are required for builds. Newer Node (26+) breaks ContentLayer via a uuid ESM error. CI installs with `--frozen-lockfile` on pnpm 9.3.0; do not downgrade pnpm, it re-resolves the v9 lockfile.
+
 **Primary Development Commands**:
 - `pnpm dev` - Start development server with ContentLayer watching and Next.js turbopack
 - `pnpm build` - Build the project (runs ContentLayer build first, then Next.js build, then post-build scripts)
@@ -17,10 +19,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm generate-sitemap` - Generate sitemap.xml
 - `pnpm generate-rss` - Generate RSS feed
 - `pnpm generate-robots` - Generate robots.txt
+- `pnpm generate-llms` - Generate llms.txt and markdown copies of posts
 
 ## Architecture Overview
 
-**Framework**: Next.js 15.2.4 with App Router and TypeScript
+**Framework**: Next.js 16.2.6 with App Router and TypeScript
 **Content System**: ContentLayer for MDX blog posts and author profiles
 **Styling**: Tailwind CSS with custom components using Radix UI primitives
 **Deployment**: Static export ready (uses `output: 'export'` when EXPORT env var is set)
@@ -88,7 +91,9 @@ canonicalUrl: string
 2. ContentLayer processes them automatically during `pnpm dev`
 3. TypeScript types are generated for all content
 
-**Styling**: Uses Tailwind with custom design system. Components follow shadcn/ui patterns.
+**Styling**: Minimal industrial design system (flat hairlines, sharp corners, IBM Plex Mono labels). Follow the conventions in `skills/site-conventions/SKILL.md` for any page or component work.
+
+**Site Archive**: Frozen snapshots of past designs live in `public/archive/` and are served as-is. See `skills/archive-snapshots/SKILL.md` before adding a new snapshot.
 
 **Code Style**: 
 - Prettier configuration: 100 char width, single quotes, no semicolons, Tailwind plugin
