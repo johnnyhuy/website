@@ -20,7 +20,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm generate-rss` - Generate RSS feed
 - `pnpm generate-robots` - Generate robots.txt
 - `pnpm generate-llms` - Generate llms.txt and markdown copies of posts
-- `node scripts/blog-image.mjs` - Fetch xkcd comics or memegen memes into `public/images/blog/` (see `skills/blog-writing/SKILL.md`)
+- `node scripts/blog-image.mjs` - Fetch xkcd comics or memegen memes into `public/images/blog/` (see `.agents/skills/blog-writing/SKILL.md`)
 
 ## Architecture Overview
 
@@ -92,9 +92,9 @@ canonicalUrl: string
 2. ContentLayer processes them automatically during `pnpm dev`
 3. TypeScript types are generated for all content
 
-**Styling**: Minimal industrial design system (flat hairlines, sharp corners, IBM Plex Mono labels). Follow the conventions in `skills/site-conventions/SKILL.md` for any page or component work.
+**Styling**: Minimal industrial design system (flat hairlines, sharp corners, IBM Plex Mono labels). Follow the conventions in `.agents/skills/site-conventions/SKILL.md` for any page or component work.
 
-**Site Archive**: Frozen snapshots of past designs live in `public/archive/` and are served as-is. See `skills/archive-snapshots/SKILL.md` before adding a new snapshot.
+**Site Archive**: Frozen snapshots of past designs live in `public/archive/` and are served as-is. See `.agents/skills/archive-snapshots/SKILL.md` before adding a new snapshot.
 
 **Code Style**: 
 - Prettier configuration: 100 char width, single quotes, no semicolons, Tailwind plugin
