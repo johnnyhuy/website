@@ -212,6 +212,7 @@ The site renders these automatically; write to take advantage of them:
 - **Mermaid**: ```mermaid blocks render in the site theme. Use `flowchart LR/TD`, short node labels, for loops and pipelines.
 - **Images**: files go in `public/images/blog/`; add an italic caption with author + license on the next line (styles automatically). Wikimedia Commons CC/PD sources preferred.
 - **Tables**: plain markdown tables, styling is automatic.
+- **Footnotes over References sections**: cite sources inline with `[^1]` at first mention, define them at the bottom (`[^1]: [Title](url) - note`). Do not add a `## References` list. Keep the body readable; the footnote holds the full link and context.
 - Full design rules live in `skills/site-conventions/SKILL.md`.
 
 ## Illustration Tooling
