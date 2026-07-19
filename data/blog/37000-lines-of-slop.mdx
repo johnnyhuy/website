@@ -12,7 +12,7 @@ draft: false
 
 37,000 lines of code a day isn't a flex. It's a warning.
 
-Garry Tan claimed that number across five concurrent projects. Tech press reported it as proof of AI's power. [Scott Tolinski](https://www.youtube.com/watch?v=1r9n-HsBQsE) examined what actually happens when AI agents generate code at industrial scale without human review.
+Garry Tan claimed that number across five concurrent projects. Tech press reported it as proof of AI's power. Scott Tolinski[^1] examined what actually happens when AI agents generate code at industrial scale without human review.
 
 ## The Case Study
 
@@ -58,7 +58,7 @@ Without review, these issues accumulate. The codebase becomes digital landfill -
 
 ## Slowing Down
 
-[Mario Zechner](https://mariozechner.at/posts/2026-03-25-thoughts-on-slowing-the-fuck-down/), creator of the [Pi agent framework](https://pi.dev), argues the answer isn't abandoning AI. It's using it deliberately.
+Mario Zechner[^2], creator of the [Pi agent framework](https://pi.dev), argues the answer isn't abandoning AI. It's using it deliberately.
 
 His core argument: let the AI handle the boring, repetitive tasks that teach you nothing, then carefully evaluate what it produced.
 
@@ -69,7 +69,7 @@ Practical guidance from Zechner:
 
 ## Tooling for Hygiene
 
-Tolinski has been exploring [Fallow](https://docs.fallow.tools/) - a static analysis tool for TypeScript and JavaScript codebases that surfaces:
+Tolinski has been exploring Fallow[^3] - a static analysis tool for TypeScript and JavaScript codebases that surfaces:
 
 - Dead code
 - Duplicate lines
@@ -101,9 +101,6 @@ First approach produces slop. Second produces leverage.
 
 Next time you see someone bragging about AI line counts, ask how many lines were reviewed by a human who understood them. The answer tells you whether they're building software or generating slop.
 
-## References
-
-- [37,000 Lines of Slop - Syntax FM (Scott Tolinski)](https://www.youtube.com/watch?v=1r9n-HsBQsE)
-- [Thoughts on slowing the fuck down - Mario Zechner](https://mariozechner.at/posts/2026-03-25-thoughts-on-slowing-the-fuck-down/)
-- [Fallow - Codebase analyser for TypeScript/JavaScript](https://docs.fallow.tools/)
-- [Garry Tan's GStack - GitHub](https://github.com/garrytan/gstack/)
+[^1]: [37,000 Lines of Slop - Syntax FM (Scott Tolinski)](https://www.youtube.com/watch?v=1r9n-HsBQsE)
+[^2]: [Thoughts on slowing the fuck down - Mario Zechner](https://mariozechner.at/posts/2026-03-25-thoughts-on-slowing-the-fuck-down/)
+[^3]: [Fallow - Codebase analyser for TypeScript/JavaScript](https://docs.fallow.tools/)
