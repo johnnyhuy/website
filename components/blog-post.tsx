@@ -5,8 +5,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { MDXLayoutRenderer } from 'pliny/mdx-components.js'
+import { Comments } from 'pliny/comments'
 import { components } from '@/components/mdx-components'
 import HeroPattern from '@/components/hero-pattern'
+import siteMetadata from '@/data/siteMetadata'
 import { format, formatDistanceToNow, parseISO } from 'date-fns'
 import type { Blog, Authors } from 'contentlayer/generated'
 
@@ -91,6 +93,16 @@ export function BlogPost({ post }: BlogPostProps) {
           <MDXLayoutRenderer code={post.body.code} components={components} />
         </div>
       </article>
+
+      {siteMetadata.comments?.provider && (
+        <section
+          aria-label="Comments"
+          className="mt-12 border-t pt-10 md:mt-16 md:pt-12"
+        >
+          <h2 className="mono-label mb-6">comments</h2>
+          <Comments commentsConfig={siteMetadata.comments} />
+        </section>
+      )}
     </div>
   )
 }
