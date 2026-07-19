@@ -1,7 +1,7 @@
 ---
 name: blog-writing
 description: This skill should be used when the user asks to "write a blog post", "create a blog post from notes", "convert notes to blog", "backfill blog posts", "write an essay", or mentions blog post creation, backfill, or converting Obsidian notes into published posts.
-version: 1.0.0
+version: 1.1.0
 ---
 
 # Blog Writing Skill
@@ -153,14 +153,19 @@ Before committing:
 - [ ] 1,000+ words
 - [ ] No fabricated scenarios
 - [ ] No work details or names
-- [ ] Voice matches Johnny's style
+- [ ] Voice matches Johnny's style (claim-first opening, short paragraphs, no AI slop words)
 - [ ] Has hook opening
 - [ ] Has Summary section with bold takeaways
-- [ ] Has What's Next section
-- [ ] Inline links for external references
+- [ ] Has What's Next section with a concrete action (not engagement bait)
+- [ ] Sources cited as footnotes (`[^n]`), not a `## References` dump
+- [ ] No `## References` section remaining
+- [ ] Key:value runs converted to bullet lists
+- [ ] Numbered step sections use `### 1. Title` headings
+- [ ] Illustrations (xkcd/meme/diagram) only where they earn their place, with attribution captions
 - [ ] Frontmatter date matches commit date
 - [ ] Tags in Title Case (2-4 tags)
 - [ ] Short paragraphs throughout
+- [ ] No em-dashes; use spaced hyphen ` - ` or restructure
 
 ## Commit Process
 
@@ -203,33 +208,56 @@ Tag conventions:
 - 2-4 tags maximum
 - Prefer: AI, Career, Leadership, Productivity, Software Engineering, Health, Future of Work
 
+## Citations (Footnotes)
+
+Prefer footnotes. Never end a post with `## References`.
+
+```mdx
+Sean Goedecke[^1] argues this is not arrogance in the bully sense.
+
+[^1]: [Sean Goedecke - Big tech engineers need big egos](https://www.seangoedecke.com/big-tech-needs-big-egos/)
+```
+
+Rules:
+- Cite at first meaningful mention: `Name[^1]` or `claim[^1]`.
+- Footnote body holds the full link and a short note. Keep prose clean.
+- Drop unused sources rather than stuffing a dump list.
+- Named inline links without footnotes are fine for light asides; primary sources get footnotes.
+- Footnote definitions sit at the bottom of the file after What's Next (remark-gfm renders them automatically).
+
 ## Rendering Features to Use
 
 The site renders these automatically; write to take advantage of them:
 
 - **Step sections**: `### 1. Title` headings render a boxed step icon. Use numbered h3s for pillars, steps, or dimensions.
 - **Key:value pairs**: always as `- **Key:** value` bullet lists, never bold lead-in paragraphs.
-- **Mermaid**: ```mermaid blocks render in the site theme. Use `flowchart LR/TD`, short node labels, for loops and pipelines.
-- **Images**: files go in `public/images/blog/`; add an italic caption with author + license on the next line (styles automatically). Wikimedia Commons CC/PD sources preferred.
+- **Mermaid**: fenced `mermaid` blocks render in the site theme. Use `flowchart LR/TD`, short node labels, for loops and pipelines.
+- **Images**: files go in `public/images/blog/`; add an italic caption with author + license on the next line (styles automatically).
 - **Tables**: plain markdown tables, styling is automatic.
-- **Footnotes over References sections**: cite sources inline with `[^1]` at first mention, define them at the bottom (`[^1]: [Title](url) - note`). Do not add a `## References` list. Keep the body readable; the footnote holds the full link and context.
 - Full design rules live in `skills/site-conventions/SKILL.md`.
 
 ## Illustration Tooling
 
-Fetch comics and memes with `scripts/blog-image.mjs` (no dependencies, run with the repo-pinned node):
+Fetch comics and memes with `scripts/blog-image.mjs` (no deps; use the repo-pinned node from `.tool-versions`):
 
 ```bash
-node scripts/blog-image.mjs xkcd 927 xkcd-standards       # downloads comic + prints MDX snippet
-node scripts/blog-image.mjs xkcd-search machine learning  # find comic IDs by title keyword
-node scripts/blog-image.mjs meme buzz my-meme "top text" "bottom text"  # memegen.link
+# Requires Node 22.14 (asdf) - homebrew Node 26 breaks other tooling
+export PATH="$(asdf where nodejs 22.14.0)/bin:$PATH"
+
+node scripts/blog-image.mjs xkcd 927 xkcd-standards              # download + print MDX snippet
+node scripts/blog-image.mjs xkcd-search machine learning         # find IDs by title keyword
+node scripts/blog-image.mjs meme buzz my-meme "top" "bottom"     # memegen.link
 ```
 
-Rules:
+Paste the printed snippet into the MDX at the argument it illustrates. One comic per post is usually enough.
 
-- xkcd is CC BY-NC 2.5 - fine for this non-commercial blog, attribution caption is mandatory (the script generates it).
-- Only embed when the comic genuinely illustrates the argument. One per post is usually enough.
-- xkcd data source: `https://xkcd.com/<id>/info.0.json` (title, image URL, alt text). Memes: `https://api.memegen.link`, free and keyless.
+| Source | License | Notes |
+|---|---|---|
+| xkcd (`xkcd.com/<id>/info.0.json`) | CC BY-NC 2.5 | Attribution caption mandatory (script generates it) |
+| memegen.link | free, keyless | Caption notes template; don't use for copyrighted characters you don't own |
+| Wikimedia Commons | CC/PD varies | Check each file; attribute author + license in caption |
+
+Existing embeds live under `public/images/blog/` (`xkcd-*.png`, `jevons-paradox.jpg`). Reuse before re-downloading.
 
 ## Additional Resources
 

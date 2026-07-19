@@ -20,6 +20,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm generate-rss` - Generate RSS feed
 - `pnpm generate-robots` - Generate robots.txt
 - `pnpm generate-llms` - Generate llms.txt and markdown copies of posts
+- `node scripts/blog-image.mjs` - Fetch xkcd comics or memegen memes into `public/images/blog/` (see `skills/blog-writing/SKILL.md`)
 
 ## Architecture Overview
 
