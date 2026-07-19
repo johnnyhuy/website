@@ -33,7 +33,7 @@ Every page renders inside the single column shell in `app/layout.tsx` (`max-w-3x
 
 - **Key:value pairs go in bullet lists.** Never a run of `**Key:** value` paragraphs; make it a `- **Key:** value` list.
 - **Footnotes, not References.** Cite with `[^n]` at first mention; define at file bottom. Never add `## References`. Footnotes style via remark-gfm (`.footnotes` in `app/globals.css`).
-- **Images**: put files in `public/images/blog/`, reference with markdown image syntax, italic caption with source + license on the next line. Captions style automatically (`div:has(> img) + p`). Clear licenses only (Wikimedia CC/PD, xkcd CC BY-NC 2.5). Fetch helpers: `scripts/blog-image.mjs` (see `skills/blog-writing/SKILL.md`).
+- **Images**: put files in `public/images/blog/`, reference with markdown image syntax, italic caption with source + license on the next line. Captions style automatically (`div:has(> img) + p`). Clear licenses only (Wikimedia CC/PD, xkcd CC BY-NC 2.5). Fetch helpers: `scripts/blog-image.mjs` (see `.agents/skills/blog-writing/SKILL.md`).
 - **No em-dashes**, no bold-as-speech, no AI slop openers/endings.
 
 ## Analytics

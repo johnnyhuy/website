@@ -234,7 +234,7 @@ The site renders these automatically; write to take advantage of them:
 - **Mermaid**: fenced `mermaid` blocks render in the site theme. Use `flowchart LR/TD`, short node labels, for loops and pipelines.
 - **Images**: files go in `public/images/blog/`; add an italic caption with author + license on the next line (styles automatically).
 - **Tables**: plain markdown tables, styling is automatic.
-- Full design rules live in `skills/site-conventions/SKILL.md`.
+- Full design rules live in `.agents/skills/site-conventions/SKILL.md`.
 
 ## Illustration Tooling
 
