@@ -70,6 +70,11 @@ Every post ends with something the reader can do. Not philosophy. Action.
 - Use jargon without explanation
 - Fabricate specific scenarios or stories
 - Use unspaced hyphen-dashes (`workflows-it's`) - use ` - ` or restructure
+- Overuse the negation pivot ("not X, but Y") outside the thesis bookends - state the positive instead
+- Use negation pairs for emphasis ("no X, no Y") when the positive sentence already carries the meaning
+- Signpost every conclusion ("The common thread is...", "That's the tell") - one payoff line per post
+- Repeat motif phrases in adjacent paragraphs - keep the strongest, vary or cut the rest
+- Use metaphors the reader has to solve - keep them plain
 
 ## Paragraph Structure
 
@@ -189,3 +194,27 @@ Spending too long setting up the argument before making the claim.
 Ending with "In conclusion..." or vague philosophical musings.
 
 **Fix:** Always close with "What's Next" — a specific, actionable step.
+
+### The Negation Tic
+"Not this but that" pivots and "no X, no Y" pairs are strong exactly once - at the thesis. By the third use they're a tic.
+
+**Good:** "Some people would call that escapism. I reckon it's a return to form." (hook) and "What looks like escapism is usually a return to form." (close) - bookends only.
+
+**Bad:** "It's not the same muscle. It stimulates rather than numbs. Sharing matters more, not less." - three pivots in one body.
+
+**Fix:** Mid-body, state the positive: "Wrenching pulls on a different muscle to the day job." If the positive sentence already carries the meaning ("these guys genuinely enjoy it"), cut the negation ("no gimmicks, no growth-hacked persona") entirely.
+
+### The Signpost Habit
+Interpretive signposts - "The common thread is simple", "That's the tell", "Here's the point" - narrate the reader's conclusion for them. One payoff line per post earns its place; more reads as throat-clearing.
+
+**Fix:** Let the observation land. Start the paragraph with the thing itself ("These guys genuinely enjoy...") and trust the reader.
+
+### The Echo
+Motif words are load-bearing once. Repeated in adjacent paragraphs ("airtime to go deep" twice, "juggle" three times), they read as a tic.
+
+**Fix:** Before publishing, re-read the draft hunting for your theme words. Keep the strongest instance. Vary or cut the rest.
+
+### The Cute Metaphor
+If the reader has to solve the metaphor, it's too clever ("one of the fastest things on the pedestrian crossing of life").
+
+**Fix:** Say it plain: "properly quick for something so pedestrian".

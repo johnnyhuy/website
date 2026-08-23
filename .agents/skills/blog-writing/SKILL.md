@@ -1,7 +1,7 @@
 ---
 name: blog-writing
 description: This skill should be used when the user asks to "write a blog post", "create a blog post from notes", "convert notes to blog", "backfill blog posts", "write an essay", or mentions blog post creation, backfill, or converting Obsidian notes into published posts.
-version: 1.1.0
+version: 1.2.0
 ---
 
 # Blog Writing Skill
@@ -82,6 +82,14 @@ draft: false
 ```
 
 For detailed structure patterns by post type, consult `references/post-structure-patterns.md`.
+
+## Referencing Media
+
+When a post references a video, podcast, or film, write from the source itself, not memory alone:
+
+- Pull the transcript where one exists (e.g. `yt-dlp --write-auto-subs --skip-download`) and grep for the segment you're citing
+- Grounded detail beats a generic summary: "his coach had been training his dad before he passed" lands harder than "it's about loss and exercise"
+- Verify titles, dates, and channels before embedding or linking
 
 ## Word Count Targets
 
@@ -166,6 +174,11 @@ Before committing:
 - [ ] Tags in Title Case (2-4 tags)
 - [ ] Short paragraphs throughout
 - [ ] No em-dashes; use spaced hyphen ` - ` or restructure
+- [ ] Negation sweep: "not X but Y" pivots and "no X, no Y" pairs only at the thesis bookends (hook + close), never mid-body runs
+- [ ] Signpost sweep: at most one interpretive payoff line ("That's the tell") per post
+- [ ] Echo sweep: motif words appear once; no phrase repeated in adjacent paragraphs
+- [ ] Referenced media (videos, podcasts) grounded in transcripts or first-hand viewing, not guesses
+- [ ] Polarising public figures named in the footnote, only nodded at in prose ("a certain list of rules for life")
 
 ## Commit Process
 
@@ -223,6 +236,7 @@ Rules:
 - Footnote body holds the full link and a short note. Keep prose clean.
 - Drop unused sources rather than stuffing a dump list.
 - Named inline links without footnotes are fine for light asides; primary sources get footnotes.
+- Polarising public figures: nod in prose, name in the footnote. The footnote carries the full attribution.
 - Footnote definitions sit at the bottom of the file after What's Next (remark-gfm renders them automatically).
 
 ## Rendering Features to Use
@@ -232,7 +246,8 @@ The site renders these automatically; write to take advantage of them:
 - **Step sections**: `### 1. Title` headings render a boxed step icon. Use numbered h3s for pillars, steps, or dimensions.
 - **Key:value pairs**: always as `- **Key:** value` bullet lists, never bold lead-in paragraphs.
 - **Mermaid**: fenced `mermaid` blocks render in the site theme. Use `flowchart LR/TD`, short node labels, for loops and pipelines.
-- **Images**: files go in `public/images/blog/`; add an italic caption with author + license on the next line (styles automatically).
+- **YouTube embeds**: `<YouTube id="..." title="..." caption="..." />` for the primary videos a post argues from. Asides and gag references get footnote links instead - don't interrupt the read for them.
+- **Images**: files go in `public/images/blog/`; add an italic caption with author + license on the next line (styles automatically). All images open a full-size modal on click - keep markdown image syntax so the `div:has(> img)` structure stays intact. Side-by-side panes: wrap two `<Image>` in a `grid sm:grid-cols-2` div and force equal heights with `aspect-[4/3] w-full object-cover`.
 - **Tables**: plain markdown tables, styling is automatic.
 - Full design rules live in `.agents/skills/site-conventions/SKILL.md`.
 
