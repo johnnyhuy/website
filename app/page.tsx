@@ -30,7 +30,7 @@ export default function Home() {
             <Image
               src={Me}
               alt={profile.name}
-              className="h-10 w-10 rounded-full border object-cover grayscale md:h-12 md:w-12"
+              className="h-10 w-10 rounded-full border object-cover md:h-12 md:w-12"
               priority
             />
             <h1 className="text-3xl font-bold tracking-tight md:text-4xl">{profile.name}</h1>

@@ -5,6 +5,7 @@ import type { MDXComponents } from 'mdx/types'
 import TableWrapper from './table-wrapper'
 import CustomLink from './link'
 import Image from './image'
+import YouTube from './youtube'
 import { CustomPre } from './custom-pre'
 
 const extractText = (node: React.ReactNode): string => {
@@ -37,5 +38,6 @@ export const components: MDXComponents = {
   pre: CustomPre,
   table: TableWrapper,
   h3: H3,
+  YouTube,
   BlogNewsletterForm,
 }
