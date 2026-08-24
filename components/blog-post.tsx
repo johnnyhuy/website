@@ -12,6 +12,7 @@ import BlogSneakPeek from '@/components/blog-sneak-peek'
 import Me from '@/data/images/me.jpg'
 import siteMetadata from '@/data/siteMetadata'
 import { extractPostImages } from '@/lib/blog-images'
+import { resolvePostIcon } from '@/lib/post-icons'
 import { format, formatDistanceToNow, parseISO } from 'date-fns'
 import type { Blog, Authors } from 'contentlayer/generated'
 
@@ -19,6 +20,7 @@ interface BlogPostProps {
   post: Blog
   author?: Authors
   nextPost?: Blog
+  relatedPosts?: Array<{ slug: string; title: string; date: string; icon?: string }>
 }
 
 const SIGN_OFF_PHRASES = [
@@ -79,7 +81,7 @@ const withSignatureBeforeFootnotes = (dateTime: string, year: string, phrase: st
   return Section
 }
 
-export function BlogPost({ post, nextPost }: BlogPostProps) {
+export function BlogPost({ post, nextPost, relatedPosts }: BlogPostProps) {
   const postDate = parseISO(post.date)
   const isoDate = format(postDate, 'yyyy-MM-dd')
   const year = format(postDate, 'yyyy')
@@ -184,6 +186,42 @@ export function BlogPost({ post, nextPost }: BlogPostProps) {
 
         {!hasFootnotes && <PostSignature dateTime={post.date} year={year} phrase={signOff} />}
       </article>
+
+      {relatedPosts && relatedPosts.length > 0 && (
+        <section
+          aria-label="Related posts"
+          className="mt-12 border-t pt-10 md:mt-16 md:pt-12"
+        >
+          <h2 className="mono-label mb-6">related</h2>
+          <ul className="divide-y border-y">
+            {relatedPosts.map((rp) => {
+              const Icon = resolvePostIcon(rp.icon)
+              return (
+                <li key={rp.slug}>
+                  <Link
+                    href={`/blog/${rp.slug}`}
+                    className="group flex items-baseline gap-4 py-3 transition-colors hover:bg-gray-100/60 md:gap-6 dark:hover:bg-gray-800/40"
+                  >
+                    <time
+                      dateTime={rp.date}
+                      className="shrink-0 font-mono text-xs text-gray-500 tabular-nums dark:text-gray-400"
+                    >
+                      {format(parseISO(rp.date), 'yyyy-MM-dd')}
+                    </time>
+                    <Icon
+                      aria-hidden="true"
+                      className="h-4 w-4 shrink-0 translate-y-0.5 text-gray-400 dark:text-gray-500"
+                    />
+                    <span className="min-w-0 flex-1 truncate font-medium text-gray-900 group-hover:underline group-hover:decoration-yellow-500 group-hover:underline-offset-4 dark:text-gray-100">
+                      {rp.title}
+                    </span>
+                  </Link>
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+      )}
 
       {siteMetadata.comments?.provider && (
         <section
