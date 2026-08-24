@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { format, parseISO } from 'date-fns'
 import type { CoreContent } from 'pliny/utils/contentlayer.js'
 import type { Blog } from 'contentlayer/generated'
@@ -13,11 +14,22 @@ export default function PostList({ posts }: PostListProps) {
     <ul className="divide-y border-y">
       {posts.map((post) => {
         const Icon = resolvePostIcon(post.icon)
+        const sneak = post.firstImage
         return (
-          <li key={post.slug}>
+          <li key={post.slug} className="relative overflow-hidden">
+            {sneak && (
+              <Image
+                src={sneak}
+                alt=""
+                aria-hidden="true"
+                width={320}
+                height={200}
+                className="pointer-events-none absolute right-0 top-0 z-0 h-full w-[160px] object-cover opacity-70 [mask-image:linear-gradient(to_top,black,transparent)] [-webkit-mask-image:linear-gradient(to_top,black,transparent)] md:w-[220px]"
+              />
+            )}
             <Link
               href={`/blog/${post.slug}`}
-              className="group flex items-baseline gap-4 py-4 transition-colors hover:bg-gray-100/60 md:gap-6 dark:hover:bg-gray-800/40"
+              className="group relative z-10 flex items-baseline gap-4 py-4 transition-colors hover:bg-gray-100/60 md:gap-6 dark:hover:bg-gray-800/40"
             >
               <time
                 dateTime={post.date}

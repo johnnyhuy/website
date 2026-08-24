@@ -13,11 +13,16 @@ const ytThumb = (id: string) => `/images/blog/yt-${id}.jpg`
  * Video thumbnails resolve to the locally-saved /images/blog/yt-<id>.jpg.
  */
 export function extractPostImages(post: Blog): string[] {
-  const raw = post.body?.raw ?? ''
+  return extractImagesFromRaw(post.body?.raw ?? '')
+}
+
+/** Same logic as extractPostImages but takes the raw body string directly
+ *  so it can run inside contentlayer's computed-field resolver, which
+ *  hands you a doc rather than a Blog with the parsed body. */
+export function extractImagesFromRaw(raw: string): string[] {
   const found: string[] = []
   const seen = new Set<string>()
 
-  // <Image src="...">
   MDX_IMAGE.lastIndex = 0
   let m: RegExpExecArray | null
   while ((m = MDX_IMAGE.exec(raw)) !== null) {
@@ -27,7 +32,6 @@ export function extractPostImages(post: Blog): string[] {
     found.push(src)
   }
 
-  // markdown ![alt](src)
   MD_IMAGE.lastIndex = 0
   while ((m = MD_IMAGE.exec(raw)) !== null) {
     const src = m[1]
@@ -36,7 +40,6 @@ export function extractPostImages(post: Blog): string[] {
     found.push(src)
   }
 
-  // <YouTube id="..." /> -> /images/blog/yt-<id>.jpg (snapshotted by scripts/yt-thumbnail.mjs)
   YOUTUBE.lastIndex = 0
   while ((m = YOUTUBE.exec(raw)) !== null) {
     const id = m[1]
@@ -47,4 +50,10 @@ export function extractPostImages(post: Blog): string[] {
   }
 
   return found
+}
+
+/** First image src in a blog body (or undefined). Used by the blog index
+ *  for the per-row sneak peek. */
+export function firstPostImage(post: Blog): string | undefined {
+  return extractPostImages(post)[0]
 }
