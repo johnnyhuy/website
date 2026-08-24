@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo, type ComponentPropsWithoutRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { MDXLayoutRenderer } from 'pliny/mdx-components.js'
 import { Comments } from 'pliny/comments'
 import { components } from '@/components/mdx-components'
@@ -18,6 +18,7 @@ import type { Blog, Authors } from 'contentlayer/generated'
 interface BlogPostProps {
   post: Blog
   author?: Authors
+  nextPost?: Blog
 }
 
 const SIGN_OFF_PHRASES = [
@@ -78,7 +79,7 @@ const withSignatureBeforeFootnotes = (dateTime: string, year: string, phrase: st
   return Section
 }
 
-export function BlogPost({ post }: BlogPostProps) {
+export function BlogPost({ post, nextPost }: BlogPostProps) {
   const postDate = parseISO(post.date)
   const isoDate = format(postDate, 'yyyy-MM-dd')
   const year = format(postDate, 'yyyy')
@@ -149,7 +150,22 @@ export function BlogPost({ post }: BlogPostProps) {
                 </div>
               )}
             </div>
-            <BlogSneakPeek images={extractPostImages(post)} iconName={post.icon} />
+            <div className="flex flex-col items-end gap-4">
+              {nextPost && (
+                <Link
+                  href={`/blog/${nextPost.slug}`}
+                  aria-label={`Next post: ${nextPost.title}`}
+                  className="group inline-flex items-center gap-2 text-yellow-500 transition-colors hover:text-yellow-400"
+                >
+                  <span className="flex flex-col items-end leading-tight">
+                    <span className="font-mono text-[10px] uppercase tracking-wider opacity-70">next</span>
+                    <span className="max-w-[14rem] truncate font-mono text-xs">{nextPost.title}</span>
+                  </span>
+                  <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                </Link>
+              )}
+              <BlogSneakPeek images={extractPostImages(post)} iconName={post.icon} />
+            </div>
           </div>
         </header>
 
