@@ -10,17 +10,16 @@ interface PostListProps {
 }
 
 // More images in the post body -> more transparent the row thumbnail gets.
-// Single-image posts stay at the default ~70%; multi-image posts fade so
+// Single-image posts stay at the default ~50%; multi-image posts fade so
 // the row text carries the eye and the thumbnail stays a peek.
 function thumbnailOpacity(imageCount: number | undefined): string {
-  if (!imageCount || imageCount <= 1) return 'opacity-70'
-  if (imageCount === 2) return 'opacity-50'
-  if (imageCount === 3) return 'opacity-35'
-  return 'opacity-25'
+  if (!imageCount || imageCount <= 1) return 'opacity-50'
+  if (imageCount === 2) return 'opacity-35'
+  if (imageCount === 3) return 'opacity-25'
+  return 'opacity-15'
 }
 
 // Cards fan across the right edge of each row with alternating rotation.
-// Returns CSS transform strings per card index.
 const PEEK_ROTATIONS = ['-rotate-[6deg]', 'rotate-[3deg]', '-rotate-[4deg]', 'rotate-[7deg]']
 
 export default function PostList({ posts }: PostListProps) {
@@ -48,7 +47,7 @@ export default function PostList({ posts }: PostListProps) {
                     <div
                       key={`${src}-${i}`}
                       style={{ zIndex: cards.length - i, transform: `translateX(${i * 16}px)` }}
-                      className={`relative h-full w-[72px] -ml-5 origin-bottom overflow-hidden border border-[var(--color-border)] bg-white object-cover shadow-sm first:ml-0 [mask-image:linear-gradient(to_top,black,transparent)] [-webkit-mask-image:linear-gradient(to_top,black,transparent)] md:w-[80px] ${rot}`}
+                      className={`relative h-full w-[72px] -ml-5 origin-bottom overflow-hidden border border-[var(--color-border)] object-cover shadow-sm first:ml-0 [mask-image:linear-gradient(to_top,black,transparent)] [-webkit-mask-image:linear-gradient(to_top,black,transparent)] md:w-[80px] ${rot}`}
                     >
                       <Image
                         src={src}
