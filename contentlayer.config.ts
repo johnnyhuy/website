@@ -127,6 +127,36 @@ export const Blog = defineDocumentType(() => ({
       type: 'number',
       resolve: (doc) => extractImagesFromRaw(doc.body.raw).length,
     },
+    // Up to four body images used to compose the multi-card row peek
+    // in the blog index. Excludes YouTube embeds from the row peek
+    // (those are heavy and noisy at 60px tall); only <Image> + markdown.
+    peekImages: {
+      type: 'list',
+      of: { type: 'string' },
+      resolve: (doc) => {
+        const raw = doc.body.raw
+        const found: string[] = []
+        const seen = new Set<string>()
+        const re1 = /<Image[^>]*?\bsrc=["']([^"']+)["']/g
+        re1.lastIndex = 0
+        let m: RegExpExecArray | null
+        while ((m = re1.exec(raw)) !== null) {
+          const src = m[1]
+          if (!src || seen.has(src)) continue
+          seen.add(src)
+          found.push(src)
+        }
+        const re2 = /!\[[^\]]*\]\(([^)]+)\)/g
+        re2.lastIndex = 0
+        while ((m = re2.exec(raw)) !== null) {
+          const src = m[1]
+          if (!src || seen.has(src)) continue
+          seen.add(src)
+          found.push(src)
+        }
+        return found.slice(0, 4)
+      },
+    },
     structuredData: {
       type: 'json',
       resolve: (doc) => ({

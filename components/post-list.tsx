@@ -19,24 +19,49 @@ function thumbnailOpacity(imageCount: number | undefined): string {
   return 'opacity-25'
 }
 
+// Cards fan across the right edge of each row with alternating rotation.
+// Returns CSS transform strings per card index.
+const PEEK_ROTATIONS = ['-rotate-[6deg]', 'rotate-[3deg]', '-rotate-[4deg]', 'rotate-[7deg]']
+
 export default function PostList({ posts }: PostListProps) {
   return (
     <ul className="divide-y border-y">
       {posts.map((post) => {
         const Icon = resolvePostIcon(post.icon)
-        const sneak = post.firstImage
+        const cards = (post.peekImages?.length
+          ? post.peekImages
+          : post.firstImage
+            ? [post.firstImage]
+            : []
+        ).slice(0, 4)
         const opacity = thumbnailOpacity(post.imageCount)
         return (
           <li key={post.slug} className="relative overflow-hidden">
-            {sneak && (
-              <Image
-                src={sneak}
-                alt=""
+            {cards.length > 0 && (
+              <div
                 aria-hidden="true"
-                width={320}
-                height={200}
-                className={`pointer-events-none absolute right-0 top-0 z-0 h-full w-[160px] object-cover ${opacity} [mask-image:linear-gradient(to_top,black,transparent)] [-webkit-mask-image:linear-gradient(to_top,black,transparent)] md:w-[220px]`}
-              />
+                className="pointer-events-none absolute right-0 top-1/2 z-0 flex h-[64px] w-[200px] -translate-y-1/2 items-center md:h-[72px] md:w-[240px]"
+              >
+                {cards.map((src, i) => {
+                  const rot = PEEK_ROTATIONS[i % PEEK_ROTATIONS.length]
+                  return (
+                    <div
+                      key={`${src}-${i}`}
+                      style={{ zIndex: cards.length - i, transform: `translateX(${i * 16}px)` }}
+                      className={`relative h-full w-[72px] -ml-5 origin-bottom overflow-hidden border border-[var(--color-border)] bg-white object-cover shadow-sm first:ml-0 [mask-image:linear-gradient(to_top,black,transparent)] [-webkit-mask-image:linear-gradient(to_top,black,transparent)] md:w-[80px] ${rot}`}
+                    >
+                      <Image
+                        src={src}
+                        alt=""
+                        aria-hidden="true"
+                        width={160}
+                        height={120}
+                        className={`h-full w-full object-cover ${opacity}`}
+                      />
+                    </div>
+                  )
+                })}
+              </div>
             )}
             <Link
               href={`/blog/${post.slug}`}
