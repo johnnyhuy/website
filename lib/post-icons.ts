@@ -3,10 +3,48 @@
 // map; posts without a registered icon fall back to FileText.
 //
 // Add new post icons here once and every consumer picks them up.
-import { Car, FileText, type LucideIcon } from 'lucide-react'
+import {
+  Award,
+  Bed,
+  Blocks,
+  BookOpen,
+  Bot,
+  Bug,
+  Car,
+  Compass,
+  FileText,
+  Flame,
+  MessageCircle,
+  Mountain,
+  Package,
+  RefreshCw,
+  Terminal,
+  TrendingUp,
+  Users,
+  Workflow,
+  Wrench,
+  type LucideIcon,
+} from 'lucide-react'
 
 export const POST_ICONS: Record<string, LucideIcon> = {
+  Award,
+  Bed,
+  Blocks,
+  BookOpen,
+  Bot,
+  Bug,
   Car,
+  Compass,
+  Flame,
+  MessageCircle,
+  Mountain,
+  Package,
+  RefreshCw,
+  Terminal,
+  TrendingUp,
+  Users,
+  Workflow,
+  Wrench,
 }
 
 export const POST_ICON_DEFAULT: LucideIcon = FileText
