@@ -34,13 +34,17 @@ export default function BlogSneakPeek({ images, iconName }: BlogSneakPeekProps) 
   const deck = [...photoCards, ...iconCard]
   if (deck.length < 2) return null
 
-  // Card footprint tightens when the deck is bigger so it always fits the container.
+  // Card footprint + container width tighten for small hands so two cards
+  // don't get flung to opposite edges of the header. Stride shrinks too.
   const size =
-    deck.length <= 4 ? 'h-[120px] w-[84px] md:h-[140px] md:w-[98px]'
+    deck.length <= 2 ? 'h-[120px] w-[84px] md:h-[140px] md:w-[98px]'
+    : deck.length <= 4 ? 'h-[120px] w-[84px] md:h-[140px] md:w-[98px]'
     : deck.length === 5 ? 'h-[110px] w-[76px] md:h-[128px] md:w-[90px]'
     : 'h-[100px] w-[68px] md:h-[118px] md:w-[80px]'
   const containerW =
-    deck.length <= 4 ? 'w-[230px] md:w-[260px]'
+    deck.length <= 2 ? 'w-[150px] md:w-[170px]'
+    : deck.length === 3 ? 'w-[190px] md:w-[220px]'
+    : deck.length === 4 ? 'w-[230px] md:w-[260px]'
     : deck.length === 5 ? 'w-[260px] md:w-[290px]'
     : 'w-[290px] md:w-[320px]'
 
