@@ -1,12 +1,15 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Menu, X } from 'lucide-react'
+import { Car, Menu, X, type LucideIcon } from 'lucide-react'
+import { allBlogs } from 'contentlayer/generated'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { navbar } from '@/data/siteData'
+
+const ICON_MAP: Record<string, LucideIcon> = { Car }
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -23,11 +26,29 @@ const Navbar = () => {
 
   const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`)
 
+  // Navbar logo: home -> yellow square, blog post -> post.frontmatter.icon (default Car),
+  // otherwise -> Car fallback.
+  const logoNode = useMemo(() => {
+    if (pathname === '/') {
+      return <span className="block h-3 w-3 bg-yellow-500" aria-hidden="true" />
+    }
+    let iconName: string | undefined
+    if (pathname && pathname.startsWith('/blog/')) {
+      const slug = pathname.replace('/blog/', '').split('/')[0]
+      const post = allBlogs.find((b) => b.slug === slug)
+      if (post?.icon) iconName = post.icon
+    }
+    const Icon: LucideIcon = (iconName && ICON_MAP[iconName]) || Car
+    return (
+      <Icon className="h-4 w-4 fill-yellow-500 text-yellow-500" strokeWidth={1.5} aria-hidden="true" />
+    )
+  }, [pathname])
+
   return (
     <header className="bg-background/95 supports-[backdrop-filter]:bg-background/80 sticky top-0 z-50 border-b backdrop-blur-sm">
       <div className="flex h-14 items-center justify-between px-6">
         <Link href="/" aria-label="Home">
-          <span className="block h-3 w-3 bg-yellow-500" aria-hidden="true" />
+          {logoNode}
         </Link>
 
         {/* Desktop Navigation */}

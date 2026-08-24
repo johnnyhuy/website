@@ -114,6 +114,7 @@ export const Blog = defineDocumentType(() => ({
     readTime: { type: 'string' },
     relatedPosts: { type: 'json' },
     comments: { type: 'json' },
+    icon: { type: 'string' },
   },
   computedFields: {
     ...computedFields,

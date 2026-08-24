@@ -8,8 +8,10 @@ import { MDXLayoutRenderer } from 'pliny/mdx-components.js'
 import { Comments } from 'pliny/comments'
 import { components } from '@/components/mdx-components'
 import HeroPattern from '@/components/hero-pattern'
+import BlogSneakPeek from '@/components/blog-sneak-peek'
 import Me from '@/data/images/me.jpg'
 import siteMetadata from '@/data/siteMetadata'
+import { extractPostImages } from '@/lib/blog-images'
 import { format, formatDistanceToNow, parseISO } from 'date-fns'
 import type { Blog, Authors } from 'contentlayer/generated'
 
@@ -119,32 +121,35 @@ export function BlogPost({ post }: BlogPostProps) {
           >
             <HeroPattern seed={post.slug} className="absolute inset-0" />
           </div>
-          <div className="relative pt-20">
-            <h1 itemProp="headline" className="mb-6 text-3xl font-bold tracking-tight md:text-4xl">
-              {post.title}
-            </h1>
+          <div className="relative grid grid-cols-1 gap-8 pt-20 md:grid-cols-[1fr_auto] md:items-end md:gap-10">
+            <div>
+              <h1 itemProp="headline" className="mb-6 text-3xl font-bold tracking-tight md:text-4xl">
+                {post.title}
+              </h1>
 
-            <p className="mono-label mb-6">
-              <time dateTime={post.date} itemProp="datePublished">
-                {isoDate}
-              </time>
-              {formattedRelativeDate ? ` · ${formattedRelativeDate}` : ''}
-              {post.readingTime?.text ? ` · ${post.readingTime.text}` : ''}
-            </p>
+              <p className="mono-label mb-6">
+                <time dateTime={post.date} itemProp="datePublished">
+                  {isoDate}
+                </time>
+                {formattedRelativeDate ? ` · ${formattedRelativeDate}` : ''}
+                {post.readingTime?.text ? ` · ${post.readingTime.text}` : ''}
+              </p>
 
-            {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-x-4 gap-y-2">
-                {post.tags.map((tag: string, index: number) => (
-                  <Link
-                    href={`/blog?tag=${tag}`}
-                    key={index}
-                    className="font-mono text-xs text-gray-500 underline decoration-yellow-500 underline-offset-4 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
-                  >
-                    {tag}
-                  </Link>
-                ))}
-              </div>
-            )}
+              {post.tags && post.tags.length > 0 && (
+                <div className="flex flex-wrap gap-x-4 gap-y-2">
+                  {post.tags.map((tag: string, index: number) => (
+                    <Link
+                      href={`/blog?tag=${tag}`}
+                      key={index}
+                      className="font-mono text-xs text-gray-500 underline decoration-yellow-500 underline-offset-4 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100"
+                    >
+                      {tag}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+            <BlogSneakPeek images={extractPostImages(post)} iconName={post.icon} />
           </div>
         </header>
 
