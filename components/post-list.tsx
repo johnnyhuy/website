@@ -1,9 +1,8 @@
 import Link from 'next/link'
 import { format, parseISO } from 'date-fns'
-import { FileText } from 'lucide-react'
-import { getTagIcon } from '@/components/ui/tag-icon'
 import type { CoreContent } from 'pliny/utils/contentlayer.js'
 import type { Blog } from 'contentlayer/generated'
+import { resolvePostIcon } from '@/lib/post-icons'
 
 interface PostListProps {
   posts: CoreContent<Blog>[]
@@ -13,8 +12,7 @@ export default function PostList({ posts }: PostListProps) {
   return (
     <ul className="divide-y border-y">
       {posts.map((post) => {
-        const TagIcon = post.tags.length > 0 ? getTagIcon(post.tags[0]) : undefined
-        const Icon = TagIcon ?? FileText
+        const Icon = resolvePostIcon(post.icon)
         return (
           <li key={post.slug}>
             <Link

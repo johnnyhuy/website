@@ -1,7 +1,6 @@
 import Image from 'next/image'
-import { Car, type LucideIcon } from 'lucide-react'
-
-const ICON_MAP: Record<string, LucideIcon> = { Car }
+import type { LucideIcon } from 'lucide-react'
+import { resolvePostIcon } from '@/lib/post-icons'
 
 interface BlogSneakPeekProps {
   images: string[]
@@ -17,9 +16,7 @@ export default function BlogSneakPeek({ images, iconName }: BlogSneakPeekProps) 
   // Build the deck: photo cards first (cap so the hand doesn't overflow),
   // then a topic icon card to round out the hand if a post icon is set.
   const photoCards = images.slice(0, 6).map((src, i) => ({ kind: 'photo' as const, src, idx: i }))
-  const iconCard = iconName && ICON_MAP[iconName]
-    ? [{ kind: 'icon' as const, Icon: ICON_MAP[iconName] as LucideIcon }]
-    : []
+  const iconCard = iconName ? [{ kind: 'icon' as const, Icon: resolvePostIcon(iconName) as LucideIcon }] : []
 
   // Intersperse the icon card at the end so it acts as a topic badge in the hand.
   const deck = [...photoCards, ...iconCard]
@@ -68,7 +65,7 @@ export default function BlogSneakPeek({ images, iconName }: BlogSneakPeekProps) 
             className={`${base} flex items-center justify-center bg-gray-100 dark:bg-gray-800 ${rot} ${ty}`}
           >
             <Icon
-              className="h-7 w-7 fill-yellow-500 text-yellow-500 md:h-8 md:w-8"
+              className="h-7 w-7 text-yellow-500 md:h-8 md:w-8"
               strokeWidth={1.5}
             />
           </div>
