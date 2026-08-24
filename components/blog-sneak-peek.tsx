@@ -9,17 +9,21 @@ interface BlogSneakPeekProps {
 
 const ROTATIONS = ['-rotate-[10deg]', '-rotate-[2deg]', 'rotate-[3deg]', 'rotate-[12deg]']
 
-// Hand of cards: middle card lifted most, outer cards step down/out.
-// Reads as a focal point sitting on top of the fanned deck.
+// Hand of cards: pure mirror arc. Middle card lifted, outer cards step
+// down by the same amount so the deck reads as a symmetric fan with the
+// focal point on top.
 function tiltY(i: number, total: number): string {
   if (total <= 1) return ''
   const mid = (total - 1) / 2
-  const dist = i - mid // 0 at centre, ±1, ±2, ...
-  const abs = Math.abs(dist)
-  if (abs === 0) return '-translate-y-3' // middle: lifted
-  if (abs === 1) return '-translate-y-1' // next to middle: lightly lifted
-  if (abs === 2) return '-translate-y-0'
-  return 'translate-y-2' // outermost: dropped a touch
+  const abs = Math.abs(i - mid)
+  // 4 tiers, mirrored in 4px units -> -16, -8, +8, +16 px
+  const map: Record<number, string> = {
+    0: '-translate-y-4',
+    1: '-translate-y-2',
+    2: 'translate-y-2',
+    3: 'translate-y-4',
+  }
+  return map[abs] ?? map[3]
 }
 
 export default function BlogSneakPeek({ images, iconName }: BlogSneakPeekProps) {
