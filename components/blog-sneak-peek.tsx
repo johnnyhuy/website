@@ -9,21 +9,14 @@ interface BlogSneakPeekProps {
 
 const ROTATIONS = ['-rotate-[10deg]', '-rotate-[2deg]', 'rotate-[3deg]', 'rotate-[12deg]']
 
-// Hand of cards: pure mirror arc. Middle card lifted, outer cards step
-// down by the same amount so the deck reads as a symmetric fan with the
-// focal point on top.
+// Hand of cards: zig-zag. Every other card is lifted so the deck reads
+// as a wavy fan with adjacent cards clearly overlapping.
 function tiltY(i: number, total: number): string {
   if (total <= 1) return ''
-  const mid = (total - 1) / 2
-  const abs = Math.abs(i - mid)
-  // 4 tiers, mirrored in 4px units -> -16, -8, +8, +16 px
-  const map: Record<number, string> = {
-    0: '-translate-y-4',
-    1: '-translate-y-2',
-    2: 'translate-y-2',
-    3: 'translate-y-4',
-  }
-  return map[abs] ?? map[3]
+  // Alternating: even-indexed cards sit down, odd-indexed cards sit up.
+  // With z-index increasing by index, the "up" cards always overlap
+  // their "down" neighbours, so the zigzag cascades visually.
+  return i % 2 === 0 ? 'translate-y-3' : '-translate-y-3'
 }
 
 export default function BlogSneakPeek({ images, iconName }: BlogSneakPeekProps) {
