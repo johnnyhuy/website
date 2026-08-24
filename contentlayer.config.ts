@@ -123,6 +123,10 @@ export const Blog = defineDocumentType(() => ({
       type: 'string',
       resolve: (doc) => extractImagesFromRaw(doc.body.raw)[0],
     },
+    imageCount: {
+      type: 'number',
+      resolve: (doc) => extractImagesFromRaw(doc.body.raw).length,
+    },
     structuredData: {
       type: 'json',
       resolve: (doc) => ({

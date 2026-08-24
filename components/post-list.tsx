@@ -9,12 +9,23 @@ interface PostListProps {
   posts: CoreContent<Blog>[]
 }
 
+// More images in the post body -> more transparent the row thumbnail gets.
+// Single-image posts stay at the default ~70%; multi-image posts fade so
+// the row text carries the eye and the thumbnail stays a peek.
+function thumbnailOpacity(imageCount: number | undefined): string {
+  if (!imageCount || imageCount <= 1) return 'opacity-70'
+  if (imageCount === 2) return 'opacity-50'
+  if (imageCount === 3) return 'opacity-35'
+  return 'opacity-25'
+}
+
 export default function PostList({ posts }: PostListProps) {
   return (
     <ul className="divide-y border-y">
       {posts.map((post) => {
         const Icon = resolvePostIcon(post.icon)
         const sneak = post.firstImage
+        const opacity = thumbnailOpacity(post.imageCount)
         return (
           <li key={post.slug} className="relative overflow-hidden">
             {sneak && (
@@ -24,7 +35,7 @@ export default function PostList({ posts }: PostListProps) {
                 aria-hidden="true"
                 width={320}
                 height={200}
-                className="pointer-events-none absolute right-0 top-0 z-0 h-full w-[160px] object-cover opacity-70 [mask-image:linear-gradient(to_top,black,transparent)] [-webkit-mask-image:linear-gradient(to_top,black,transparent)] md:w-[220px]"
+                className={`pointer-events-none absolute right-0 top-0 z-0 h-full w-[160px] object-cover ${opacity} [mask-image:linear-gradient(to_top,black,transparent)] [-webkit-mask-image:linear-gradient(to_top,black,transparent)] md:w-[220px]`}
               />
             )}
             <Link
