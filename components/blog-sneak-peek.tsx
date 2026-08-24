@@ -8,7 +8,19 @@ interface BlogSneakPeekProps {
 }
 
 const ROTATIONS = ['-rotate-[10deg]', '-rotate-[2deg]', 'rotate-[3deg]', 'rotate-[12deg]']
-const TILT_Y = ['translate-y-2', '-translate-y-1', 'translate-y-1', '-translate-y-2']
+
+// Hand of cards: middle card lifted most, outer cards step down/out.
+// Reads as a focal point sitting on top of the fanned deck.
+function tiltY(i: number, total: number): string {
+  if (total <= 1) return ''
+  const mid = (total - 1) / 2
+  const dist = i - mid // 0 at centre, ±1, ±2, ...
+  const abs = Math.abs(dist)
+  if (abs === 0) return '-translate-y-3' // middle: lifted
+  if (abs === 1) return '-translate-y-1' // next to middle: lightly lifted
+  if (abs === 2) return '-translate-y-0'
+  return 'translate-y-2' // outermost: dropped a touch
+}
 
 export default function BlogSneakPeek({ images, iconName }: BlogSneakPeekProps) {
   if (images.length === 0 && !iconName) return null
@@ -39,7 +51,7 @@ export default function BlogSneakPeek({ images, iconName }: BlogSneakPeekProps) 
     >
       {deck.map((card, i) => {
         const rot = ROTATIONS[i % ROTATIONS.length]
-        const ty = TILT_Y[i % TILT_Y.length]
+        const ty = tiltY(i, deck.length)
         const left = `${(deck.length === 1 ? 50 : (i * 100) / (deck.length - 1))}%`
         const z = String(10 + i)
         const base = `absolute top-1/2 ${size} -translate-x-1/2 -translate-y-1/2 border bg-white object-cover shadow-md`
