@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import type { LucideIcon } from 'lucide-react'
 import { resolvePostIcon } from '@/lib/post-icons'
+import { cardAnchorId } from '@/lib/blog-images'
 
 interface BlogSneakPeekProps {
   images: string[]
@@ -58,16 +59,23 @@ export default function BlogSneakPeek({ images, iconName }: BlogSneakPeekProps) 
         const base = `absolute top-1/2 ${size} -translate-x-1/2 -translate-y-1/2 border bg-white object-cover shadow-md`
 
         if (card.kind === 'photo') {
+          const anchor = `#${cardAnchorId(card.src)}`
           return (
-            <Image
+            <a
               key={`p-${card.src}`}
-              src={card.src}
-              alt=""
-              width={200}
-              height={266}
+              href={anchor}
+              aria-label={`Jump to image in post`}
+              className={`${base} ${rot} ${ty} hover:outline hover:outline-1 hover:outline-yellow-500`}
               style={{ left, zIndex: z }}
-              className={`${base} ${rot} ${ty}`}
-            />
+            >
+              <Image
+                src={card.src}
+                alt=""
+                width={200}
+                height={266}
+                className="h-full w-full object-cover"
+              />
+            </a>
           )
         }
         const Icon = card.Icon

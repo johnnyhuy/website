@@ -8,7 +8,7 @@ type YouTubeProps = {
 
 export default function YouTube({ id, title, caption }: YouTubeProps) {
   return (
-    <figure className="my-8">
+    <figure id={`youtube-${id}`} className="my-8 scroll-mt-20">
       <div className="aspect-video w-full border border-[var(--color-border)]">
         <iframe
           src={`https://www.youtube-nocookie.com/embed/${id}`}

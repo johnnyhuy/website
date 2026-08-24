@@ -3,12 +3,14 @@
 import { useEffect, useState } from 'react'
 import NextImage, { ImageProps } from 'next/image'
 import { cn } from '@/lib/utils'
+import { cardAnchorId } from '@/lib/blog-images'
 
 const basePath = process.env.BASE_PATH
 
-const Image = ({ src, alt, className, ...rest }: ImageProps) => {
+const Image = ({ src, alt, id, className, ...rest }: ImageProps) => {
   const [open, setOpen] = useState(false)
   const fullSrc = `${basePath || ''}${src}`
+  const anchorId = id ?? cardAnchorId(typeof src === 'string' ? src : (src?.default?.src ?? ''))
 
   useEffect(() => {
     if (!open) return
@@ -30,6 +32,7 @@ const Image = ({ src, alt, className, ...rest }: ImageProps) => {
       <NextImage
         src={fullSrc}
         alt={alt || ''}
+        id={anchorId}
         role="button"
         tabIndex={0}
         aria-label={alt ? `View full size: ${alt}` : 'View full size image'}
@@ -40,7 +43,7 @@ const Image = ({ src, alt, className, ...rest }: ImageProps) => {
             openModal()
           }
         }}
-        className={cn('cursor-zoom-in', className)}
+        className={cn('cursor-zoom-in scroll-mt-20', className)}
         {...rest}
       />
       {open ? (

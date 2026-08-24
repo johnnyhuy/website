@@ -7,6 +7,25 @@ const YOUTUBE = /<YouTube\b[^>]*?\bid=["']([^"']+)["']/g
 const ytThumb = (id: string) => `/images/blog/yt-${id}.jpg`
 
 /**
+ * Stable anchor id for a blog-body image src, matching the id the
+ * <Image> component auto-applies. Lets the post-header sneak peek link
+ * straight to the figure when clicked.
+ */
+export function cardAnchorId(src: string): string {
+  if (src.startsWith('/images/blog/yt-')) {
+    const ytId = src.replace('/images/blog/yt-', '').replace(/\.[a-z0-9]+$/i, '')
+    return `youtube-${ytId}`
+  }
+  const last = src.split('/').pop() ?? 'image'
+  const slug = last
+    .replace(/\.[a-z0-9]+$/i, '')
+    .replace(/[^a-z0-9]+/gi, '-')
+    .replace(/^-+|-+$/g, '')
+    .toLowerCase()
+  return `image-${slug || 'unknown'}`
+}
+
+/**
  * Pull every blog-body image src + YouTube thumbnail out of an MDX post
  * body (deduped, in source order). Matches the <Image> JSX component,
  * markdown `![alt](src)` references, and <YouTube id="..." /> embeds.
