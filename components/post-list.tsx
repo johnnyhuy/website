@@ -21,8 +21,9 @@ function thumbnailOpacity(imageCount: number | undefined): string {
 
 // Cards fan across the right edge of each row with alternating rotation.
 const PEEK_ROTATIONS = ['-rotate-[6deg]', 'rotate-[3deg]', '-rotate-[4deg]', 'rotate-[7deg]']
-// Stride between adjacent cards (in px). Tighter = cards hug the right.
-const PEEK_STRIDE = 14
+// Stride between adjacent cards (in px). Bigger = cards don't overlap.
+// 56 leaves a ~16px overlap on each card; 72 would have them touching.
+const PEEK_STRIDE = 56
 
 export default function PostList({ posts }: PostListProps) {
   return (
