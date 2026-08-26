@@ -21,6 +21,8 @@ function thumbnailOpacity(imageCount: number | undefined): string {
 
 // Cards fan across the right edge of each row with alternating rotation.
 const PEEK_ROTATIONS = ['-rotate-[6deg]', 'rotate-[3deg]', '-rotate-[4deg]', 'rotate-[7deg]']
+// Stride between adjacent cards (in px). Tighter = cards hug the right.
+const PEEK_STRIDE = 14
 
 export default function PostList({ posts }: PostListProps) {
   return (
@@ -34,20 +36,29 @@ export default function PostList({ posts }: PostListProps) {
             : []
         ).slice(0, 4)
         const opacity = thumbnailOpacity(post.imageCount)
+        // Total rightward extent = first card's width + stride * (n-1).
+        // Cards anchor by their RIGHT edge so the rightmost card sits flush
+        // to the row's right edge and the fan steps left from there.
+        const cardWidth = 72
+        const peekWidth = cardWidth + PEEK_STRIDE * (cards.length - 1)
         return (
           <li key={post.slug} className="relative overflow-hidden">
             {cards.length > 0 && (
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute right-0 top-1/2 z-0 flex h-[64px] w-[200px] -translate-y-1/2 items-center md:h-[72px] md:w-[240px]"
+                className="pointer-events-none absolute right-0 top-1/2 z-0 flex h-[64px] -translate-y-1/2 items-center md:h-[72px]"
+                style={{ width: `${peekWidth}px` }}
               >
                 {cards.map((src, i) => {
                   const rot = PEEK_ROTATIONS[i % PEEK_ROTATIONS.length]
                   return (
                     <div
                       key={`${src}-${i}`}
-                      style={{ zIndex: cards.length - i, transform: `translateX(${i * 16}px)` }}
-                      className={`relative h-full w-[72px] -ml-5 origin-bottom overflow-hidden border border-[var(--color-border)] object-cover shadow-sm first:ml-0 [mask-image:linear-gradient(to_top,black,transparent)] [-webkit-mask-image:linear-gradient(to_top,black,transparent)] md:w-[80px] ${rot}`}
+                      style={{
+                        zIndex: cards.length - i,
+                        right: `${i * PEEK_STRIDE}px`,
+                      }}
+                      className={`absolute right-0 top-0 h-full w-[72px] origin-bottom overflow-hidden border border-[var(--color-border)] object-cover shadow-sm [mask-image:linear-gradient(to_top,black,transparent)] [-webkit-mask-image:linear-gradient(to_top,black,transparent)] md:w-[72px] ${rot}`}
                     >
                       <Image
                         src={src}
