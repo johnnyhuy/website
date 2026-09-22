@@ -1,7 +1,7 @@
 ---
 name: blog-writing
 description: This skill should be used when the user asks to "write a blog post", "create a blog post from notes", "convert notes to blog", "backfill blog posts", "write an essay", or mentions blog post creation, backfill, or converting Obsidian notes into published posts.
-version: 1.2.0
+version: 1.3.0
 ---
 
 # Blog Writing Skill
@@ -83,6 +83,20 @@ draft: false
 
 For detailed structure patterns by post type, consult `references/post-structure-patterns.md`.
 
+### What's Next variants
+
+The full `## What's Next` section works for action-oriented posts. For posts that end on a thesis and don't need a step list, use the minimal close instead:
+
+```mdx
+The last paragraph of the post body.
+
+---
+
+Your next step is the one you'd regret not having built in five years. You already know what it is.
+```
+
+The `---` divider gives visual breathing room; the one-liner puts ownership on the reader without forcing a checklist. Use this when the post already showed the action - the reader doesn't need it spelled out again.
+
 ## Referencing Media
 
 When a post references a video, podcast, or film, write from the source itself, not memory alone:
@@ -128,10 +142,17 @@ Transform dense paragraphs into:
 - Framework tables (dimensions, attributes, levels)
 - Key insight callouts
 
-### Step 5: Write Summary and What's Next
+### Step 5: Write Summary and What's Next (Optional)
 
-Summary: 4-6 bold takeaways with one-line elaborations.
-What's Next: One specific, actionable step. Not philosophical.
+Both are optional. Skip them when the post's closing section already lands the takeaway (e.g. a `## Consultants Already Live Here` that closes the loop). When you do use them:
+
+- **Summary**: 4-6 bold takeaways with one-line elaborations.
+- **What's Next**: One specific, actionable step. Not philosophical. Can render as just a horizontal rule + one line, no `## What's Next` heading needed - the rule reads as the section break and the line is the action. Example:
+  ```
+  ---
+
+  Pick the thing you'd regret not having built. Build it.
+  ```
 
 ### Step 6: Write the Hook
 
@@ -245,13 +266,17 @@ The site renders these automatically; write to take advantage of them:
 
 - **Step sections**: `### 1. Title` headings render a boxed step icon. Use numbered h3s for pillars, steps, or dimensions.
 - **Key:value pairs**: always as `- **Key:** value` bullet lists, never bold lead-in paragraphs.
-- **Mermaid**: fenced `mermaid` blocks render in the site theme. Use `flowchart LR/TD`, short node labels, for loops and pipelines.
+- **Mermaid**: fenced `mermaid` blocks render in the site theme. Use `flowchart LR/TD`, short node labels, for loops and pipelines. Syntax quirks: `classDef` + `class` directives go after all node definitions (inline `:::bad` on a node breaks parsing); `flowchart LR` alone doesn't force side-by-side subgraphs - add an explicit cross-link between them to pin the order; callouts use two-line format `[!TIP]\n> body` (single-line `[!TIP] > body` eats everything after the marker).
 - **YouTube embeds**: `<YouTube id="..." title="..." caption="..." />` for the primary videos a post argues from. Asides and gag references get footnote links instead - don't interrupt the read for them.
-- **Images**: files go in `public/images/blog/`; add an italic caption with author + license on the next line (styles automatically). All images open a full-size modal on click - keep markdown image syntax so the `div:has(> img)` structure stays intact. Side-by-side panes: wrap two `<Image>` in a `grid sm:grid-cols-2` div and force equal heights with `aspect-[4/3] w-full object-cover`.
+- **Images**: files go in `public/images/blog/`; add an italic caption with author + license on the next line (styles automatically). All images open a full-size modal on click - keep markdown image syntax so the `div:has(> img)` structure stays intact. Side-by-side panes: wrap two `<Image>` in a `grid sm:grid-cols-2` div and force equal heights with `aspect-[4/3] w-full object-cover`. **Top-of-post banner** vs **inline banner**: `image:` in frontmatter renders the top banner (`components/blog-post.tsx:174`, h-[250px] / md:h-[350px]). For an in-body banner above a specific section, just use markdown image syntax at the spot you want it and drop the frontmatter `image:` field.
 - **Tables**: plain markdown tables, styling is automatic.
 - Full design rules live in `.agents/skills/site-conventions/SKILL.md`.
 
 ## Illustration Tooling
+
+Default order: **source first, generate only when sourcing won't cut it**.
+
+### Sourcing (preferred)
 
 Fetch comics and memes with `scripts/blog-image.mjs` (no deps; use the repo-pinned node from `.tool-versions`):
 
@@ -274,6 +299,18 @@ Paste the printed snippet into the MDX at the argument it illustrates. One comic
 
 Existing embeds live under `public/images/blog/` (`xkcd-*.png`, `jevons-paradox.jpg`). Reuse before re-downloading.
 
+### AI generation (when sourcing won't fit)
+
+For editorial diagrams with text + icons + periods of time + brand logos, generate via `codex exec` using the `gpt-image-1` model. It produces clean text rendering, real brand logos (Spotify, Adobe, JPMorgan, Backstage, WordPress) recognisably, and correct data labels in a single shot.
+
+```bash
+codex exec --skip-git-repo-check "Generate one image using your image generation tool. Subject: ..."
+```
+
+Two-pass workflow for site typography: pass 1 generates the visual composition (accept the rendered text), pass 2 generates a no-text base and overlays Inter + SF Mono via PIL. Full prompt patterns, model comparison, and provider code in `references/image-sourcing-and-generation.md`.
+
+Caption for generated diagrams stays plain - describe what the diagram shows, don't call out "AI-generated" or the model.
+
 ## Additional Resources
 
 ### Reference Files
@@ -282,6 +319,7 @@ For detailed guidance, consult:
 - **`references/voice-and-style-guide.md`** — Detailed voice instructions with do/don't examples
 - **`references/post-structure-patterns.md`** — Structure patterns by post type (research-based, opinion, framework, analysis)
 - **`references/example-posts-index.md`** — Index of published posts to reference for voice and structure
+- **`references/image-sourcing-and-generation.md`** — Provider comparison, decision rules for source-vs-generate, caption formats, text-overlay fallback
 
 ### Example Files
 

@@ -1,7 +1,7 @@
 ---
 name: site-conventions
 description: Design system and content conventions for johnnyhuy.com. Use when creating or editing pages, components, layouts, or blog content so the minimal industrial aesthetic and accessibility baseline stay consistent.
-version: 1.2.0
+version: 1.3.0
 ---
 
 # Site Conventions
@@ -25,6 +25,7 @@ Every page renders inside the single column shell in `app/layout.tsx` (`max-w-3x
 - `components/post-list.tsx` - the only post list row style (ISO date, tag icon, title).
 - `components/hero-pattern.tsx` - geometric header band, picked deterministically from a seed (usually the post slug). Used in post headers; home uses `components/cloud-pattern.tsx` instead.
 - `components/hero-pattern.tsx` and cloud bands always sit behind content with `opacity-25` and a `[mask-image:linear-gradient(to_bottom,black,transparent)]` fade.
+- `components/blog-sneak-peek.tsx` - the floating card preview in the post header. Two-card hands fan symmetrically (left at `40%`, right at `60%`, rotated `-10deg` and `+10deg`) with `origin-bottom` so the tops spread while the bottoms stay close - reads as a hand of playing cards. Three-plus card hands use the asymmetric `ROTATIONS` array and the alternating `translate-y-3`/`-translate-y-3` zigzag. Don't hand-build card markup when editing this component.
 - Numbered headings (`### 1. Title`) automatically render a boxed step icon via the h3 override in `components/mdx-components.tsx`. Write step sections as plain numbered h3s; do not hand-build icon markup.
 - Mermaid blocks render via `components/mermaid-diagram.tsx` with the site's gray + mono theme in both modes. Use `flowchart LR/TD` with short node labels.
 - `components/youtube.tsx` - YouTube embed for MDX: `<YouTube id="..." title="..." caption="..." />`. Lazy youtube-nocookie iframe, hairline border, optional mono-label caption. Needs `frame-src` CSP entries in `next.config.ts`.
@@ -35,7 +36,7 @@ Every page renders inside the single column shell in `app/layout.tsx` (`max-w-3x
 
 - **Key:value pairs go in bullet lists.** Never a run of `**Key:** value` paragraphs; make it a `- **Key:** value` list.
 - **Footnotes, not References.** Cite with `[^n]` at first mention; define at file bottom. Never add `## References`. Footnotes style via remark-gfm (`.footnotes` in `app/globals.css`).
-- **Images**: put files in `public/images/blog/`, reference with markdown image syntax, italic caption with source + license on the next line. Captions style automatically (`div:has(> img) + p`). Clear licenses only (Wikimedia CC/PD, xkcd CC BY-NC 2.5). Fetch helpers: `scripts/blog-image.mjs` (see `.agents/skills/blog-writing/SKILL.md`). Side-by-side panes: two `<Image>` in a `grid sm:grid-cols-2` div, equal heights via `aspect-[4/3] w-full object-cover`. Scrub personal metadata (EXIF/GPS, license plates) before publishing photos.
+- **Images**: put files in `public/images/blog/`, reference with markdown image syntax, italic caption with source + license on the next line. Captions style automatically (`div:has(> img) + p`). Clear licenses only (Wikimedia CC/PD, xkcd CC BY-NC 2.5). Fetch helpers: `scripts/blog-image.mjs` (see `.agents/skills/blog-writing/SKILL.md`). Side-by-side panes: two `<Image>` in a `grid sm:grid-cols-2` div, equal heights via `aspect-[4/3] w-full object-cover`. Scrub personal metadata (EXIF/GPS, license plates) before publishing photos. **Caption style**: plain description of what the diagram shows (e.g. `*Exponential growth vs power and linear references over 20 years.*`). For sourced images keep `Author, License, via Wikimedia Commons`. For AI-generated diagrams keep the caption descriptive, not a meta-statement about how it was made.
 - **No em-dashes**, no bold-as-speech, no AI slop openers/endings.
 
 ## Analytics

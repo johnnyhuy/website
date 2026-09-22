@@ -14,10 +14,19 @@ const ROTATIONS = ['-rotate-[10deg]', '-rotate-[2deg]', 'rotate-[3deg]', 'rotate
 // as a wavy fan with adjacent cards clearly overlapping.
 function tiltY(i: number, total: number): string {
   if (total <= 1) return ''
+  if (total === 2) return '' // Two cards fan symmetrically from the centre.
   // Alternating: even-indexed cards sit down, odd-indexed cards sit up.
   // With z-index increasing by index, the "up" cards always overlap
   // their "down" neighbours, so the zigzag cascades visually.
   return i % 2 === 0 ? 'translate-y-3' : '-translate-y-3'
+}
+
+// For two cards, fan them symmetrically so they read like a hand of
+// playing cards - leftmost tilting left, rightmost tilting right.
+// Wider decks use the asymmetric progression in ROTATIONS.
+function fanRotation(i: number, total: number): string {
+  if (total === 2) return i === 0 ? '-rotate-[10deg]' : 'rotate-[10deg]'
+  return ROTATIONS[i % ROTATIONS.length]
 }
 
 export default function BlogSneakPeek({ images, iconName }: BlogSneakPeekProps) {
@@ -52,11 +61,17 @@ export default function BlogSneakPeek({ images, iconName }: BlogSneakPeekProps) 
       className={`relative mx-auto hidden h-[160px] shrink-0 sm:block md:h-[180px] ${containerW}`}
     >
       {deck.map((card, i) => {
-        const rot = ROTATIONS[i % ROTATIONS.length]
+        const rot = fanRotation(i, deck.length)
         const ty = tiltY(i, deck.length)
-        const left = `${(deck.length === 1 ? 50 : (i * 100) / (deck.length - 1))}%`
+        // Two cards overlap in the centre so the fan reads as a hand of
+        // cards rather than two cards flung to opposite ends of the header.
+        // origin-bottom pivots the rotation so the tops fan out while the
+        // bottoms stay close together.
+        const left =
+          deck.length === 2 ? `${i === 0 ? 40 : 60}%`
+          : `${(deck.length === 1 ? 50 : (i * 100) / (deck.length - 1))}%`
         const z = String(10 + i)
-        const base = `absolute top-1/2 ${size} -translate-x-1/2 -translate-y-1/2 border bg-white object-cover shadow-md`
+        const base = `absolute top-1/2 ${size} origin-bottom -translate-x-1/2 -translate-y-1/2 border bg-white object-cover shadow-md`
 
         if (card.kind === 'photo') {
           const anchor = `#${cardAnchorId(card.src)}`
