@@ -7,6 +7,7 @@ import CustomLink from './link'
 import Image from './image'
 import YouTube from './youtube'
 import { CustomPre } from './custom-pre'
+import { CompoundingChart } from './compounding-chart'
 
 const extractText = (node: React.ReactNode): string => {
   if (typeof node === 'string') return node
@@ -40,4 +41,5 @@ export const components: MDXComponents = {
   h3: H3,
   YouTube,
   BlogNewsletterForm,
+  CompoundingChart,
 }
