@@ -67,7 +67,7 @@ What used to require a seed round and a co-founder now requires attention, AI le
 
 [Backstage](https://backstage.io) is the cleanest example of the pattern working.
 
-[Spotify](https://engineering.atspotify.com/2020/03/24/introducing-backstage/) built an internal developer portal because they were tired of every team reinventing service catalogues. They [open sourced it](https://github.com/backstage/backstage). It's now a [CNCF incubating project](https://www.cncf.io/projects/backstage/) under Apache 2.0. Anyone can self-host the same portal, with the same plugin ecosystem, the same scaffolder, the same tech radar.
+Spotify[^1] built an internal developer portal because they were tired of every team reinventing service catalogues. They open sourced it.[^2] It's now a CNCF incubating project[^3] under Apache 2.0. Anyone can self-host the same portal, with the same plugin ecosystem, the same scaffolder, the same tech radar.
 
 Around that open core, a real neo enterprise has grown:
 
@@ -155,6 +155,26 @@ The same free stack that killed the capital barrier killed the team barrier too.
 
 Different lens: build for yourself, or build for a customer, or both. Same playbook. Same long game. The line between "side project" and "consulting deliverable" is thinner than people think.
 
+## Bots Scale Down, Headcount Doesn't
+
+The next wave is software factories. Bots raise the PR, bots review it, bots approve and merge it. This isn't a demo any more.
+
+Lauren Tan cleared the trust curve at Cursor and merged a thousand PRs in a month.[^4] Amp ships fifty times a day and killed the pull request entirely.[^5]
+
+People will tell you quality slips when that happens. The question I keep getting from engineers runs deeper: who's maintaining this stuff?
+
+That question carries a bias toward engineering excellence. Stable systems, code you can hand to the next person. Fair lens. It usually comes from people inside org structures built to reward that kind of knowledge work.
+
+Large companies can't scale down manpower without layoffs. Bots scale down like cloud infrastructure - turn the dial and the spend goes.
+
+A small company incubating and shipping feature work without much toil never needed that payroll to begin with.
+
+I'm digging into this across a few upcoming pieces:
+
+- **AI factories** - what happens when bots raise, review, and merge the work, and who's left holding the pager
+- **Coding Is a Hobby, I Don't Do That Anymore** - the five stages of developer grief, and what's left when hand-writing code stops being the job
+- **AI Adoption at Enterprises** - trust curves, middle-out rollouts, and why the org chart is the hard part
+
 ---
 
 <div className="h-8" aria-hidden="true"></div>
@@ -162,3 +182,9 @@ Different lens: build for yourself, or build for a customer, or both. Same playb
 Your next step is the one you've been meaning to try. Have a crack at it - see what you can build.
 
 <div className="h-16" aria-hidden="true"></div>
+
+[^1]: [Introducing Backstage - Spotify Engineering](https://engineering.atspotify.com/2020/03/24/introducing-backstage/) - the March 2020 announcement of the internal developer portal they later gave away.
+[^2]: [backstage/backstage](https://github.com/backstage/backstage) - the open source repository, Apache 2.0.
+[^3]: [Backstage - CNCF](https://www.cncf.io/projects/backstage/) - incubating project status.
+[^4]: [Lauren Tan on pstack, trust and 1000 PR months at Cursor](https://www.youtube.com/watch?v=Zc07HI9Ppxk) - UninformedInvestors interview, August 2026.
+[^5]: [How Amp Ships 50 Times a Day With AI Agents](https://www.youtube.com/watch?v=uKO1ueC6eu0) - Beyond Coding with Dario Hamidi, September 2026.
