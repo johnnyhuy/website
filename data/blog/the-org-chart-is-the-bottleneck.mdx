@@ -1,0 +1,98 @@
+---
+title: The Org Chart Is the Bottleneck
+summary: |
+  Every enterprise wants an AI adoption strategy. Most of them are buying tooling and hoping the org follows. The bottleneck was never the model. It's trust, and trust doesn't scale the way a licence does. Here's the curve teams actually climb, why middle-out beats top-down, and the bit nobody wants to talk about - what happens when the work itself shrinks.
+date: "2026-10-07 11:20:00 +1000"
+tags:
+  - AI
+  - Leadership
+  - Future of Work
+draft: true
+icon: Users
+---
+
+Every enterprise I talk to wants an AI adoption plan. Most of them have already bought the tooling and are waiting for the org to catch up.
+
+It won't catch up on its own. The bottleneck was never the model. It's trust, and trust doesn't scale the way a licence does.
+
+## The Curve Is Personal
+
+There's a trust curve that shows up in every successful rollout I've seen.[^1] You start in the loop with one or two agents and you watch every output. Then you pair, three to five agents, some verification in place. Then parallel local work with a real feature map and evals. Then cloud agents merging PRs overnight behind hard architectural guardrails.
+
+The order matters. There is no shortcut from observation to automation, because the curve tracks your trust, not the tool's sophistication.
+
+I like the engineering management parallel because it's exact. If you don't trust your team, you micromanage. Same with agents. Waking up to twenty already-merged PRs requires the same muscle as reviewing a teammate's overnight work, and you only build that muscle by having been in the loop first.
+
+Teams that skip the curve burn tokens and produce noise. Teams that climb it get leverage.
+
+## Why Orgs Can't Buy It
+
+A licence is instant. Trust isn't.
+
+The non-technical work is the work. Change management, champions, baselines. I've spent time training engineers and non-engineers at a mid-sized company and you see both sides of it: engineers who can't get past code completion, and people whose work was never about code in the first place but who are suddenly expected to direct agents to do it.
+
+For the second group this is genuinely liberating. Knowledge work was always the point. The code was incidental.
+
+For the first group it's a grief curve, and you can't mandate your way past it.
+
+## Middle-Out Beats Top-Down
+
+Every rollout I've been close to that worked used the same shape. Not top-down, not bottom-up. Middle-out.
+
+Leadership sets expectations and protects the space. Bottom-up champions train their peers and do the proving. The middle does the translating. Top-down alone produces compliance theatre where everyone has a tool and nobody uses it. Bottom-up alone produces a dozen incompatible workflows and no leverage.
+
+The failure mode I've seen most often is buying four AI IDEs at once because procurement could move faster than judgement. It confuses everyone and doubles the support surface. Pick one. Go deep.
+
+## Guardrails Beat Rules
+
+The other thing that separates the teams making progress: they shape the codebase so the shortest path is the best path.
+
+Soft rules get ignored. Style guides, prompt packs, "please write tests" conventions. What works is architecture that enforces the outcome - a build that fails closed, a scaffold that generates the right shape by default, a review boundary on the paths that matter.
+
+The payoff is wider than engineering. Once the codebase is set up so even a weak agent does good work, people who aren't engineers can ship directly. Designers and product folks opening pull requests. The technical leader reviews but rarely finds problems, because the architecture is doing the enforcement.
+
+That's the version of adoption worth aiming at. Not more engineers typing faster. More of the org able to move.
+
+## Get a Baseline First
+
+Before any of it, measure something. PR cycle time, review load, engagement. Any baseline beats no baseline, because six months later someone senior will ask whether any of it worked and you need a number that isn't a vibe.
+
+Slurp the tool's data into a warehouse. Visualise the trend. You don't need a perfect metric, you need a direction.
+
+## The Part Nobody Wants to Talk About
+
+Here's the awkward bit.
+
+Large companies can't scale down manpower without layoffs. That is the mechanism, and everyone knows it. Reduce, restructure, contract, then expand again when work picks up.
+
+Bots scale down like cloud infrastructure. Turn the dial and the spend goes.
+
+Enterprises hate seeing people idle. So busy work becomes the default and it has been for decades. When the real work is orchestrating and handing context to a squad of bots, there is simply less work to go around. The org has to decide what to do with that, and "reskill everyone" is a much harder sentence than it sounds.
+
+This is where adoption stops being a tooling conversation and becomes a structural one. Top-down and bottom-up both have to move, and the honest version is that companies will find this much deeper and harder than the rollout deck suggested.
+
+You can see the same grief curve at org scale. Leadership denying the shift is coming. Vendors and internal sceptics fighting about it. Teams bargaining that it'll automate the boring stuff only. Then the quiet part where people realise what the work was, and what it's becoming. Very few organisations have reached acceptance as a whole, even where individuals have.
+
+The ones furthest along are the ones that named it early and gave people somewhere to go. Not a reskilling slide deck. Actual scope, actual teams, actual permission to build the new thing.
+
+## The Human Side
+
+One more thing that gets lost. Human attention is the most precious resource in the system now, and agent noise is eating it.[^2]
+
+The review queue is where that shows up first. Large AI-generated changesets are genuinely hard to review properly. The fix isn't more review, it's smaller work: size limits, decomposition before development, code owners on the paths that matter, a stable default branch with a fast fix-forward path.
+
+There's also the pipeline question. If agents absorb the entry-level work, where do the next seniors come from? Nobody has a good answer yet and I'd rather name it than pretend the rollout solves it.
+
+## What Actually Works
+
+The teams making progress aren't doing anything exotic. One toolchain. Real champions. A baseline. Small PRs. Verification skills built before automation. An environment built so the agents can be trusted, rather than an expectation that people just trust them.
+
+One line I keep coming back to: part of your job is to create an environment where you can trust the agents. Let's not juggle knives.[^3]
+
+---
+
+Your next step is the one you've been meaning to try. Have a crack at it - see what you can build.
+
+[^1]: [Lauren Tan on pstack, trust and 1000 PR months at Cursor](https://www.youtube.com/watch?v=Zc07HI9Ppxk) - UninformedInvestors interview, August 2026. Maps the four rungs of the trust curve and the engineering management parallel.
+[^2]: [Software Engineering at the Tipping Point](https://www.youtube.com/watch?v=2n41YjR5QfU) - Adam Bender, Google I/O 2026. Flags human attention as the scarcest resource and the junior talent pipeline as the structural risk.
+[^3]: [How Amp Ships 50 Times a Day With AI Agents](https://www.youtube.com/watch?v=uKO1ueC6eu0) - Beyond Coding with Dario Hamidi, September 2026. The trust argument for removing pull requests.

@@ -28,14 +28,20 @@ async function generateSitemap() {
   
   // Get all blog posts from contentlayer if available
   let blogs = [];
+  let notes = [];
   try {
-    // Try to import the blog data from contentlayer
+    // Try to import the content data from contentlayer
     const contentlayerPath = path.join(projectRoot, '.contentlayer/generated/index.mjs');
-    const { allBlogs } = await import(contentlayerPath);
-    blogs = allBlogs.map(post => `/blog/${post.slug}`);
-    console.log(`Found ${blogs.length} blog posts to include in sitemap`);
+    const { allBlogs, allNotes } = await import(contentlayerPath);
+    // Drafts must never appear in the sitemap. A draft that is indexed and
+    // then un-drafted reads as a URL that 404s on first crawl.
+    blogs = allBlogs.filter(post => post.draft !== true).map(post => `/blog/${post.slug}`);
+    notes = (allNotes || [])
+      .filter(note => note.draft !== true)
+      .map(note => `/notes/${note.slug}`);
+    console.log(`Found ${blogs.length} blog posts and ${notes.length} notes for the sitemap`);
   } catch (error) {
-    console.warn('Could not import blog data from contentlayer, continuing without blog data');
+    console.warn('Could not import content data from contentlayer, continuing without it');
   }
 
   // Combine all routes
@@ -49,6 +55,7 @@ async function generateSitemap() {
       return path === '//' ? '/' : path;
     }),
     ...blogs,
+    ...notes,
     // Add additional static routes that might not be captured by the page detection
     '/projects'
   ];

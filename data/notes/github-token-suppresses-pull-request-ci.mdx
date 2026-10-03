@@ -1,0 +1,76 @@
+---
+title: GitHub Actions Silently Skips CI on PRs Opened by GITHUB_TOKEN
+summary: |
+  GitHub does not run pull_request workflows for pull requests that GITHUB_TOKEN opened. Any release tool that opens its own PR (release-please, semantic-release, changesets, Mergify) will therefore never see its own release PR pass CI. Nothing errors, nothing is annotated, the checks just do not exist. Here is the rule, how to prove you have hit it, and the three ways out.
+date: '2026-08-30 09:20:00 +1000'
+tags:
+  - CI/CD
+  - GitHub Actions
+  - Release Automation
+draft: false
+icon: Workflow
+---
+
+GitHub will not trigger a `pull_request` workflow for a pull request that was created using the default `GITHUB_TOKEN`. This is deliberate, it is documented, and it is the single most common reason a release bot's PR sits there with no checks on it.
+
+## The rule
+
+Events triggered by `GITHUB_TOKEN` do not start new workflow runs. Not `pull_request`. Not `pull_request_target` either, because that fires on the base branch's workflow file and the _action_ still came from the token. The loop is cut at the source.
+
+So this:
+
+```yaml
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+```
+
+will not run for the release PR that release-please opened. It runs perfectly well for every human PR, which is exactly what makes it hard to spot.
+
+## Proving it in ten seconds
+
+Open the release PR and look at the checks tab. No jobs at all, not even skipped ones. Then compare with a human PR on the same branch. That is the whole diagnosis.
+
+Two more signals if you want them in the log:
+
+- `gh pr view <n> --json statusCheckRollup` returns an empty array, while a human PR on the same head returns a populated one.
+- No run exists for the release commit. `gh run list --commit <sha>` is empty, but `gh run list --branch <release-branch>` shows the push-branch run from when the branch was created and nothing since.
+
+I lost an afternoon to a slightly different face of the same bug. A release-please PR had been sitting unmerged for a week. Not because CI was red. Because CI had never been asked.
+
+## The three ways out
+
+**1. Use a token that is not `GITHUB_TOKEN`.** A fine-grained PAT, or better, a GitHub App installation token. Pass it to the action:
+
+```yaml
+- uses: googleapis/release-please-action@v4
+  with:
+    token: ${{ secrets.RELEASE_PLEASE_TOKEN }}
+```
+
+The PR is now authored by a real identity and `pull_request` fires normally. This is the option to pick if you want full CI on release PRs. It costs you: a PAT with a rotation schedule, or App permissions you have to keep in scope.
+
+**2. Gate on `workflow_run` instead.** Let CI run on the branch push rather than the PR, and have release-please wait for it:
+
+```yaml
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    needs: [ci]
+```
+
+On a bot PR the `ci` job is skipped, so `needs` resolves immediately and release-please proceeds. On a human PR release-please is blocked until CI passes. Correct in the common case, and it is a workaround rather than a fix, because you have quietly made "no CI result" mean "pass".
+
+**3. Add a `workflow_dispatch` escape hatch.** This is the belt-and-braces option and it is worth having regardless. Release-please actions generally support being pointed at a specific target, so a manual workflow can create the release PR, at which point the token _is_ a PAT and CI behaves. Note this in the repo README, because a release process that only exists in one workflow file is a release process nobody can use under pressure.
+
+## What I would do
+
+Fine-grained PAT, scoped to the one repository, with contents, pull requests and issues read/write. Nothing else. Keep the release pipeline on `GITHUB_TOKEN` and the PR-opening action on the PAT. That way the blast radius of the PAT is a single repo and a single job, and the release PR gets real CI on it.
+
+Whichever route you take, the thing to take away is narrower than "GitHub Actions is unreliable": **an event that is self-referential needs a different identity than the one that triggered it.** Any tool that reacts to your infrastructure by writing to that same infrastructure hits this.

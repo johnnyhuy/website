@@ -4,7 +4,7 @@ import { useState, useEffect, createElement } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
-import { allBlogs } from 'contentlayer/generated'
+import { allBlogs, allNotes } from 'contentlayer/generated'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { navbar } from '@/data/siteData'
@@ -36,13 +36,17 @@ const Navbar = () => {
 
   const isActive = (path: string) => pathname === path || pathname.startsWith(`${path}/`)
 
-  // Navbar logo: home -> yellow square, blog post -> post.frontmatter.icon,
+  // Navbar logo: home -> yellow square, post or note -> its frontmatter.icon,
   // otherwise -> FileText fallback.
   let postIcon: string | undefined
   if (pathname && pathname.startsWith('/blog/')) {
     const slug = pathname.replace('/blog/', '').split('/')[0]
     const post = allBlogs.find((b) => b.slug === slug)
     if (post?.icon) postIcon = post.icon
+  } else if (pathname && pathname.startsWith('/notes/')) {
+    const slug = pathname.replace('/notes/', '').split('/')[0]
+    const note = allNotes.find((n) => n.slug === slug)
+    if (note?.icon) postIcon = note.icon
   }
 
   const logoNode =
