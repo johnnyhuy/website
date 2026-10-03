@@ -1,0 +1,72 @@
+---
+title: Helm Does Not Install CRDs on Upgrade
+summary: |
+  CRDs in a chart's crds/ directory are only applied by helm install. helm upgrade skips them entirely, with no warning. If your External Secrets Operator ClusterSecretStore or your cert-manager Issuer disappears, this is why, and the fix is not in your values file because the values file is never read.
+date: '2026-07-22 14:10:00 +1000'
+tags:
+  - Kubernetes
+  - Helm
+  - External Secrets Operator
+draft: false
+icon: Package
+---
+
+Anything in a chart's `crds/` directory is applied on `helm install` and skipped on `helm upgrade`. No warning, no diff, no error. Helm treats CRDs as cluster-scoped infrastructure that it does not own, on the reasonable grounds that it cannot safely diff or roll back a CRD, and that a failed CRD update can brick every CR in the cluster.
+
+The trap is that the CRDs only need to be missing once. After that your release PRs look clean, your values are correct, and your `ExternalSecret` resources are rejected with `no matches for kind "ExternalSecret" in version "external-secrets.io/v1"`.
+
+## The failure, in order
+
+This is what a broken bootstrap looks like:
+
+1. A fresh cluster. `helm upgrade --install external-secrets external-secrets` runs against a release that Helm believes already exists, or a previous uninstall cleaned up the release record but not the namespace.
+2. Helm applies the Deployment and RBAC. It does not apply `externalsecrets.external-secrets.io`, `secretstores.external-secrets.io` or `clustersecretstores.external-secrets.io`.
+3. The controller starts, watches for `SecretStore` and `ClusterSecretStore`, finds none, and logs nothing useful because nothing told it to look for anything.
+4. Your `ClusterSecretStore` apply fails at the API server, not at the controller. `no matches for kind`.
+5. Every workload that mounts a `secretRef` from that store CrashLoopBackOffs with a generic missing-secret error, which sends you looking at the store rather than at the CRDs.
+
+The failure surfaces three layers away from its cause, which is why this takes a while to spot the first time.
+
+## The fix, in the order you need it
+
+Assert the CRDs exist, and create them if they do not. This is idempotent and safe to run every time:
+
+```bash
+for crd in externalsecrets.external-secrets.io \
+           secretstores.external-secrets.io \
+           clustersecretstores.external-secrets.io; do
+  kubectl get crd "$crd" >/dev/null 2>&1 || \
+    kubectl apply -f "https://raw.githubusercontent.com/external-secrets/external-secrets/main/deploy/crds/bundle.yaml"
+done
+```
+
+Then wait for them to be servable before applying any custom resource:
+
+```bash
+kubectl wait --for=condition=Established --timeout=60s \
+  crd/externalsecrets.external-secrets.io \
+  crd/secretstores.external-secrets.io \
+  crd/clustersecretstores.external-secrets.io
+```
+
+That `kubectl wait` matters even when the CRDs are already there, because `kubectl apply` returns as soon as the object is stored. Custom resources created in the same script will hit `no matches for kind` against an API server that has not finished its discovery refresh yet.
+
+## Why the ordering is not optional in Argo CD
+
+If you sync a bundle containing both the Helm release and the custom resources, Argo CD applies them as one wave. CRDs and the CRs that depend on them land in the same sync, and the CRs lose that race routinely.
+
+Two options that both work:
+
+- Put the CRD-manifest and the `helm install` in a **first sync wave**, and everything that references those CRDs in a second wave with a `sync-wave` delay. This is the least surprising option and I would start here.
+- Drop the chart's CRDs and manage the CRDs as a pinned manifest in the same repo. More verbose, and it means you own the upgrade path for the CRD schema across chart versions, but it makes the dependency explicit instead of relying on Helm's install-time-only behaviour.
+
+## Verify it, do not assume it
+
+```bash
+kubectl get externalsecrets,secretstores,clustersecretstores -A
+kubectl describe clustersecretstore -n <ns> <name> | tail -20
+```
+
+If the store exists and the `ExternalSecret` exists but no `Secret` appears, the provider is the problem, not the plumbing. `kubectl describe` on the `ExternalSecret` carries the controller's reconciliation error in its events, and that message is more specific than anything the workload logs will tell you.
+
+One last trap. External Secrets only retries reconciliation on the `refreshInterval` you configured, so a store that was applied before its provider was ready can sit silently empty for the length of that interval. Set the interval low during bootstrap and raise it once the cluster is steady. A 24 hour default that was fine in dev will cost you an afternoon of staring at a healthy-looking pod.

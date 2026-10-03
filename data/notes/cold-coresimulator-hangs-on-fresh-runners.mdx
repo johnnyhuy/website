@@ -1,0 +1,69 @@
+---
+title: Cold CoreSimulator Hangs on Fresh macOS Runners
+summary: |
+  On a fresh GitHub Actions macOS runner, the first iOS simulator boot can hang indefinitely with no output. The job does not fail, it just stops making progress until timeout-minutes kills it. Shutting down and erasing the prewarmed simulators before the first boot is the fix, and bootstatus instead of sleep is what turns an invisible hang into a readable failure.
+date: '2026-06-14 11:45:00 +1000'
+tags:
+  - CI/CD
+  - iOS
+  - Testing
+draft: false
+icon: Bug
+---
+
+The symptom is unhelpful: your test job goes quiet after the build step, produces no further log lines, and eventually dies on `timeout-minutes`. No CoreSimulator error, no crash, no kernel log. It reads like the runner ran out of memory, which is why people burn hours on memory limits before looking anywhere useful.
+
+## What is actually happening
+
+GitHub's macOS images ship with CoreSimulator already warm. The image build boots devices, the runner starts, and the simulator service has been holding that state for however long the image has been sitting in the blob store. Sometimes the first boot on a fresh runner picks up a half-torn-down device and the `CoreSimulatorService` never finishes bringing it up.
+
+You cannot see this from inside the job, but you can see it from the device list:
+
+```bash
+xcrun simctl list devices
+```
+
+If you see devices listed with `(unavailable)` next to a runtime that is not installed, that is your hung boot. The runner is trying to boot a device that no longer maps to a runtime it has.
+
+## The fix
+
+Shut down and erase everything before the first boot. It costs about ten seconds and it removes the whole class of problem:
+
+```yaml
+- name: Reset simulators
+  run: |
+    xcrun simctl shutdown all || true
+    xcrun simctl erase all
+
+- name: Test
+  run: |
+    set -o pipefail
+    xcodebuild test \
+      -scheme MyApp \
+      -destination 'platform=iOS Simulator,name=iPhone 15,OS=latest' \
+      -derivedDataPath "$RUNNER_TEMP/dd" \
+      -parallel-testing-enabled NO \
+      | xcpretty
+```
+
+Four things in there matter, and each one is a separate failure mode:
+
+- **Shutdown and erase before the first boot.** The actual fix. `|| true` because a cold runner may have nothing running and `simctl shutdown all` returns non-zero when there is no service to talk to.
+- **`bootstatus`, never `sleep`.** `xcodebuild` does wait for the boot, but it waits quietly. If you need to boot explicitly, `xcrun simctl bootstatus <udid> -b` prints a line per state transition and fails loudly on timeout. A `sleep 30` in place of this is a coin flip that is green on fast runners and red on loaded ones.
+- **`-parallel-testing-enabled NO`.** Parallel testing clones the destination device per worker. On a cold CoreSimulator that is several simultaneous boots against the same service, and it is the second most common cause of a silent hang.
+- **Explicit `-derivedDataPath`.** The default is under the runner's home directory, which persists across jobs on a self-hosted runner and picks up stale build state. A path under `$RUNNER_TEMP` is fresh by definition.
+
+## The belt-and-braces bit
+
+`set -o pipefail` is not optional when you pipe `xcodebuild` into anything. Without it the pipeline's exit code is the last command's, so a formatter that succeeds will happily report a green build that never compiled.
+
+And always set `timeout-minutes` on the job. Not as a safety net for a hang you have not diagnosed, but because the failure mode of this bug is _time_, and an explicit ceiling converts an hour of wall clock into a clean red build you can read.
+
+## When it is not this
+
+Two other things produce a similar quiet stop:
+
+- **A test that waits on a real network or a real clock.** Common in UI suites with animations, and it looks identical in the log. Add `-only-testing:` to isolate a single test class and see whether the hang follows it.
+- **Instruments and `xctrace`.** Much heavier than `xcodebuild test`, and it wants a booted destination beforehand. Boot it with `bootstatus -b` first, then hand the booted UDID to the test step.
+
+If shutdown and erase did not fix it and the hang survives `-only-testing:MyAppTests/testFoo`, it is your test, not the runner.

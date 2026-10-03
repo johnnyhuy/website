@@ -59,6 +59,37 @@ const computedFields: ComputedFields = {
 }
 
 /**
+ * Up to four body images, used to compose the multi-card row peek in the
+ * blog and notes indexes. Excludes YouTube embeds from the row peek (those
+ * are heavy and noisy at 60px tall); only <Image> + markdown.
+ *
+ * Shared by Blog and Notes so the two surfaces cannot drift apart.
+ */
+function resolvePeekImages(doc: { body: { raw: string } }): string[] {
+  const raw = doc.body.raw
+  const found: string[] = []
+  const seen = new Set<string>()
+  const re1 = /<Image[^>]*?\bsrc=["']([^"']+)["']/g
+  re1.lastIndex = 0
+  let m: RegExpExecArray | null
+  while ((m = re1.exec(raw)) !== null) {
+    const src = m[1]
+    if (!src || seen.has(src)) continue
+    seen.add(src)
+    found.push(src)
+  }
+  const re2 = /!\[[^\]]*\]\(([^)]+)\)/g
+  re2.lastIndex = 0
+  while ((m = re2.exec(raw)) !== null) {
+    const src = m[1]
+    if (!src || seen.has(src)) continue
+    seen.add(src)
+    found.push(src)
+  }
+  return found.slice(0, 4)
+}
+
+/**
  * Count the occurrences of all tags across blog posts and write to json file
  */
 async function createTagCount(allBlogs: any[]) {
@@ -133,29 +164,7 @@ export const Blog = defineDocumentType(() => ({
     peekImages: {
       type: 'list',
       of: { type: 'string' },
-      resolve: (doc) => {
-        const raw = doc.body.raw
-        const found: string[] = []
-        const seen = new Set<string>()
-        const re1 = /<Image[^>]*?\bsrc=["']([^"']+)["']/g
-        re1.lastIndex = 0
-        let m: RegExpExecArray | null
-        while ((m = re1.exec(raw)) !== null) {
-          const src = m[1]
-          if (!src || seen.has(src)) continue
-          seen.add(src)
-          found.push(src)
-        }
-        const re2 = /!\[[^\]]*\]\(([^)]+)\)/g
-        re2.lastIndex = 0
-        while ((m = re2.exec(raw)) !== null) {
-          const src = m[1]
-          if (!src || seen.has(src)) continue
-          seen.add(src)
-          found.push(src)
-        }
-        return found.slice(0, 4)
-      },
+      resolve: resolvePeekImages,
     },
     structuredData: {
       type: 'json',
@@ -168,6 +177,56 @@ export const Blog = defineDocumentType(() => ({
         description: doc.summary,
         image: doc.images ? doc.images[0] : siteMetadata.socialBanner,
         url: `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`,
+      }),
+    },
+  },
+}))
+
+// Notes are the second content surface: short, self-contained, actionable
+// write-ups. Same MDX pipeline and computed fields as Blog (readingTime,
+// slug, toc, image extraction) so /notes behaves exactly like /blog at the
+// component level. Deliberately a smaller field set - a note does not need
+// authors, images frontmatter, layouts, bibliographies or canonical URLs.
+export const Notes = defineDocumentType(() => ({
+  name: 'Notes',
+  filePathPattern: 'notes/**/*.mdx',
+  contentType: 'mdx',
+  fields: {
+    title: { type: 'string', required: true },
+    date: { type: 'date', required: true },
+    tags: { type: 'list', of: { type: 'string' }, default: [] },
+    lastmod: { type: 'date' },
+    draft: { type: 'boolean' },
+    summary: { type: 'string' },
+    image: { type: 'string' },
+    icon: { type: 'string' },
+  },
+  computedFields: {
+    ...computedFields,
+    firstImage: {
+      type: 'string',
+      resolve: (doc) => extractImagesFromRaw(doc.body.raw)[0],
+    },
+    imageCount: {
+      type: 'number',
+      resolve: (doc) => extractImagesFromRaw(doc.body.raw).length,
+    },
+    peekImages: {
+      type: 'list',
+      of: { type: 'string' },
+      resolve: resolvePeekImages,
+    },
+    structuredData: {
+      type: 'json',
+      resolve: (doc) => ({
+        '@context': 'https://schema.org',
+        '@type': 'TechArticle',
+        headline: doc.title,
+        datePublished: doc.date,
+        dateModified: doc.lastmod || doc.date,
+        description: doc.summary,
+        image: siteMetadata.socialBanner,
+        url: `${siteMetadata.siteUrl}/notes/${doc.slug}`,
       }),
     },
   },
@@ -194,7 +253,7 @@ export const Authors = defineDocumentType(() => ({
 
 export default makeSource({
   contentDirPath: 'data',
-  documentTypes: [Blog, Authors],
+  documentTypes: [Blog, Notes, Authors],
   mdx: {
     cwd: process.cwd(),
     remarkPlugins: [

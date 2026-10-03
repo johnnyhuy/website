@@ -1,0 +1,95 @@
+---
+title: The Software Factory Still Needs a Pager
+summary: |
+  Bots raise the PR now. Bots review it, approve it, merge it. The productivity argument is settled and the quality objection is weaker than people think. The real question is the one engineers keep asking me: who's maintaining all this? That question carries a bias, and underneath it sits an asymmetry nobody wants to say out loud.
+date: "2026-10-01 09:15:00 +1000"
+tags:
+  - AI
+  - Software Engineering
+  - Future of Work
+draft: true
+icon: Workflow
+---
+
+Software factories aren't a demo any more. Bots raise the PR, bots review it, bots approve and merge it. The productivity argument is basically settled. The question I keep getting from engineers is the one underneath: who's maintaining this stuff?
+
+That question deserves a real answer. It also deserves a look at who's asking it and why.
+
+## The Factory Floor
+
+Start with what's actually shipping.
+
+Lauren Tan joined Cursor, spent a month learning the codebase, and the month after that merged roughly a thousand pull requests.[^1] Not a thousand generated diffs. A thousand merged PRs, with agents doing the work and architectural guardrails doing most of the review.
+
+Amp's team of twenty ships about fifty times a day[^2] and they deleted the pull request entirely. Their argument is that a PR is a 2010s artefact built for strangers, not teammates. Push to main, keep commits tiny, and move the cost of catching problems out of review and into your own verification before push.
+
+Neither of these is a productivity hack layered on the old workflow. Both are a different unit of work.
+
+## Verification Is the Craft
+
+The thing that made Lauren's thousand PRs possible wasn't generation. It was closing the feedback loop.
+
+Her first verification skill came from real pain. The agent kept confidently misreading browser performance traces, so she wrote one that drives the app through the debugging protocol: spawn a build, click through the interface, capture traces, attach screenshots. Evidence instead of vibes.
+
+The other half was navigation. A bug report saying "the sidebar is laggy" means nothing to an agent that can't find the sidebar. So she wrote a feature map - every user-visible feature, how to reach it, the selectors to grab. Vague reports become navigable tasks.
+
+That's the actual skill now. Not writing the fix. Building the scaffolding that lets something else write the fix and prove it.
+
+## The Constraint Moved
+
+There's a pattern in how these systems bottleneck.
+
+First it was tokens. Then it was compute. The speakers at the coding agents keynote at AI Engineer World's Fair this year were blunt about where it landed: attention. One of them fixed his token budget, then bought test boxes to fix compute, and is now bottlenecked on his own hours and where to spend them.
+
+I've seen the same shape in my own work. The free stack didn't delete cost. It moved cost from your budget to your attention. A factory of bots just moves it again - you stop writing code and start deciding which of twelve parallel workstreams deserves a look.
+
+That's the honest trade. It's a good trade. But it's a trade.
+
+## The Quality Objection
+
+The first thing people say is that quality slips. It's the objection I hear most and it's the weakest one.
+
+Quality slips when the unit of work is a 3,000-line changeset nobody can review. That was true before agents. Teams running big AI-generated diffs into a single PR had skipped reviews and missed logic years before any bot was approving anything. The fix is the same fix that always worked: smaller commits, size limits, code owners, a stable default branch.
+
+What changes is where the cost lands. At fifty ships a day, verification is your job before the push, not a reviewer's job two days later. Some teams will do that badly. That's a process failure, not a factory failure.
+
+## Who's Asking
+
+Now the actual question. Who's maintaining this stuff?
+
+It usually comes from people soaked in engineering excellence. Quality code. Stable systems. Work you can hand to the next person. Fair lens. Some of the best engineers I know ask it first and ask it hardest.
+
+It's worth naming that the people asking mostly sit inside org structures built to reward exactly that kind of knowledge work. Big teams, long tenures, careful review cultures, promotion ladders that pay for craft. Of course they see the maintenance gap first. Their whole job is the maintenance gap.
+
+The question isn't wrong. It's incomplete.
+
+## The Asymmetry
+
+Here's the part nobody wants to say out loud.
+
+Large companies can't scale down manpower without layoffs. That's the mechanism. Reduce, restructure, contract, then expand again when the work picks up. It is slow, expensive, and it lands on people who didn't pick the strategy.
+
+Bots scale down like cloud infrastructure. Turn the dial and the spend goes.
+
+The mechanics are further along than most people realise. Amp's agents run in purpose-built execution environments that cost nothing while idle, can spawn in the hundreds without breaking the bank, and talk to each other so one can orchestrate ten more. Secrets don't live on disk either - the environment holds a signed identity token and trades it for short-lived credentials scoped to the request.
+
+That's a real fleet. And a fleet has a dial.
+
+A small company incubating and shipping feature work without much toil never needed that payroll to begin with. There isn't a maintenance department to protect. There's one person, a stack of free tiers, and a long game.
+
+This is the part that makes engineers uncomfortable, and it isn't really about engineers. It's about what enterprises are optimised for. Orgs hate seeing people idle. So busy work becomes the default and has been for decades. When the work is orchestrating and handing context to a squad of bots, there is simply less work. You can ramp bots down. Ramping people down is called a restructure.
+
+## The Maintenance Answer
+
+So who maintains the factory?
+
+Same person who always did. Someone who knows what breaks, what to watch, and what to leave alone. The difference is the ratio. One operator with a fleet of agents can hold more surface area than a small team could five years ago, and the pager still goes to a human.
+
+The skill isn't typing. It's knowing which of the twelve workstreams is lying to you.
+
+---
+
+The next step is to build the thing you've been meaning to try, and let the factory do the boring eighty percent.
+
+[^1]: [Lauren Tan on pstack, trust and 1000 PR months at Cursor](https://www.youtube.com/watch?v=Zc07HI9Ppxk) - UninformedInvestors interview, August 2026. Covers the trust curve, verification skills, and the head chef framing of the engineer's role.
+[^2]: [How Amp Ships 50 Times a Day With AI Agents](https://www.youtube.com/watch?v=uKO1ueC6eu0) - Beyond Coding with Dario Hamidi, September 2026. Covers removing pull requests, cloud-agent execution environments, and workload identity federation.

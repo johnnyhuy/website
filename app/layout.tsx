@@ -39,7 +39,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: siteMetadata.siteUrl,
     types: {
-      'application/rss+xml': `${siteMetadata.siteUrl}/feed.xml`,
+      // Two feeds, advertised separately so a reader can subscribe to the
+      // long-form blog, the short notes, or both.
+      'application/rss+xml': [
+        { url: `${siteMetadata.siteUrl}/feed.xml`, title: `${siteMetadata.title} - Blog` },
+        { url: `${siteMetadata.siteUrl}/notes/feed.xml`, title: `${siteMetadata.title} - Notes` },
+      ],
     },
   },
   robots: {

@@ -1,0 +1,57 @@
+---
+title: Terraform Plan Is Not Drift Detection
+summary: |
+  A plan on a schedule detects pending configuration changes. It does not detect drift, because drift is unrecorded change to live infrastructure and a plan has no way to see it unless you ask for a refresh-only run. It also exits 0 with real differences present. Two facts, and most homegrown drift detection is wrong because it missed one of them.
+date: '2026-09-12 08:05:00 +1000'
+tags:
+  - Terraform
+  - Infrastructure as Code
+  - Drift Detection
+draft: false
+icon: RefreshCw
+---
+
+There is a difference between two things people both call drift, and conflating them is the reason most hand-rolled drift detection is either noisy or blind.
+
+- **Configuration drift:** your code changed, nobody ran apply. `terraform plan` reports this and is very good at it.
+- **Infrastructure drift:** something outside Terraform changed the live world. A console edit, a controller that reconciled a default back onto a resource, another team's apply with different state. Your code did not change and your plan will be empty.
+
+Only the second one is what people are actually worried about when they ask for drift detection.
+
+## Why a plain plan cannot see it
+
+Terraform's plan is a diff between your configuration and the state it last recorded. It is not a diff between your configuration and reality. State is the only record of reality Terraform has, and the whole point of state is that it is stale until you refresh it.
+
+So a plan on a schedule catches "the merge queue has a pending infra change nobody applied". Useful, and not the same thing. To actually read reality you need a refresh-only plan:
+
+```bash
+terraform plan -refresh-only -detailed-exitcode -no-color > drift.json
+```
+
+- **`-refresh-only`** updates state from the live providers _without_ proposing any configuration change. This is the only plan mode that observes drift.
+- **`-detailed-exitcode`** is the part people miss. Without it, `terraform plan` exits 0 whether or not it found changes. You cannot tell a clean run from a dirty one without parsing stdout, and parsing stdout is how you end up with a regex that silently stops matching when Terraform reformats a plan.
+
+Exit codes: `0` no changes, `1` error, `2` changes present.
+
+## The trap in refresh-only
+
+A refresh-only plan is a diagnostic, not a remediation. It tells you what changed. Running `terraform apply -refresh-only` writes those discovered changes into state and makes the drift disappear from every future plan, which is often exactly what you want and occasionally the opposite of what you want.
+
+Use it when the drift is expected. Someone fixed a broken resource by hand and you want Terraform to stop shouting about it. Do not use it when the drift is a security finding, because you will have laundered the evidence and the next plan will be clean.
+
+For a security finding you want the diff, keep the state untouched, and open a pull request that reverts the live change in code.
+
+## Making it a real signal
+
+The part that turns this into a detector rather than a curiosity:
+
+- **Run it on a schedule against production.** Nightly is enough. Hourly is expensive and the interesting drift is always someone editing by hand, which is a human timescale.
+- **Alert on exit code 2, not on plan text.** Anything else is a rule you will have to maintain.
+- **Snapshot state before you refresh it.** A refreshed state is your only record of what reality used to be. Commit it as an artefact, or you will lose the before-picture.
+- **Differentiate the two drift types before you page anyone.** A plan with configuration changes means the pipeline is broken. A refresh-only plan with changes means someone touched production. Those go to different people and the wrong page is how you earn a reputation for noisy tooling.
+
+## On managed and serverless services
+
+Some resources cannot be drifted in the way you would expect, because the provider itself is the controller. A cloud database with automated backups will have fields that change underneath you. A service with a platform-managed ingress will report a live config that no Terraform configuration could reproduce.
+
+For these, diff only the fields you actually manage, and treat everything else as ignored rather than trying to converge it. A detector that reports thirty differences nobody can action will be muted within a week, and a muted detector is worse than no detector because it still looks like coverage.
