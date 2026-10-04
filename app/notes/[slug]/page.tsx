@@ -1,9 +1,17 @@
 import { allNotes } from 'contentlayer/generated'
 import { notFound } from 'next/navigation'
 import { Note } from '@/components/note'
+import { publishedOnly, isPublished } from '@/lib/published'
+
+// Same reasoning as app/blog/[slug]: the export only emits these slugs, so
+// a note marked `draft: true` is not served in production. Latent today
+// because every seed note is published, but the flag had to actually work.
+// Same reasoning as the blog detail route: unlisted slugs must not be
+// generated on demand.
+export const dynamicParams = false
 
 export function generateStaticParams() {
-  return allNotes.map((note) => ({
+  return publishedOnly(allNotes).map((note) => ({
     slug: note.slug,
   }))
 }
@@ -32,7 +40,9 @@ export default async function NotePage({ params }: { params: { slug: string } })
 
   const note = allNotes.find((n) => n.slug === slug)
 
-  if (!note) {
+  // Same two guards as the blog detail page: unknown slug, or a draft in
+  // production. generateStaticParams alone is not enough under plain SSG.
+  if (!note || !isPublished(note)) {
     notFound()
   }
 
