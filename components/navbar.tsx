@@ -4,11 +4,18 @@ import { useState, useEffect, createElement } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
-import { allBlogs, allNotes } from 'contentlayer/generated'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { navbar } from '@/data/siteData'
 import { resolvePostIcon } from '@/lib/post-icons'
+
+interface NavbarProps {
+  // slug -> frontmatter.icon, built server-side in app/layout.tsx.
+  // This component used to import allBlogs/allNotes directly, which pulled
+  // every post body into the client bundle and published it as a static JS
+  // asset. The icon is the only thing it ever needed.
+  postIcons?: Record<string, string>
+}
 
 // Declared at module scope so React keeps a stable identity across renders.
 // resolvePostIcon returns one of a fixed set of icon components from the
@@ -21,7 +28,7 @@ function NavLogoIcon({ iconName }: { iconName?: string }) {
   })
 }
 
-const Navbar = () => {
+const Navbar = ({ postIcons = {} }: NavbarProps) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
 
@@ -38,16 +45,16 @@ const Navbar = () => {
 
   // Navbar logo: home -> yellow square, post or note -> its frontmatter.icon,
   // otherwise -> FileText fallback.
-  let postIcon: string | undefined
-  if (pathname && pathname.startsWith('/blog/')) {
-    const slug = pathname.replace('/blog/', '').split('/')[0]
-    const post = allBlogs.find((b) => b.slug === slug)
-    if (post?.icon) postIcon = post.icon
-  } else if (pathname && pathname.startsWith('/notes/')) {
-    const slug = pathname.replace('/notes/', '').split('/')[0]
-    const note = allNotes.find((n) => n.slug === slug)
-    if (note?.icon) postIcon = note.icon
-  }
+  const postIcon = (() => {
+    if (!pathname) return undefined
+    if (pathname.startsWith('/blog/')) {
+      return postIcons[pathname.replace('/blog/', '').split('/')[0]]
+    }
+    if (pathname.startsWith('/notes/')) {
+      return postIcons[pathname.replace('/notes/', '').split('/')[0]]
+    }
+    return undefined
+  })()
 
   const logoNode =
     pathname === '/' ? (

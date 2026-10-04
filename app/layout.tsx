@@ -8,6 +8,8 @@ import Footer from '@/components/footer'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Analytics, type AnalyticsConfig } from 'pliny/analytics'
 import siteMetadata from '@/data/siteMetadata'
+import { allBlogs, allNotes } from 'contentlayer/generated'
+import { publishedOnly } from '@/lib/published'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const plexMono = IBM_Plex_Mono({
@@ -84,6 +86,16 @@ export const metadata: Metadata = {
   manifest: '/favicon/site.webmanifest',
 }
 
+// Built here, on the server, because the navbar is a client component and a
+// client import of allBlogs/allNotes would inline every post body into the
+// client bundle. Only slug -> icon crosses the boundary. Notes win on slug
+// collision so a note's icon is the one shown on /notes/<slug>.
+const postIcons = Object.fromEntries(
+  [...publishedOnly(allBlogs), ...publishedOnly(allNotes)].flatMap((doc) =>
+    doc.icon ? [[doc.slug, doc.icon]] : []
+  )
+)
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -102,7 +114,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             >
               Skip to content
             </a>
-            <Navbar />
+            <Navbar postIcons={postIcons} />
             <main id="main-content" className="flex-1">{children}</main>
             <Footer />
           </div>

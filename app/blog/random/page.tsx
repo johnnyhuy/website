@@ -1,24 +1,10 @@
-'use client'
-
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import RandomPostRedirect from '@/components/random-post-redirect'
 import { allBlogs } from 'contentlayer/generated'
+import { publishedOnly } from '@/lib/published'
 
+// Server component. Hands the client only the published slugs, so the
+// redirect can pick one without importing allBlogs into the client bundle.
 export default function RandomBlogPost() {
-  const router = useRouter()
-
-  useEffect(() => {
-    if (allBlogs.length === 0) return
-    const randomIndex = Math.floor(Math.random() * allBlogs.length)
-    const randomPost = allBlogs[randomIndex]
-    router.push(`/blog/${randomPost.slug}`)
-  }, [router])
-
-  return (
-    <div className="pt-24">
-      <div className="container mx-auto px-4 py-12 text-center">
-        <p>Redirecting to a random blog post...</p>
-      </div>
-    </div>
-  )
+  const slugs = publishedOnly(allBlogs).map((post) => post.slug)
+  return <RandomPostRedirect slugs={slugs} />
 }
