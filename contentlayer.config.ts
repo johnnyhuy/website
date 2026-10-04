@@ -26,7 +26,6 @@ import { allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 import prettier from 'prettier'
 
 const root = process.cwd()
-const isProduction = process.env.NODE_ENV === 'production'
 
 // heroicon mini link
 const icon = fromHtmlIsomorphic(
@@ -90,12 +89,15 @@ function resolvePeekImages(doc: { body: { raw: string } }): string[] {
 }
 
 /**
- * Count the occurrences of all tags across blog posts and write to json file
+ * Count the occurrences of all tags across blog posts and write to json file.
+ * Drafts are always excluded: this runs under `contentlayer2 build`, before
+ * `next build` sets NODE_ENV, so gating on production never took effect and
+ * the tracked file churned with draft-inflated counts on every build.
  */
 async function createTagCount(allBlogs: any[]) {
   const tagCount: Record<string, number> = {}
   allBlogs.forEach((file: any) => {
-    if (file.tags && (!isProduction || file.draft !== true)) {
+    if (file.tags && file.draft !== true) {
       file.tags.forEach((tag: string) => {
         const formattedTag = slug(tag)
         if (formattedTag in tagCount) {
@@ -117,7 +119,9 @@ function createSearchIndex(allBlogs: any[]) {
   ) {
     writeFileSync(
       `public/${path.basename(siteMetadata.search.kbarConfig.searchDocumentsPath)}`,
-      JSON.stringify(allCoreContent(sortPosts(allBlogs)))
+      // Served publicly, so drafts must be dropped here. allCoreContent only
+      // filters them when NODE_ENV is production, which it is not at this point.
+      JSON.stringify(allCoreContent(sortPosts(allBlogs.filter((post) => post.draft !== true))))
     )
     console.log('Local search index generated...')
   }
