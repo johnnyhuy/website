@@ -14,7 +14,8 @@ async function generateLlms() {
 
   const contentlayerPath = path.join(projectRoot, '.contentlayer/generated/index.mjs');
   const { allBlogs } = await import(contentlayerPath);
-  const posts = [...allBlogs].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const publishedBlogs = allBlogs.filter((post) => post.draft !== true);
+  const posts = [...publishedBlogs].sort((a, b) => new Date(b.date) - new Date(a.date));
 
   // Markdown versions of each post at /blog/<slug>.md
   const blogOutDir = path.join(projectRoot, outputFolder, 'blog');

@@ -32,7 +32,8 @@ async function generateSitemap() {
     // Try to import the blog data from contentlayer
     const contentlayerPath = path.join(projectRoot, '.contentlayer/generated/index.mjs');
     const { allBlogs } = await import(contentlayerPath);
-    blogs = allBlogs.map(post => `/blog/${post.slug}`);
+    const publishedBlogs = allBlogs.filter(post => post.draft !== true);
+    blogs = publishedBlogs.map(post => `/blog/${post.slug}`);
     console.log(`Found ${blogs.length} blog posts to include in sitemap`);
   } catch (error) {
     console.warn('Could not import blog data from contentlayer, continuing without blog data');
