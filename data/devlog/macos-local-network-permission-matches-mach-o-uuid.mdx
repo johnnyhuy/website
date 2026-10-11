@@ -1,0 +1,33 @@
+---
+title: macOS Local Network Permission Matches the Mach-O UUID
+summary: |
+  macOS Local Network privacy matches apps by the Mach-O build UUID of their executable, not by bundle ID or code signature. Electron ships one prebuilt binary per release, so every app that packages that release shares a UUID and macOS treats them all as the same app. Rewriting the 16 UUID bytes in a post-packaging hook before signing is the fix.
+date: '2026-10-12 08:05:00 +1000'
+tags:
+  - macOS
+  - Electron
+  - Privacy
+draft: false
+icon: Bug
+---
+
+You grant an Electron app Local Network access and it still cannot reach anything on your LAN, or granting permission to one Electron app quietly grants it to another. The permission looks broken. It is not - it is attached to the wrong identity.
+
+macOS decides Local Network access by the build UUID recorded in the executable's Mach-O `LC_UUID` load command, as documented in [Apple's Local Network privacy technote](https://developer.apple.com/documentation/technotes/tn3179-understanding-local-network-privacy). Apple's guidance is that every distinct Mach-O image must carry its own unique build UUID. Electron cannot follow that guidance for you: it ships one prebuilt binary per release, so every app that packages Electron without touching the executable ends up with the same UUID. Two stock-Electron apps are one app as far as Local Network privacy is concerned. Apps that build their own Electron binary do not collide.
+
+That is exactly what [t3code issue #18221](https://github.com/pingdotgg/t3code/issues/18221) ran into. A nightly build on stock Electron 44.4.5 shared its UUID with another stock-Electron app on the same release, and macOS resolved one app's permission decision for both. The same collision runs both ways - a permission granted to the other app is a permission your app never asked for.
+
+You can see it before you ship. Compare the UUIDs of two packaged apps on the same Electron release:
+
+```bash
+otool -l /Applications/YourApp.app/Contents/MacOS/YourApp | grep -A2 LC_UUID
+otool -l /Applications/OtherApp.app/Contents/MacOS/OtherApp | grep -A2 LC_UUID
+```
+
+Identical UUIDs means macOS cannot tell them apart.
+
+## The fix
+
+Rewrite the 16 UUID bytes in an `afterPack` hook, before signing, so the normal code signature and notarisation still cover the result. The approach is implemented and verified end to end on macOS 26 in [openplc-editor #1179](https://github.com/Autonomy-Logic/openplc-editor/pull/1179), and it is what [electron-builder #10297](https://github.com/electron-userland/electron-builder/issues/10297) is asking the packager to do for everyone. [#9158](https://github.com/electron-userland/electron-builder/issues/9158) raised this first and closed stale, so until the packager handles it the hook is yours to add.
+
+If you cannot rebuild right now, the user-side workaround is to update or uninstall the colliding app, or grant it Local Network permission too. That second one is a real trade - you are handing LAN access to an app the user never granted it to - so treat it as a diagnostic step, not a fix.

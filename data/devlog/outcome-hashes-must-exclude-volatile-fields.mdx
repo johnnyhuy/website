@@ -1,0 +1,37 @@
+---
+title: Outcome Hashes Must Exclude Volatile Fields
+summary: |
+  Loop detection that hashes a tool result to decide "no progress" never escalates past a warning when the hash covers per-call timings or time-decayed scores. Every call hashes differently, so every call counts as progress and the agent loops until its context window overflows. Hash only the fields that mean "this result is different work".
+date: '2026-10-12 08:25:00 +1000'
+tags:
+  - Agents
+  - Tooling
+  - Hashing
+draft: false
+icon: RefreshCw
+---
+
+An agent calls `memory_search` fifty times in one run, alternating two queries, getting the same hits every time. Loop detection warns at count 10, 20, 30 and then never fires again. The run only ends when the context window overflows and an auto-compaction kicks in. A ping-pong on a deterministic tool such as `ls` blocks at critical in the same deployment, so the detector is on - it just cannot see this loop.
+
+[openclaw issue #169042](https://github.com/openclaw/openclaw/issues/169042) pins down why. The no-progress detector compares an outcome hash across consecutive results, and all three blocking paths need identical hashes to escalate. For `memory_search` that hash covered the full result, including `debug.searchMs`, `debug.toolMs`, `debug.outsideSearchMs` and `debug.managerMs`, plus hit scores that are re-decayed against the wall clock on every call. Fifty-two calls produced fifty-two unique hashes on identical hits. Only the timings and the seventh decimal of the scores changed.
+
+This is the general trap: any comparison that treats a serialised result as opaque will read noise as change.
+
+## The fix
+
+Project the result onto the fields that mean "different work" before hashing. Keep hit identity, ordering, ranges, snippet content, warnings, and stable backend metadata. Drop per-call debug timings and any score that drifts with time even when the underlying data is unchanged.
+
+```ts
+function stableOutcome(result: Result): unknown {
+  return {
+    hits: result.hits.map(({ path, range, snippet }) => ({ path, range, snippet })),
+    status: result.status,
+    // deliberately omitted: debug timings, decayed scores
+  }
+}
+const resultHash = sha256(JSON.stringify(stableOutcome(result)))
+```
+
+The boundary matters in both directions. Explicit error results keep their full text in the comparison - if you normalise errors too, a tool that starts failing differently looks like progress and the loop continues through the failure. Likewise a change in hit content, order or ranges must still count as progress, or you will block an agent that is genuinely making its way through results.
+
+The fix landed in [openclaw #169088](https://github.com/openclaw/openclaw/pull/169088) with a failing regression first - the three timing and score-drift cases failed on main and passed after the projection. The before-and-after run is the part worth stealing for your own tests: the same model, the same arguments, 27 identical searches that all warned on main and a blocked 21st attempt after the change.

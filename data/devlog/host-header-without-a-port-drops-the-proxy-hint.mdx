@@ -1,0 +1,35 @@
+---
+title: Host Header Without a Port Drops the Proxy Hint
+summary: |
+  A reverse proxy on port 80 or 443 forwards a Host header with no port component, and any client that parses it as host:port silently rejects the hint and falls back to localhost. The UI loads and then dials the wrong place with no error. Forward an explicit port in the Host header, or derive the port from the scheme when it is missing.
+date: '2026-10-12 08:15:00 +1000'
+tags:
+  - Reverse Proxy
+  - WebSockets
+  - Troubleshooting
+draft: false
+icon: Bug
+---
+
+The web UI loads behind an HTTPS proxy on port 443, shows its welcome screen, and then attempts `localhost:6767` instead of connecting through the proxy it was loaded from. Nothing is logged. Put the same daemon behind a non-standard public port such as 7123 and everything works.
+
+The difference is the Host header. On port 80 or 443 a browser sends `Host: example.com` with the port elided. On a non-standard port it sends `Host: example.com:7123`. A server that hands the raw Host header to a client as a connection hint therefore hands over `example.com` in the standard-port case, and a client whose parser matches `^(.+):(\d{1,5})$` throws `Invalid host:port`, returns null, and lets the caller fall back to the local bootstrap default. The hint is abandoned without an error, which is why the symptom looks like a networking failure rather than a parsing one.
+
+[getpaseo/paseo issue #1842](https://github.com/getpaseo/paseo/issues/1842) traces the whole path - the injected hint, the parser that requires a port, and the silent fallback - and the fix landed in [#6638](https://github.com/getpaseo/paseo/pull/6638). The same report has been reached from two directions now, so the shape is worth knowing outside any one project.
+
+## The fix
+
+On the proxy side, forward the port explicitly:
+
+```nginx
+location / {
+    proxy_pass http://127.0.0.1:6767;
+    proxy_set_header Host $host:$server_port;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+}
+```
+
+On the client side, accept a Host header with no port and derive it from the scheme - 443 for TLS, 80 otherwise - instead of rejecting the hint. Either change closes the gap; doing both means a deployment cannot reintroduce it.
+
+One related trap while you are in this code. Collapsing `127.0.0.1` to `localhost` before storing the endpoint can send the client to a different daemon entirely, because the two resolve on different address families and only one may be bound. That variant is tracked separately in [issue #5807](https://github.com/getpaseo/paseo/issues/5807). If a page was loaded from an explicit loopback literal, keep the literal - the address that just served the request is the one known to work.

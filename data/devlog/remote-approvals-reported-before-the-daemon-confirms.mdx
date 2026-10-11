@@ -1,0 +1,32 @@
+---
+title: Remote Approvals Reported Before the Daemon Confirms
+summary: |
+  A CLI that prints `allowed` the moment it sends an approval will report success while the request is still pending on the far side - the command it was meant to unblock never runs. Wait for the daemon's confirmation before reporting success, and make an unconfirmed response an error that points at the listing command.
+date: '2026-10-12 08:35:00 +1000'
+tags:
+  - API Design
+  - CLI
+  - Distributed Systems
+draft: false
+icon: Workflow
+---
+
+`paseo permit allow` over `--host ssh://` prints `allowed`, and the request it was approving stays pending. The command it was meant to unblock does not run. Approving the same request from the daemon host clears it immediately, so nothing is wrong with the permission itself - the success message is simply not about the right thing.
+
+[getpaseo/paseo issue #6575](https://github.com/getpaseo/paseo/issues/6575) reproduces it over an isolated SSH connection. The CLI reported success when it dispatched the approval, not when the daemon confirmed it had applied one. Locally the two are indistinguishable because the round trip is instant. Over a remote transport they come apart, and the gap is silent.
+
+This is a pattern bug rather than an SSH bug. Any command that mutates remote state and prints success on dispatch will lie on the first slow, dropped or reordered response, and the failure mode always looks like the request itself was rejected.
+
+## The fix
+
+Both approve and deny wait for the daemon's acknowledgement before printing anything, and an unconfirmed response is an error that tells the operator what to check. That landed in [#6607](https://github.com/getpaseo/paseo/pull/6607), with regression coverage on single approvals, batch approval, and the confirmation-failure path.
+
+Until a release contains it, the verified workaround is to run the approval on the daemon host and confirm it landed:
+
+```bash
+ssh daemon-host
+paseo permit allow
+paseo permit ls   # the request must be gone before you trust the success message
+```
+
+The check is the durable part. Whatever the tool, if the success message is not the daemon's, treat it as a hint and confirm against the source of truth before moving on.
