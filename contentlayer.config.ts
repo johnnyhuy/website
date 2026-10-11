@@ -59,10 +59,10 @@ const computedFields: ComputedFields = {
 
 /**
  * Up to four body images, used to compose the multi-card row peek in the
- * blog and notes indexes. Excludes YouTube embeds from the row peek (those
+ * blog and devlog indexes. Excludes YouTube embeds from the row peek (those
  * are heavy and noisy at 60px tall); only <Image> + markdown.
  *
- * Shared by Blog and Notes so the two surfaces cannot drift apart.
+ * Shared by Blog and Devlog so the two surfaces cannot drift apart.
  */
 function resolvePeekImages(doc: { body: { raw: string } }): string[] {
   const raw = doc.body.raw
@@ -186,14 +186,14 @@ export const Blog = defineDocumentType(() => ({
   },
 }))
 
-// Notes are the second content surface: short, self-contained, actionable
+// Devlog is the second content surface: short, self-contained, actionable
 // write-ups. Same MDX pipeline and computed fields as Blog (readingTime,
-// slug, toc, image extraction) so /notes behaves exactly like /blog at the
-// component level. Deliberately a smaller field set - a note does not need
+// slug, toc, image extraction) so /devlog behaves exactly like /blog at the
+// component level. Deliberately a smaller field set - an entry does not need
 // authors, images frontmatter, layouts, bibliographies or canonical URLs.
-export const Notes = defineDocumentType(() => ({
-  name: 'Notes',
-  filePathPattern: 'notes/**/*.mdx',
+export const Devlog = defineDocumentType(() => ({
+  name: 'Devlog',
+  filePathPattern: 'devlog/**/*.mdx',
   contentType: 'mdx',
   fields: {
     title: { type: 'string', required: true },
@@ -230,7 +230,7 @@ export const Notes = defineDocumentType(() => ({
         dateModified: doc.lastmod || doc.date,
         description: doc.summary,
         image: siteMetadata.socialBanner,
-        url: `${siteMetadata.siteUrl}/notes/${doc.slug}`,
+        url: `${siteMetadata.siteUrl}/devlog/${doc.slug}`,
       }),
     },
   },
@@ -257,7 +257,7 @@ export const Authors = defineDocumentType(() => ({
 
 export default makeSource({
   contentDirPath: 'data',
-  documentTypes: [Blog, Notes, Authors],
+  documentTypes: [Blog, Devlog, Authors],
   mdx: {
     cwd: process.cwd(),
     remarkPlugins: [

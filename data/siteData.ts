@@ -362,7 +362,7 @@ export const techExperienceBlurbs: Map<string, string> = new Map([
 
 // Header Nav Links
 export const headerNavLinks = [
-  { name: 'Notes', path: '/notes' },
+  { name: 'Devlog', path: '/devlog' },
   { name: 'Blog', path: '/blog' },
   { name: 'Projects', path: '/projects' },
   { name: 'Archive', path: '/archive' },

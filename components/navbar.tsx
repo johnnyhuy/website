@@ -11,7 +11,7 @@ import { resolvePostIcon } from '@/lib/post-icons'
 
 interface NavbarProps {
   // slug -> frontmatter.icon, built server-side in app/layout.tsx.
-  // This component used to import allBlogs/allNotes directly, which pulled
+  // This component used to import allBlogs/allDevlogs directly, which pulled
   // every post body into the client bundle and published it as a static JS
   // asset. The icon is the only thing it ever needed.
   postIcons?: Record<string, string>
@@ -50,8 +50,8 @@ const Navbar = ({ postIcons = {} }: NavbarProps) => {
     if (pathname.startsWith('/blog/')) {
       return postIcons[pathname.replace('/blog/', '').split('/')[0]]
     }
-    if (pathname.startsWith('/notes/')) {
-      return postIcons[pathname.replace('/notes/', '').split('/')[0]]
+    if (pathname.startsWith('/devlog/')) {
+      return postIcons[pathname.replace('/devlog/', '').split('/')[0]]
     }
     return undefined
   })()

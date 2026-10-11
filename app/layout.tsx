@@ -8,7 +8,7 @@ import Footer from '@/components/footer'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Analytics, type AnalyticsConfig } from 'pliny/analytics'
 import siteMetadata from '@/data/siteMetadata'
-import { allBlogs, allNotes } from 'contentlayer/generated'
+import { allBlogs, allDevlogs } from 'contentlayer/generated'
 import { publishedOnly } from '@/lib/published'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -42,10 +42,10 @@ export const metadata: Metadata = {
     canonical: siteMetadata.siteUrl,
     types: {
       // Two feeds, advertised separately so a reader can subscribe to the
-      // long-form blog, the short notes, or both.
+      // long-form blog, the devlog entries, or both.
       'application/rss+xml': [
         { url: `${siteMetadata.siteUrl}/feed.xml`, title: `${siteMetadata.title} - Blog` },
-        { url: `${siteMetadata.siteUrl}/notes/feed.xml`, title: `${siteMetadata.title} - Notes` },
+        { url: `${siteMetadata.siteUrl}/devlog/feed.xml`, title: `${siteMetadata.title} - Devlog` },
       ],
     },
   },
@@ -87,11 +87,11 @@ export const metadata: Metadata = {
 }
 
 // Built here, on the server, because the navbar is a client component and a
-// client import of allBlogs/allNotes would inline every post body into the
-// client bundle. Only slug -> icon crosses the boundary. Notes win on slug
-// collision so a note's icon is the one shown on /notes/<slug>.
+// client import of allBlogs/allDevlogs would inline every post body into the
+// client bundle. Only slug -> icon crosses the boundary. Entries win on slug
+// collision so an entry's icon is the one shown on /devlog/<slug>.
 const postIcons = Object.fromEntries(
-  [...publishedOnly(allBlogs), ...publishedOnly(allNotes)].flatMap((doc) =>
+  [...publishedOnly(allBlogs), ...publishedOnly(allDevlogs)].flatMap((doc) =>
     doc.icon ? [[doc.slug, doc.icon]] : []
   )
 )

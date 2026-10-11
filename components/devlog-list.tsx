@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { format, parseISO } from 'date-fns'
 import { resolvePostIcon } from '@/lib/post-icons'
 
-interface NoteListItem {
+interface DevlogListItem {
   slug: string
   title: string
   date: string
@@ -10,29 +10,29 @@ interface NoteListItem {
   icon?: string
 }
 
-interface NoteListProps {
-  notes: NoteListItem[]
+interface DevlogListProps {
+  entries: DevlogListItem[]
 }
 
 // Denser than PostList: py-3 against py-4, no thumbnail peek, and the
 // summary sits under the title instead of being deferred to the detail
-// page. Notes are meant to be scanned, not browsed.
-export default function NoteList({ notes }: NoteListProps) {
+// page. Entries are meant to be scanned, not browsed.
+export default function DevlogList({ entries }: DevlogListProps) {
   return (
     <ul className="divide-y border-y">
-      {notes.map((note) => {
-        const Icon = resolvePostIcon(note.icon)
+      {entries.map((entry) => {
+        const Icon = resolvePostIcon(entry.icon)
         return (
-          <li key={note.slug} className="group relative">
+          <li key={entry.slug} className="group relative">
             <Link
-              href={`/notes/${note.slug}`}
+              href={`/devlog/${entry.slug}`}
               className="flex flex-col gap-1.5 py-3 transition-colors hover:bg-gray-100/60 md:flex-row md:items-baseline md:gap-6 dark:hover:bg-gray-800/40"
             >
               <time
-                dateTime={note.date}
+                dateTime={entry.date}
                 className="shrink-0 font-mono text-xs text-gray-500 tabular-nums dark:text-gray-400"
               >
-                {format(parseISO(note.date), 'yyyy-MM-dd')}
+                {format(parseISO(entry.date), 'yyyy-MM-dd')}
               </time>
               <Icon
                 aria-hidden="true"
@@ -40,11 +40,11 @@ export default function NoteList({ notes }: NoteListProps) {
               />
               <span className="min-w-0 flex-1">
                 <span className="block font-medium text-gray-900 group-hover:underline group-hover:decoration-yellow-500 group-hover:underline-offset-4 dark:text-gray-100">
-                  {note.title}
+                  {entry.title}
                 </span>
-                {note.summary && (
+                {entry.summary && (
                   <span className="mt-1 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
-                    {note.summary}
+                    {entry.summary}
                   </span>
                 )}
               </span>
