@@ -1,0 +1,31 @@
+---
+title: Idempotency Keys Do Not Deduplicate by Directory
+summary: |
+  Two idempotency keys create two active records for one directory because a create call is idempotent per key, not per identity - the schema deliberately never deduplicates by directory. Derive the key from the canonical path plus repository and branch, resolve any active record first, and fail closed on ambiguity.
+date: '2026-10-11 21:40:00 +1000'
+tags:
+  - API Design
+  - Idempotency
+  - Concurrency
+draft: false
+icon: RefreshCw
+---
+
+Two clients creating a workspace for the same directory, each with its own idempotency key, end up with two active records for one directory. Nothing errors. Both creates succeed, and the duplicate only shows up later as a roster with two entries pointing at the same path. The write-up behind [paseo issue #6589](https://github.com/getpaseo/paseo/issues/6589) reproduces it cleanly with two connections and one directory, and the resolution is the interesting part - it is by design.
+
+A create call that is idempotent per key is not idempotent per identity. Paseo's `workspace.create` schema says outright that it never deduplicates by directory, and persistence is keyed on `(kind, idempotencyKey)` alone, so two different keys are two different resources as far as the daemon is concerned. That is a defensible contract - the daemon cannot know which of two racing clients owns the directory - which means uniqueness is the caller's problem. A lookup or a lock in one client cannot close a race across independent ones.
+
+## What to do
+
+Derive the key from the canonical identity rather than from whatever the caller typed, and resolve existing records before creating:
+
+```ts
+const canonical = await fs.realpath(directory)
+const identity = `${repository}:${branch ?? 'head'}:${canonical}`
+const idempotencyKey = createHash('sha256').update(identity).digest('hex')
+// resolve active records for `identity` first, and refuse on ambiguity
+```
+
+`realpath` matters here. A trailing slash, a symlink alias or a case difference is a different input string and therefore a different key, and the duplicates you get back look legitimate. Include repository and branch in the identity so two checkouts that share a directory cannot collide, and when more than one active record already exists, fail closed rather than quietly picking one.
+
+The general shape is worth keeping. When an idempotency key is your only dedupe handle, the key has to encode the identity you actually want to be unique. A key derived from the request, the client, or a random value buys retry safety and nothing else, and the duplicates it lets through are the kind that no longer look like bugs once someone reads the schema.

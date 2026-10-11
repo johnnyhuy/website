@@ -1,0 +1,31 @@
+---
+title: Ollama Cloud Quota Is on the Balance Endpoint
+summary: |
+  A quota card pointed at Ollama's /api/usage fails with "usage data could not be parsed" on every account, free and Pro alike. That endpoint answers analytics and carries no allowance. The quota lives on GET /api/balance, and an API key you already hold reads it without a copied session cookie that expires on you.
+date: '2026-10-11 21:30:00 +1000'
+tags:
+  - API
+  - Ollama Cloud
+  - Troubleshooting
+draft: false
+icon: Bug
+---
+
+Point a usage card at `https://ollama.com/api/usage` and every account fails the same way - `Ollama Cloud usage data could not be parsed`, free and Pro alike. The endpoint is real, it answers, and it is the wrong one. OpenChamber's quota tracker hit exactly this, and [the fix](https://github.com/openchamber/openchamber/pull/4253) is a reminder that the obvious endpoint is not always the one holding the number you want.
+
+What `GET /api/usage` actually answers is usage analytics - per-hour or per-day buckets of requests, tokens and USD spend, selected by a `range` and `scope`. It carries no allowance at all, so there is nothing on the response to render as a quota. Parsing it harder does not help. The allowance is on `GET https://ollama.com/api/balance`, the endpoint Ollama's own docs point at for remaining included and purchased credits.
+
+## The fix
+
+```bash
+curl -s https://ollama.com/api/balance \
+  -H "Authorization: Bearer $OLLAMA_API_KEY"
+```
+
+On a credits plan, `included.allowance_usd` is the month's total and `included.balance_usd` what remains, so used is `(allowance_usd - balance_usd) / allowance_usd` clamped to 100, with the reset at `included.period.until`. Legacy plans carrying session and weekly limits report those windows instead.
+
+## Drop the session cookie while you are there
+
+The older setup was worse than a wrong endpoint. Scraping `ollama.com/settings` with a `Cookie:` header copied out of browser devtools works right up until the session is signed out or the cookie expires on its own, at which point the card reports an authentication failure for an account that is still perfectly logged in. If the client already holds an API key for chat requests, that key reads the account directly and carries no expiry you do not control. When tracking stops, suspect the credential before the parser.
+
+Two things to keep straight. A quota card is about allowance, not activity, so the analytics endpoint will never make it work no matter how the buckets are shaped. And a pasted cookie is a credential - if there is a key available, use the key.

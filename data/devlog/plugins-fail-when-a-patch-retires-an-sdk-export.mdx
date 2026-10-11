@@ -1,0 +1,31 @@
+---
+title: Plugins Fail to Load When a Patch Retires an SDK Export
+summary: |
+  A patch upgrade can retire a plugin SDK subpath and every published plugin importing it dies at load with ERR_PACKAGE_PATH_NOT_EXPORTED. OpenClaw 2026.10.1 did exactly that, with one line in the changelog and nothing in the release summary, so check export provenance before you bump and pin the old core when a plugin you need already imports the retired path.
+date: '2026-10-11 21:35:00 +1000'
+tags:
+  - Releases
+  - Plugins
+  - Package Exports
+draft: false
+icon: Package
+---
+
+A plugin that loaded cleanly yesterday dies at load time after a patch upgrade with `ERR_PACKAGE_PATH_NOT_EXPORTED: Package subpath './plugin-sdk/command-auth' is not defined by "exports"`. The core starts, the channel it served never comes up, and nothing in the release summary looks remotely like a breaking change. [The report](https://github.com/openclaw/openclaw/issues/169049) against OpenClaw 2026.10.1 has the full provenance table, and it is worth reading as a pattern rather than an incident.
+
+A patch release can retire a package subpath. 2026.10.1 retired the `command-auth`, `discord` and `telegram-account` plugin SDK facades - one line in the [changelog](https://raw.githubusercontent.com/openclaw/openclaw/main/CHANGELOG/2026.10.1.md) pointing at channel contracts and the injected runtime, nothing in the release body - and `openclaw/plugin-sdk/command-auth` stopped being in the package's `exports` map. Every published version of the affected channel plugin imported the retired subpath, so every one of them fails fatally at load. When the plugin's author is inactive there is no migration to wait for, and upgrading into it converts a fixable bug on the old version into a channel outage on the new one.
+
+## What to do
+
+Check export provenance before upgrading a core that plugins import:
+
+```bash
+npm view openclaw exports --json | jq 'keys[] | select(test("plugin-sdk"))'
+npm view openclaw@2026.9.9 exports --json | jq 'keys[] | select(test("plugin-sdk"))'
+```
+
+Diff the two lists, then grep your installed plugins for anything that disappeared. The error to recognise is `ERR_PACKAGE_PATH_NOT_EXPORTED` at plugin load - that is a packaging boundary, not a runtime fault, and no amount of restarting will fix it.
+
+If a plugin you need already imports a retired subpath, pin the old core rather than upgrading into an outage. For plugins you own, the retirement note names the replacement surface, and that is the migration.
+
+The general shape matters more than the tool. Any core that publishes an `exports` map can drop a subpath in a patch, semver aside, and every consumer breaks at require time with no warning beforehand. The minors and patches are exactly where this hides, because the headline release notes talk about features and the changelog talks about exports.
