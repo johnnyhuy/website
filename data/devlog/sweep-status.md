@@ -18,3 +18,4 @@ This file is `.md`, not `.mdx`, so contentlayer does not pick it up as an entry.
 | Date | Sources checked | Folded in | Published |
 |---|---|---|---|
 | 2026-10-11 | baseline | Sweep configured. No entries folded in yet. | none |
+| 2026-10-11 | getpaseo/paseo issues and PRs, pingdotgg/t3code releases, openchamber/openchamber releases, openclaw/openclaw releases, deepseek-ai/deepseek-harness releases, johnnyhuy/* and echohello-dev/* PRs, Next.js / Tailwind / ContentLayer2 / shadcn-ui releases | Three reusable gotchas from getpaseo/paseo issue resolutions - wide characters shifting in terminal snapshot replay, React act missing when the shell sets NODE_ENV production, external diff commands emptying parsed git patch hunks. Nightly and pre-release builds skipped. | wide-characters-shift-after-terminal-snapshot-replay, react-act-missing-when-shell-sets-node-env-production, external-diff-commands-empty-git-patch-hunks |

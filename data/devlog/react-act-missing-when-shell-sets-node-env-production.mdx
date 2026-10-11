@@ -1,0 +1,68 @@
+---
+title: React Act Missing When the Shell Sets NODE_ENV Production
+summary: |
+  A suite that is green in CI starts throwing `React.act is not a function` on every render and renderHook call on a developer machine. React 19 only ships `act` in its development build, so a shell that exports `NODE_ENV=production` makes the test runner resolve the production React and the test-only API is simply not there. Pin the environment in the test config instead of inheriting it from the shell.
+date: '2026-10-11 21:05:00 +1000'
+tags:
+  - Testing
+  - React
+  - Vitest
+draft: false
+icon: Bug
+---
+
+Every React test fails on one machine and passes on another, with an error that points at nothing useful:
+
+```text
+TypeError: React.act is not a function
+ ❯ exports.act node_modules/react-dom/cjs/react-dom-test-utils.production.js:20:16
+ ❯ node_modules/@testing-library/react/dist/act-compat.js:46:25
+ ❯ Proxy.renderHook node_modules/@testing-library/react/dist/pure.js:339:7
+```
+
+It looks like a broken dependency install, a bad alias, or a React version mismatch. It is none of those. The machine with the failures has `NODE_ENV=production` exported in its shell profile, probably left over from a build script or a deployment tool, and the test runner is inheriting it.
+
+## Why it happens
+
+React 19 exports `act` only from its development build. When the resolved `NODE_ENV` is `production`, the bundler picks `react.production.js` and the test-only API is absent. `@testing-library/react` falls back to `react-dom/test-utils`, where `act` exists only in the development variant, so every `render` and `renderHook` call throws before a single assertion runs.
+
+The confirmation takes ten seconds:
+
+```bash
+NODE_ENV=production node -e "console.log(typeof require('react').act)"
+# undefined
+NODE_ENV=development node -e "console.log(typeof require('react').act)"
+# function
+```
+
+The reason this is so confusing is that CI usually runs with a clean environment. The suite stays green there, so the failure reads as a regression in whatever you just changed rather than as an environment problem.
+
+## The fix
+
+Pin the test environment in the test config so it is set before any dependency resolves, rather than trusting whatever the shell exports. With Vitest, force `NODE_ENV=test` inside the config itself:
+
+```ts
+// vitest.config.ts
+import { defineConfig } from 'vitest/config'
+
+process.env.NODE_ENV = 'test'
+
+export default defineConfig({
+  // ...
+})
+```
+
+Or set it explicitly in the test scripts so every entry point agrees:
+
+```json
+{
+  "scripts": {
+    "test": "NODE_ENV=test vitest run",
+    "test:browser": "NODE_ENV=test vitest run --project browser"
+  }
+}
+```
+
+The config-level assignment matters more than it looks. A `--project` flag or a second config file bypasses whatever the package script set, and then you are back to the same failure through a different door. Setting it in the config covers every entry point that loads the config.
+
+This exact failure was reported against [getpaseo/paseo](https://github.com/getpaseo/paseo/issues/2560) and fixed in [#6572](https://github.com/getpaseo/paseo/pull/6572) by selecting the test environment in both Vitest entry points before resolving dependencies. The generalisable rule is narrow and worth keeping: a test runner that inherits `NODE_ENV` from the shell will one day run in an environment where the development-only APIs are missing, and the error will not tell you that.

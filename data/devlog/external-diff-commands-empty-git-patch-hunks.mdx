@@ -1,0 +1,62 @@
+---
+title: External Diff Commands Empty Git Patch Hunks
+summary: |
+  A tool that parses `git diff` output returns correct line counts but empty hunks the moment someone configures `diff.external` or `GIT_EXTERNAL_DIFF`. The external helper replaces Git's patch output with its own text, so a parser reading hunks finds none. Always pass `--no-ext-diff` when you need machine-readable patches.
+date: '2026-10-11 21:10:00 +1000'
+tags:
+  - Git
+  - Tooling
+  - Command Line
+draft: false
+icon: Bug
+---
+
+A diff viewer or a code-review tool works perfectly until the day a developer configures an external diff helper. From then on the tool shows each changed file, its additions and deletions count correctly, and zero hunks. No error, no warning. The changed lines have simply disappeared.
+
+Git does exactly what it was asked to do. `diff.external` and `GIT_EXTERNAL_DIFF` tell `git diff` to hand the comparison to an external command and print whatever that command outputs. A visual tool such as `delta` or `icdiff` produces beautiful coloured output that is not a patch at all, so anything parsing unified diff format finds nothing to parse.
+
+## Proving it
+
+Set up a throwaway helper and watch the output change shape:
+
+```bash
+cat > /tmp/external-diff <<'EOF'
+#!/bin/sh
+printf "EXTERNAL DIFF FOR %s\n" "$1"
+EOF
+chmod +x /tmp/external-diff
+
+git config diff.external /tmp/external-diff
+git diff HEAD -- file.txt
+# EXTERNAL DIFF FOR file.txt
+```
+
+The line counts still come from `--numstat`, which runs before the external helper, so the numbers look right. It is only the patch body that is gone.
+
+## The fix
+
+When you need Git's own machine-readable patch format, say so explicitly:
+
+```bash
+git diff --no-ext-diff --no-color HEAD -- file.txt
+```
+
+The pattern worth copying into every script or tool that parses diffs is to make the format flags a constant and always include the opt-out, even when nothing is configured today:
+
+```bash
+GIT_PATCH_ARGS=(--no-ext-diff --no-color --src-prefix=a/ --dst-prefix=b/)
+git diff "${GIT_PATCH_ARGS[@]}" HEAD -- "$file"
+```
+
+That is the shape [getpaseo/paseo](https://github.com/getpaseo/paseo/issues/6557) landed on in [#6562](https://github.com/getpaseo/paseo/pull/6562) after its Changes view came back with `hunks: []` for anyone with a helper configured. Parsed patches get `--no-ext-diff`; ordinary terminal `git diff` is left alone so the user's pretty printer keeps working.
+
+## The wider rule
+
+Any time you consume `git diff` output programmatically, pin the output format and opt out of everything that can alter it:
+
+- `--no-ext-diff` stops the external helper
+- `--no-color` stops pager colouring that survives some `GIT_PAGER` setups
+- `--src-prefix` and `--dst-prefix` stop user prefix config from breaking path parsers
+- `--numstat` or `--name-status` for counts and statuses rather than counting lines in a patch
+
+A user's Git config is part of the environment your tool runs in. A pipeline that depends on default `git diff` output is one `git config` away from silently returning nothing, and silent empty output is the worst failure mode a parser can have.

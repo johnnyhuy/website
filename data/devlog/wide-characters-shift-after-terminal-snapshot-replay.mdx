@@ -1,0 +1,62 @@
+---
+title: Wide Characters Shift After Terminal Snapshot Replay
+summary: |
+  Replaying a terminal snapshot turns every double-width character into three cells instead of two. Lines stretch, wraps break, and coloured boxes fall apart. Wide characters occupy two terminal cells and the second is an empty continuation, so any code that fills empty cells with a space corrupts the row. Keep continuation cells empty and skip them on replay.
+date: '2026-10-11 21:00:00 +1000'
+tags:
+  - Terminal
+  - Unicode
+  - xterm.js
+draft: false
+icon: Bug
+---
+
+A terminal showing CJK text comes back wrong after a reconnect, a resize, or any other snapshot replay. Every wide character now takes three cells instead of two, so lines run long enough to wrap early, continuation rows lose their indentation, and box drawing or background colouring stops lining up. Live output looks fine. Only the replayed snapshot is broken.
+
+## What is actually happening
+
+A double-width character such as `仓` occupies two consecutive cells in the terminal grid. The first cell holds the character. The second is a continuation cell: `getChars()` returns `""` and `getWidth()` returns `0`. It is a placeholder, not a space.
+
+Snapshot code that tidies up empty strings walks straight into this:
+
+```js
+char: cell.getChars() || " "
+```
+
+That turns the continuation cell into a literal space. On replay the terminal writes `仓` (which advances two cells) followed by the space (one more), so the character now covers three cells. Multiply that across a line and everything downstream shifts.
+
+The same class of bug shows up in any renderer that serialises a terminal grid, not just xterm.js. If your row builder normalises empty strings to spaces, it is corrupting every wide character in the buffer.
+
+## The fix
+
+Keep continuation cells empty and skip them on replay:
+
+```diff
+-        char: cell.getChars() || " ",
++        char: cell.getWidth() === 0 ? "" : cell.getChars() || " ",
+```
+
+```diff
++        if (cell.char === "") continue;
+         output.push(cell.char || " ");
+```
+
+With those two changes the replayed buffer is cell-for-cell identical to the original, including rows with background colours. The check is `getWidth() === 0`, not `getChars() === ""`, because an empty string is also the legitimate result for some erased cells and you only want to skip true continuations.
+
+## Checking your own serialiser
+
+Write a wide character through a headless terminal, read the row back, and confirm the continuation cell is empty:
+
+```js
+const t = new Terminal({ cols: 20, rows: 2, allowProposedApi: true })
+await new Promise((r) => t.write('仓库ab', r))
+const line = t.buffer.active.getLine(0)
+const cells = [...Array(8)].map((_, i) => line.getCell(i).getChars())
+// expect: ["仓", "", "库", "", "a", "b", "", ""]
+```
+
+If your snapshot turns those two empty strings into spaces, replay will shift the row.
+
+This was reported against [getpaseo/paseo](https://github.com/getpaseo/paseo/issues/6581) with the minimal reproduction above and fixed in [#6452](https://github.com/getpaseo/paseo/pull/6452) by keeping the continuation cell empty through capture and skipping it on replay.
+
+One related trap while you are in here. Grapheme clusters and variation selectors such as `☑️` are one cell in xterm.js but two cells in some TUIs, so a snapshot can still drift on emoji even with the continuation fix. Unicode width tables and grapheme handling are separate problems, and mixing them produces bugs that look like this one.
