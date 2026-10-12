@@ -1,0 +1,36 @@
+---
+title: Gitea Admin Merges Need force_merge to Bypass Protection
+summary: |
+  Merging a pull request as a repo admin on Gitea or Forgejo fails with HTTP 405 "Does not have enough approvals" even though the web UI lets the same admin through, because branch protection is enforced on admins too and only the `force_merge` flag turns on the override. Send the flag when scripting admin merges, or merge from the web UI.
+date: '2026-10-13 09:20:00 +1000'
+tags:
+  - Git
+  - API
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+You are a repo admin. The Gitea or Forgejo web UI shows "As an administrator, you may still merge this pull request" and merges the pull request without approvals. Your own client POSTs to the same merge endpoint and gets `HTTP 405 {"message":"Does not have enough approvals"}`. The report in [pingdotgg/t3code#18755](https://github.com/pingdotgg/t3code/issues/18755) walks the whole path against a Gitea server.
+
+## Why it happens
+
+Branch protection is enforced on admins too. The web UI's admin merge is not a different permission - it is the same merge request with an explicit override attached. A client that posts only the merge method never opts in to it:
+
+```json
+POST /api/v1/repos/{owner}/{repo}/pulls/{index}/merge
+{ "Do": "merge" }
+```
+
+`force_merge` is a documented request field on the [Gitea merge API](https://docs.gitea.com/api/operations/repo-merge-pull-request/) and Forgejo carries the same field, so one change covers both. The web UI appears to send it for admins - that part is inferred from its behaviour rather than read from the source, but the flag itself is in the public API surface. GitHub is unaffected: its `mergePullRequest` mutation has no override field, and admin bypass there is decided by the protection rule or ruleset.
+
+## What to do
+
+If you are scripting merges as an admin, send the override with the merge request:
+
+```json
+POST /api/v1/repos/{owner}/{repo}/pulls/{index}/merge
+{ "Do": "merge", "force_merge": true }
+```
+
+If you just need the merge to land, use the web UI, which applies the override for you. Two caveats. If the branch rule has "block admin merge override" enabled, Gitea rejects `force_merge` as well - surface the server's error rather than retrying. And treat the override as a deliberate act: the point of the 405 is that the rule is doing its job, so anything that sends `force_merge` automatically should make that visible before the click.

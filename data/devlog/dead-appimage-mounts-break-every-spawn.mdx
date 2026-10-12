@@ -1,0 +1,37 @@
+---
+title: Dead AppImage Mounts Break Every Spawn on PATH
+summary: |
+  Every git spawn from a Linux desktop app fails with `spawn ENOTCONN` while the same command works in a normal shell, because mount directories from earlier AppImage launches pile up on PATH and one of them has died. PATH lookup stops at the first error that is not "not found", so a single dead mount blocks every later directory. Lazy-unmount the dead mount and spawns work again.
+date: '2026-10-13 09:25:00 +1000'
+tags:
+  - Linux
+  - Filesystem
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+Starting a thread fails with "workspace prep failed ENOTCONN". Every git spawn from the app server dies the same way - `Error: spawn ENOTCONN` - while `git --version` in your own terminal works fine. The report in [pingdotgg/t3code#18790](https://github.com/pingdotgg/t3code/issues/18790) found eight AppImage mount directories on the server's PATH, one per launch going back five days, all of them ahead of `/usr/bin`.
+
+## Why it happens
+
+Each AppImage launch unpacks into a `.mount_*` directory and prepends its own pair of entries to PATH. The new instance inherits the previous instance's environment, so the old mounts are never removed - they accumulate. That is harmless until one of them dies. An AppImage mount stays alive only while its runtime process lives, and when that process goes away the mount goes with it, leaving a path that answers `Transport endpoint is not connected` instead of "no such file".
+
+PATH lookup during spawn treats only ENOENT, EACCES and ENOTDIR as "skip this directory, keep searching". ENOTCONN is a real error, so the search ends at the dead mount and never reaches `/usr/bin`. Reproduce it with the server's exact PATH:
+
+```console
+$ env PATH="$SERVER_PATH" git --version
+env: 'git': Transport endpoint is not connected
+```
+
+## What to do
+
+Lazy-unmount the dead directory - it becomes an empty folder, so PATH lookup skips it and everything after it becomes reachable again:
+
+```bash
+fusermount3 -uz <cache>/t3code/tmp/.mount_T3-CodXXXXXX
+```
+
+Git spawns work immediately, no restart needed. The lasting workaround is to fully quit the app and start it from the desktop launcher, so it gets a clean environment instead of one inherited through a chain of relaunches and auto-updates.
+
+If you ship an AppImage, scrub every `.mount_*` segment that is not the current `APPDIR` out of PATH, `LD_LIBRARY_PATH` and `XDG_DATA_DIRS` at startup, before anything is spawned - and scrub the same variables in whatever environment a relaunch or update passes down. The general rule: a directory on PATH that answers with any error other than "not found" stops the whole lookup, so stale and dead entries are not just untidy, they are load-bearing.

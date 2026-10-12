@@ -1,0 +1,28 @@
+---
+title: Update Checks Must Follow the Installing Channel
+summary: |
+  A Homebrew-installed CLI keeps reporting an update that "Update now" cannot deliver, and the button installs a second copy outside PATH, because the version check compares the binary against npm latest no matter who installed it. Compare against the channel that owns the binary - `brew info` for a cask - and update through the same channel.
+date: '2026-10-13 09:35:00 +1000'
+tags:
+  - CLI
+  - Packaging
+  - Gotcha
+draft: false
+icon: RefreshCw
+---
+
+You installed a CLI with `brew install --cask`. It reports an update, you click **Update now**, and the toast says the update command completed but the version is still outdated. A second copy now sits somewhere PATH never sees, while the one you actually run is unchanged. The report in [pingdotgg/t3code#18768](https://github.com/pingdotgg/t3code/issues/18768) follows it end to end for a provider CLI that ships both as a cask and on npm.
+
+## Why it happens
+
+Two release channels, one version check. The advisory compares the installed binary against npm's latest version even when Homebrew installed the binary. Homebrew casks are bumped by their own pull requests, so the cask version legitimately trails npm for a while - and every gap looks like a pending update. Pressing the button then runs the npm install path, which writes a second copy into a different prefix. The cask-managed binary, the one on PATH, is untouched, so the advisory comes straight back.
+
+## What to do
+
+Detect the installing channel first, then compare and update through it. For Homebrew, the binary's real path tells you - a cask lives under `<prefix>/Caskroom/<name>/<version>/`, and the prefix matches `brew --prefix`. Then take the latest version from `brew info --json=v2`, which reports what Homebrew can actually deliver, and update with:
+
+```bash
+brew upgrade --cask <name>
+```
+
+Until the tool does this itself, work around it by ignoring the in-app button and running the brew upgrade by hand. If you build an updater, the same rule covers every other channel: npm for an npm global install, pip for pip, the app's own updater only when it owns the file. The check and the action must come from the same source, or you will ship an advisory that cannot clear itself.

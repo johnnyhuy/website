@@ -1,0 +1,39 @@
+---
+title: IME Text Changes Precede Keypresses
+summary: |
+  Typing one character into a terminal on Android produces it twice and then Backspace stops deleting, because a software keyboard reports the text change before the keypress while iOS reports the keypress first. A dedupe that only handles the keypress-first order double-emits and desyncs the input. Let the keypress consume the character the text change just appended and both orders collapse to one.
+date: '2026-10-13 09:15:00 +1000'
+tags:
+  - Input
+  - Mobile
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+Type a single character into a terminal on an Android soft keyboard and it appears twice. Press Backspace and nothing is deleted. Tap the terminal body and type again - the next character doubles too. It is not the keyboard's fault and it is not specific to any one terminal profile, as the report in [getpaseo/paseo#6748](https://github.com/getpaseo/paseo/issues/6748) shows with a plain shell.
+
+## Why it happens
+
+The two platforms disagree about event order. Android's software keyboard reports a printable key as a text change first and a keypress second. iOS reports the keypress first. A terminal input state machine that reconciles those two events has to collapse them into a single insertion, and this one only knew how to do that in the keypress-first order.
+
+On Android the text-change path emits the character, then the keypress path appends and emits it a second time. The model now holds the character twice, so the next text change no longer matches and gets classified as a replacement - the input is marked desynced. While desynced, Backspace is intentionally suppressed, which is why deletion stops. Tapping the terminal resets the hidden input and the desync flag, so the next character doubles again.
+
+## The fix
+
+Remember the printable character the last text change appended, and let the immediately following keypress consume it instead of emitting a second copy ([PR #6749](https://github.com/getpaseo/paseo/pull/6749)):
+
+```ts
+// on text change - Android order
+pendingFromTextChange = appendedPrintableChar
+
+// on keypress - if it matches, consume rather than emit
+if (pendingFromTextChange === keyChar) {
+  pendingFromTextChange = ''
+  return
+}
+```
+
+Keypress-first input (iOS, and any keyboard that only reports keys) leaves the pending character empty, so those paths keep working unchanged.
+
+The general shape: when two event streams describe the same user action, deduplication cannot assume one of the orderings is canonical. Tag whichever event arrives first and let the second consume the tag, or you will ship a state machine that works on one platform and quietly breaks on the other.

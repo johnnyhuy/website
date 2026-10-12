@@ -1,0 +1,34 @@
+---
+title: Editor-free Git Continuations Still Need PATH
+summary: |
+  Finishing a conflicted rebase fails on NixOS with `error: cannot run true: No such file or directory`, because the continuation ran with a child environment holding only `GIT_EDITOR=true`. Replacing the environment wholesale drops PATH, git falls back to `/bin:/usr/bin` to find the no-op editor, and NixOS has neither. Merge the override onto the inherited environment instead of swapping it out.
+date: '2026-10-13 09:30:00 +1000'
+tags:
+  - Git
+  - Node.js
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+You resolve the last conflict, run `git rebase --continue`, and git answers `error: cannot run true: No such file or directory` followed by `error: unable to start editor 'true'`. The conflicts are resolved - the commit itself never happens. The report in [openchamber/openchamber#4801](https://github.com/openchamber/openchamber/pull/4801) reproduces it finishing a conflicted rebase or merge on NixOS.
+
+## Why it happens
+
+Continuations are supposed to run without prompting for a commit message, so the code spawns them with `GIT_EDITOR=true` - a no-op editor, nothing to type. The mistake is in how that override is applied. The child environment is built as just `{ GIT_EDITOR: 'true' }`, replacing the parent environment instead of extending it.
+
+Without PATH in the child, git cannot find `true` through a shell. Its editor spawn falls back to the execvp default search path, `/bin:/usr/bin`. On a normal distribution `/bin/true` exists and the bug is invisible. NixOS puts nothing in `/bin`, so the lookup fails and the continuation cannot commit the resolution.
+
+## The fix
+
+Merge the override over the inherited environment rather than replacing it, the same way the other call sites in the module already do:
+
+```ts
+await exec('git', ['rebase', '--continue'], {
+  env: { ...process.env, GIT_EDITOR: 'true' },
+})
+```
+
+With PATH present, `true` resolves like any other command and systems without `/bin/true` work. Nothing else about the invocation changes.
+
+The general rule: an environment that replaces rather than extends is almost never what a child process needs. It silently drops PATH, HOME, and every other inherited variable, and it will only ever be caught on a platform that does not paper over the gap - which is exactly where you are least likely to have tested. Override one variable, inherit the rest.
