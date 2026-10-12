@@ -1,0 +1,30 @@
+---
+title: OpenChamber 2.3.0 Moves Panels Around the Chat
+summary: |
+  The minor release that lets the terminal, files, diffs and the browser sit beside the chat instead of behind a tab also changes how streaming replies land and how the sidebar groups sessions. Movable panels are the headline, but the fix list is where the daily friction goes - pnpm 11 installs that stopped asking which packages to build, terminal commits that no longer hit index.lock, and prompts that survive a chunked tunnel.
+date: '2026-10-13 05:00:00 +1000'
+tags:
+  - Releases
+  - OpenChamber
+  - Upgrades
+draft: false
+icon: Package
+---
+
+The [OpenChamber v2.3.0 release](https://github.com/openchamber/openchamber/releases/tag/v2.3.0) puts the terminal, files, diffs and the browser to the right, left or under the chat instead of behind a tab. Drag a rail icon, tab or panel header onto a zone, or use "Move panel to" in the panel's menu. An open editor keeps its unsaved text and the terminal keeps its session across the move, so you can have a diff and a terminal on screen together without losing either.
+
+Live replies now land a paragraph or list item at a time, and the chat stops scrolling at the start of a long reply so you can read from the top. With Activity collapsed, a working turn shows its latest 7 steps and a "+N more" count.
+
+## What actually changed for a user
+
+Beyond the panels, three things worth knowing:
+
+- **Sidebar views are now Tree and List.** List is the default for new installs and shows each project under its own sticky header. Recent is gone. Every message you send puts a session in work, and a message after Done reopens it.
+- **pnpm 11 installs finish cleanly.** Earlier versions paused on every install and update to ask which packages to build. 2.3.0 skips that prompt and completes.
+- **Git commits from the terminal no longer hit index.lock.** The app reads git status in the background, and that read used to race with a commit, leaving `index.lock: File exists` on the terminal side. The background read now coexists with an in-progress commit.
+
+Two more fixes worth flagging if you hit them: prompts behind a tunnel that sends chunked requests used to fail with `400 Expected object` and now arrive whole, and the Linux AppImage shows its icon (the packaging path is covered in [openchamber#4766](https://github.com/openchamber/openchamber/issues/4766)).
+
+## What to do
+
+Upgrade to 2.3.0. If you had a panel arrangement you liked, the layout model is new - spend a minute dragging things where you want them. If you were on the old sidebar with Recent, pick Tree or List from the sidebar menu. The pnpm 11 and git fixes are silent - you only notice them if you were hitting the prompt or the lock error before.
