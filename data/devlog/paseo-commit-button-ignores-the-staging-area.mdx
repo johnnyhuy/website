@@ -1,0 +1,31 @@
+---
+title: Paseo's Commit Button Ignores the Staging Area
+summary: |
+  Stage one file on purpose, press Commit, and the commit contains the unstaged changes too, because the Commit action always sends `addAll: true` and the server runs `git add -A` before committing. The button is a commit-everything action by design - when you want only what you staged, run `git commit` in a terminal.
+date: '2026-10-12 21:15:00 +1000'
+tags:
+  - Git
+  - CLI
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+You modify two files, stage one of them deliberately, check `git status --short` to confirm the split, and press Commit. Both files land in the commit. The unstaged change you were keeping out of it is gone from the working tree and inside the snapshot instead. The report in [getpaseo/paseo#6689](https://github.com/getpaseo/paseo/issues/6689) walks through exactly that sequence.
+
+## Why it happens
+
+It is not a race or a stale status view. The Commit action explicitly sends `addAll: true`, and the server runs `git add -A` before `git commit`, so whatever the staging area held is irrelevant - the button's contract is to commit every uncommitted change in the workspace, staged or not. The Changes view has no staging step at all, so there is nothing in the UI that would make the distinction meaningful.
+
+That is the designed workflow rather than a bug, so the report was closed as not planned. A staging-aware Commit would be a workflow change, not a fix. Nothing warns you about this at the point of use, which is why the surprise lands after the commit exists.
+
+## What to do
+
+Treat the Commit button as `git add -A && git commit`. When you want to commit only what you staged, do it from the terminal:
+
+```bash
+git add path/to/the-one-file
+git commit -m "just this change"
+```
+
+The habit that saves you: if a change must not enter the commit, do not rely on it merely being unstaged. Commit from the terminal where the index is the contract, or move the work you are keeping to a separate worktree first so it cannot be swept in.

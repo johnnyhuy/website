@@ -1,0 +1,26 @@
+---
+title: Menu Dismiss Taps Press the View Underneath
+summary: |
+  On iOS, the tap that dismisses an open native menu also activates whatever was underneath it - dismissing a filter menu over a list row opens that row - because UIKit hands the dismiss tap through to React Native's touch handler as a full press. A touch gate that drops touches which begin while a menu container is on screen stops the pass-through.
+date: '2026-10-12 21:20:00 +1000'
+tags:
+  - iOS
+  - React Native
+  - Input Handling
+draft: false
+icon: Bug
+---
+
+Dismiss a filter menu by tapping the list beside it and you open the row you happened to tap. On iOS 26 and 27 the tap that closes a native menu is not eaten by the menu - UIKit lets it through to React Native's surface touch handler, which reports it as a complete press. Dismissing a Pulls filter menu over a PR row opens the PR. It is a known React Native issue ([react-native#58983](https://github.com/react/react-native/issues/58983)).
+
+## Why it happens
+
+The menu dismissal and the underlying tap are the same touch. UIKit resolves it against the menu, closes the menu, and the touch continues down the responder chain to the React Native surface, which sees a normal touch begin and end over a pressable. Nothing marks it as a dismissal, so the view underneath does exactly what a tap on it always does.
+
+Expo already carries a gate for this in `expo-modules-core`, but it only installs on windows that host an `@expo/ui` SwiftUI view, so `@react-native-menu` menus and native header menus never get it. Android is unaffected - its menus put a backdrop under the menu that takes the outside tap.
+
+## The fix
+
+Install a touch gate on every window ([PR #18565](https://github.com/pingdotgg/t3code/pull/18565)) rather than only on the windows you expect to host menus. While a menu's container view - keyed on `_UIContextMenuContainerView` - is on screen and accepting input, tell React Native's touch handler to ignore the touches that just began. JavaScript then sees no `touchStart`, no `pressIn`, and no press for the dismissing tap. When no menu is open the gate does nothing, so ordinary taps are untouched.
+
+Two practical notes. The gate has to live in an app delegate subscriber so every window gets it - menu ownership will not tell you which windows need it. And this is native code, so it needs a fresh build; it cannot ship as an OTA update.

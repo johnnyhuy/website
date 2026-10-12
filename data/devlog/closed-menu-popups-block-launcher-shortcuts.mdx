@@ -1,0 +1,37 @@
+---
+title: Closed Menu Popups Block Launcher Shortcuts
+summary: |
+  Launcher keyboard shortcuts stop firing entirely while clicking the same rows still works, because the shortcut handler bails whenever a blocking-layer selector matches and a closed menu popup stays mounted in the DOM. Match overlays on open state, not on slot presence - and until then, click the row or use Tab and Enter.
+date: '2026-10-12 21:25:00 +1000'
+tags:
+  - Keyboard
+  - Web
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+Every letter shortcut in the panel launcher is dead. The launcher is focused, the hints say `B / T / F / D`, pressing `T` does nothing, and clicking the Terminal row works fine. The keydown handler is bailing out before it ever sees the key ([pingdotgg/t3code#18602](https://github.com/pingdotgg/t3code/issues/18602)):
+
+```ts
+if (document.querySelector(LAUNCHER_SHORTCUT_BLOCKING_LAYERS)) return
+```
+
+## Why it happens
+
+The check is meant to defer shortcuts while an overlay is up. But the chat header's menu popup stays mounted when closed - `data-closed`, `hidden`, `opacity: 0`, `pointer-events: none`, still in the DOM - so the `[data-slot="menu-popup"]` entry in the selector always matches. The guard is asking whether a popup exists rather than whether one is open, and a closed-but-mounted popup answers yes forever.
+
+This is the kind of selector that works in testing against a fresh page and fails the moment any menu has been opened. The same root cause accounts for other swallowed keyboard input in the app, tracked separately from the launcher symptom.
+
+## The fix
+
+Treat overlays as blocking only while they are open ([PR #18132](https://github.com/pingdotgg/t3code/pull/18132)). Either scope the selector to open popups - drop anything carrying `data-closed`, or require the open state explicitly - or track open overlays in state and skip the DOM query entirely:
+
+```ts
+const blocked = document.querySelector(
+  `${LAUNCHER_SHORTCUT_BLOCKING_LAYERS}:not([data-closed])`
+)
+if (blocked) return
+```
+
+The invariant: a presence query is not an openness query. Anything that gates behaviour on an overlay being up has to ask about the overlay's state, because component libraries keep closed overlays mounted on purpose. Until the fix lands, clicking the launcher row or Tab and Enter still works.

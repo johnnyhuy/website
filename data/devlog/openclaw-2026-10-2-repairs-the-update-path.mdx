@@ -1,0 +1,28 @@
+---
+title: OpenClaw 2026.10.2 Repairs the Update Path From 2026.10.1
+summary: |
+  The first upgrade from OpenClaw 2026.10.1 could stall, roll back, or end in an error even when it had succeeded, so the patch release that followed spends its headline on the update path rather than a feature. 2026.10.2 makes that upgrade complete cleanly and also masks credentials that cross a redaction chunk boundary, so go straight to it and retry any update that failed leaving the Gateway stopped.
+date: '2026-10-12 21:00:00 +1000'
+tags:
+  - Releases
+  - OpenClaw
+  - Upgrades
+draft: false
+icon: Package
+---
+
+The first thing on the [OpenClaw 2026.10.2 release notes](https://github.com/openclaw/openclaw/releases/tag/v2026.10.2) is not a feature. It is the upgrade out of 2026.10.1. The previous patch release retired plugin SDK exports and hard-broke published plugins at load, and on top of that the first upgrade from 2026.10.1 could stall, roll back, or finish in an error even when the update had actually succeeded. Windows, cloned-filesystem and private-Node update paths were the worst of it - they would hang or revert instead of finishing.
+
+2026.10.2 makes that upgrade complete cleanly, reports finalised update successes as successes, and stops already-validated release candidates from failing on live npm dist-tag drift. If you are still on 2026.10.1 with broken plugins, this is the release that lets you move.
+
+## What actually changed for a user
+
+Three things beyond the update path are worth knowing about:
+
+- **Secret redaction now crosses chunk boundaries.** Credentials that straddled a chunk boundary in long tool output were not masked by earlier builds - the redactor ran per chunk and missed anything split across two. 2026.10.2 masks them, and redaction of large text no longer stalls or overflows the stack.
+- **Provider-native compaction is now the default** for OpenAI and Anthropic API-key routes, and compaction recovers when the primary auth profile is cooling down instead of failing the turn.
+- **Prompt-cache prefixes stay byte-identical** across follow-ups, replays, Gateway restarts and subagent completions, so the cached prefix keeps hitting instead of silently re-billing the whole conversation.
+
+## What to do
+
+Upgrade to 2026.10.2. If an update from 2026.10.1 stalled, rolled back, or refused to finalise and left the Gateway stopped, retry on 2026.10.2 rather than working around the failure on the old version - the update path repairs are in this release. If you were auditing tool output for leaked credentials on an older build, treat anything that ran through a chunk boundary as unredacted and rotate accordingly.

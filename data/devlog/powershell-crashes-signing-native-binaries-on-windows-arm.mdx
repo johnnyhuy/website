@@ -1,0 +1,34 @@
+---
+title: PowerShell Crashes Signing Native Binaries On Windows ARM
+summary: |
+  A release pipeline can stop dead after the Windows ARM build succeeds because PowerShell 7.6 crashes with `Internal CLR error. (0x80131506)` while signing a native executable - a known upstream runtime fault. Pin the ARM64 PowerShell 7.4.20 distribution on .NET 8 for the signing job, verify its hash, and check later steps actually resolve the pinned runtime.
+date: '2026-10-12 21:30:00 +1000'
+tags:
+  - Windows
+  - CI/CD
+  - Release Automation
+draft: false
+icon: Workflow
+---
+
+The Windows ARM build completes and then the release just stops. The signing step dies mid-run with:
+
+```text
+Internal CLR error. (0x80131506)
+```
+
+It is not the signing service and it is not the certificate. PowerShell 7.6 itself crashes while signing a native executable, and the failure matches the [upstream Windows ARM runtime issue](https://github.com/dotnet/runtime/issues/131636) for that combination.
+
+## Why it happens
+
+The crash is in the CLR behind PowerShell 7.6 on Windows 11 ARM, triggered by the signing tooling loading and exercising native code in-process. There is nothing to fix in the pipeline's own logic - the shell running it is what falls over. The trap is that it fails only on the ARM signing leg, so a release green everywhere else looks like a signing-service outage and burns a cycle on the wrong suspect.
+
+## The fix
+
+Run the ARM signing job on a PowerShell that is not affected ([PR #18573](https://github.com/pingdotgg/t3code/pull/18573)). The ARM64 PowerShell 7.4.20 distribution, backed by .NET 8, signs the same native executables without the crash. Pin it explicitly rather than trusting whatever `pwsh` resolves to on the runner, and harden the pin:
+
+- Verify the distribution's SHA-256 before use.
+- Write its `PATH` entry as UTF-8 - a mis-encoded entry silently resolves to the unpinned PowerShell.
+- Assert that later steps resolve the pinned runtime, so the pin cannot rot after an image update.
+
+The broader pattern is worth keeping: when a release step crashes inside the interpreter rather than in your script, check the runtime's issue tracker for the platform combination before touching the pipeline. The workaround is almost always a version pin, and the pin needs verification like any other artefact.

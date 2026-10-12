@@ -1,0 +1,41 @@
+---
+title: Path Trimming Breaks Folders With Trailing Spaces
+summary: |
+  A repository in a folder named `repo ` shows Not a git repository and refuses to create worktrees because two independent parsers trim the trailing space off the path before it reaches git. Trimming input paths is not normalisation - normalise separators, reject blank input, and keep every other byte.
+date: '2026-10-12 21:10:00 +1000'
+tags:
+  - Git
+  - Filesystem
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+A project whose folder name ends in a space does not work as a Git project even though the folder is a perfectly good repository. The Changes pane shows **Not a git repository**, and creating a worktree for it fails with:
+
+```text
+Workspace cwd is outside its source worktree: <tmp>/repos/repo
+```
+
+Note the error names `<tmp>/repos/repo` while the folder on disk is `<tmp>/repos/repo ` - the trailing space is already gone by the time the comparison happens. The daemon log gives it away earlier: the Git watcher stats the path without the trailing space and hits `ENOENT` the moment the workspace opens. Reproduction is one command - `git init -b main "<tmp>/repos/repo "` with a trailing space in the name, then add the project.
+
+## Why it happens
+
+Two independent parsers discarded the final space ([getpaseo/paseo#6675](https://github.com/getpaseo/paseo/issues/6675), [#6685](https://github.com/getpaseo/paseo/issues/6685)). The daemon's Git path-output parser treated the trailing space as padding, and the app's workspace-directory normalisation trimmed it away on the way in. A path helper that trims its input turns `repo ` into `repo`, which is a different directory or no directory at all, and every containment check downstream fails on the lie.
+
+This is the input side of the same family as lossless parsing of `git worktree list` output - the output side truncates, the input side trims, and both destroy whitespace that is part of the path.
+
+## The fix
+
+Stop trimming paths ([PR #6686](https://github.com/getpaseo/paseo/pull/6686)). Both parsers now preserve directory-name whitespace:
+
+```typescript
+// wrong - a valid directory name loses its final character
+const cwd = userInput.trim()
+
+// right - normalise separators, reject blank input, keep every other byte
+const cwd = normalizeSeparators(userInput)
+if (cwd.length === 0) throw new Error('blank path')
+```
+
+The useful invariant is that path normalisation may only make changes the filesystem agrees with. Separator normalisation is fine. Rejecting blank input is fine. Whitespace is data. One caveat from the fix - folder names ending in a space are not preserved on Windows at the filesystem level, so this class of name is portable only where the filesystem is.

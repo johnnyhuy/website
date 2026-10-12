@@ -1,0 +1,32 @@
+---
+title: TTL Read Caches Keep Archived Worktrees Listed
+summary: |
+  Archiving a worktree succeeds and the directory is gone, but the next listing still shows it for up to fifteen seconds because the daemon serves listings from a TTL read cache the archive path never invalidates. Clear the cache on the mutation path, clear it broadly enough to cover alternate checkout paths, and make sure stale in-flight reads cannot repopulate it.
+date: '2026-10-12 21:05:00 +1000'
+tags:
+  - Caching
+  - Git
+  - Gotcha
+draft: false
+icon: RefreshCw
+---
+
+The archive says it worked. The worktree directory is gone and the `git worktree list` entry with it. Then the listing you run a second later still shows the worktree you just archived, and the one after that does not. The report in [getpaseo/paseo#6512](https://github.com/getpaseo/paseo/issues/6512) reproduces it exactly:
+
+```bash
+paseo worktree archive qa-codex --json   # exits 0, directory and git entry gone
+paseo worktree ls --json                  # still lists qa-codex
+paseo worktree ls --json                  # now gone
+```
+
+## Why it happens
+
+The daemon serves the worktree listing from a read cache with a fifteen-second lifetime, and archiving a worktree does not invalidate that cache. The mutation talks to disk and to git; the read path keeps serving its snapshot until the TTL expires. Every other caller of the same listing request reads that same cache, so the stale entry is not a CLI quirk - it is what the daemon answers to everything.
+
+Two details make the naive fix wrong. First, a read that was already in flight when you cleared the cache can land afterwards and repopulate it with pre-archive state, undoing the invalidation. Second, the cache key is not always the path you removed - alternate checkout paths and bare repositories key differently - so clearing only the entry you think you changed leaves the stale one reachable.
+
+## The fix
+
+Invalidate on the mutation path, not on a timer ([PR #6545](https://github.com/getpaseo/paseo/pull/6545)). Once disk removal succeeds, clear the cached worktree listings - all of them, so alternate paths and bare repositories cannot hide a stale entry - and keep older in-flight reads from writing back into the cleared cache.
+
+The general shape: a TTL is staleness tolerance, not invalidation. Any read cache that answers questions about a mutable resource needs an explicit clear on the code path that mutates it, and the clear has to win against reads that started before the mutation.
