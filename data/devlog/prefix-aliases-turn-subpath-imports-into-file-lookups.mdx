@@ -1,0 +1,36 @@
+---
+title: Prefix Aliases Turn Subpath Imports Into a Filesystem Lookup
+summary: |
+  A Vitest run fails three test files with `ENOTDIR` the moment a package subpath is imported, because the alias maps the package prefix to a single source file and the subpath import becomes that filename with `/ui` appended. List subpath aliases ahead of the bare prefix, and remember the app build resolves these through package exports so only tests break.
+date: '2026-10-13 02:45:00 +1000'
+tags:
+  - Vitest
+  - Testing
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+One commit starts importing `@openchamber/sdk/ui` from server code and every Vitest run in that package dies on load with `ENOTDIR`, pointing at something like `packages/sdk/src/index.ts/ui`. The app itself is fine - only the test config cares ([openchamber/openchamber#4785](https://github.com/openchamber/openchamber/pull/4785)).
+
+## Why it happens
+
+The web package's Vitest config rewrites the `@openchamber/sdk` prefix to `../sdk/src/index.ts`. A prefix alias is a string replacement, not a module resolution, so `@openchamber/sdk/ui` becomes `.../sdk/src/index.ts/ui` - a path under a file. Node never sees this, because the app resolves subpaths through the package `exports` map; the alias only exists to point tests at source.
+
+The trap is that the alias works right up until someone imports a subpath, and the error names a filesystem path rather than the alias, so it reads like a broken dependency instead of a config problem.
+
+## The fix
+
+Give every subpath its own entry and keep it ahead of the bare prefix ([PR #4785](https://github.com/openchamber/openchamber/pull/4785)):
+
+```ts
+resolve: {
+  alias: [
+    { find: '@openchamber/sdk/ui', replacement: '../sdk/src/ui/index.ts' },
+    { find: '@openchamber/sdk/schemas', replacement: '../sdk/src/schemas/index.ts' },
+    { find: '@openchamber/sdk', replacement: '../sdk/src/index.ts' },
+  ],
+}
+```
+
+Order matters - the first match wins, so a bare prefix listed first swallows the subpaths again. When you alias a package with subpath exports, either mirror every subpath explicitly or map to the package directory and let resolution fall through, and treat `ENOTDIR` in a test run as an alias that fired one level too high.

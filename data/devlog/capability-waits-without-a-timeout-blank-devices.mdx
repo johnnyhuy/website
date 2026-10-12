@@ -1,0 +1,32 @@
+---
+title: Capability Waits Without a Timeout Blank Devices That Never Signal
+summary: |
+  A regular iPhone on an iOS 27.2 developer beta shows the splash and then a black screen forever, because the layout observer waits for a hinge update before publishing any metrics and only foldable hardware ever sends one. Bound every wait on a hardware capability with a timeout, and make the fallback the common case rather than nothing at all.
+date: '2026-10-13 02:39:00 +1000'
+tags:
+  - iOS
+  - React Native
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+The app launches, shows its splash for a moment, and then sits on a black screen that never resolves. Reinstalling does not help, and the same build works on the foldable it was written for. The failure was reported against a regular iPhone running an iOS 27.2 developer beta ([pingdotgg/t3code#18654](https://github.com/pingdotgg/t3code/pull/18654)).
+
+## Why it happens
+
+Foldable support made the layout observer wait for a hinge update before it reports any layout metrics, and the navigator draws nothing until those metrics arrive. UIKit sends hinge updates only on devices that have a hinge. The first release carrying that code shipped on the foldable alone, so the wait always ended - then the same code path reached regular iPhones on the developer beta, which wait forever on a window that stays empty.
+
+This is the shape to watch for: a wait whose only exit is a signal that a subset of hardware sends. On the hardware that never signals, the wait is not slow, it is infinite, and the symptom shows up as a missing UI rather than an error.
+
+## The fix
+
+Bound the wait and treat silence as the common answer ([PR #18654](https://github.com/pingdotgg/t3code/pull/18654)). The fix publishes default metrics if no hinge update arrives within 0.25s of the observer joining a window - a foldable still switches to its fold layout when its hinge update comes in late. A JS-side fallback does the same at 1s so binaries without the native fix still render something.
+
+```ts
+// if the hardware signal never comes, publish the ordinary layout
+const hinge = await waitForHingeUpdate({ timeoutMs: 250 })
+publishMetrics(hinge ? foldLayout : phoneLayout)
+```
+
+The habit that generalises: when you gate rendering on a capability signal, decide up front what silence means and encode it as a timeout, because the devices that lack the capability are precisely the ones that say nothing.

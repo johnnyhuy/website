@@ -1,0 +1,32 @@
+---
+title: Compositors That Advertise Features They Reject Crash Electron at Startup
+summary: |
+  Launching on Hyprland 0.48 to 0.50 dies immediately after the window appears with `Custom primaries aren't supported`, because the compositor advertises a colour-manager feature and then refuses the request, which Chromium treats as a fatal protocol error. Pin the workaround to stock affected builds and leave everything unknown on the default.
+date: '2026-10-13 02:42:00 +1000'
+tags:
+  - Electron
+  - Linux
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+A plain `BrowserWindow` on Hyprland, under native Wayland, terminates right after creating its window with `Custom primaries aren't supported`. No application code involved - the release's Electron runtime reproduces it alone ([pingdotgg/t3code#18566](https://github.com/pingdotgg/t3code/pull/18566)).
+
+## Why it happens
+
+Hyprland 0.48.0 added `wp-color-manager-v1` and advertises `FEATURE_SET_PRIMARIES`, then rejects `set_primaries` outside debug mode. Chromium treats a request the compositor advertised but refuses as a fatal protocol error and shuts the app down. Hyprland 0.51.0 accepts custom primaries again, so only the 0.48 to 0.50 range is affected.
+
+This is worth remembering beyond Wayland: a client that validates a protocol by what the server advertises will abort on a server that advertises carelessly. Feature negotiation needs a kill switch for known-bad peers.
+
+## The fix
+
+Disable `WaylandWpColorManagerV1` before app readiness, but only where the evidence lines up ([PR #18566](https://github.com/pingdotgg/t3code/pull/18566)):
+
+```js
+app.commandLine.appendSwitch('disable-features', 'WaylandWpColorManagerV1')
+```
+
+The judgement call is scoping. Apply it only when the Ozone backend resolves to `wayland`, the session is Hyprland, the user has not chosen a side already, and `hyprctl version -j` reports a stock affected release - version, tag and upstream release commit all matching, build not dirty. Everything else keeps colour management on: 0.51 and later, unknown versions, and any probe failure such as `hyprctl` missing, timing out or returning junk.
+
+Matching the commit matters. A dev build that reports an old version and tag would otherwise be swept up by a version-only check and lose colour management for nothing.

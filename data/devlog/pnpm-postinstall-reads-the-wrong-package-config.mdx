@@ -1,0 +1,32 @@
+---
+title: Pnpm Postinstall Reads the Wrong Package Config
+summary: |
+  A per-package opt-out is ignored and the install downloads the heavy dependency anyway, because the postinstall reads `INIT_CWD/package.json` and in a pnpm workspace that is the repo root, not the package being installed. Read config from the package that owns the script, or accept that only root-level config applies.
+date: '2026-10-13 02:36:00 +1000'
+tags:
+  - Node.js
+  - Monorepos
+  - Gotcha
+draft: false
+icon: Package
+---
+
+You set `enableMath: false` in the `enriched-markdown` block of a workspace package's `package.json`, and every install still downloads the math engine. The flag never applies, so each fresh checkout pays for a dependency the app has opted out of. The cause is where the postinstall looks for the setting ([pingdotgg/t3code#18679](https://github.com/pingdotgg/t3code/pull/18679)).
+
+## Why it happens
+
+`INIT_CWD` is the directory the install was invoked from. In a pnpm workspace that is almost always the repo root, so a postinstall that reads `INIT_CWD/package.json` reads the root manifest and never sees the `enriched-markdown` block sitting in `apps/mobile/package.json`. The script behaves correctly in a single-package repo and silently misreads the layout in a monorepo. Upstream had the same bug and fixed it in [software-mansion/enriched-markdown#977](https://github.com/software-mansion/enriched-markdown/pull/977).
+
+## The fix
+
+Point the config lookup at the package that actually declares the dependency, not at the invocation directory. `npm_package_json` is the manifest of the package whose lifecycle script is running, which is the one you want:
+
+```js
+// wrong in a workspace - this is the invocation directory, usually the root
+const fromCwd = path.join(process.env.INIT_CWD, 'package.json')
+
+// the package whose script is running
+const manifest = JSON.parse(await readFile(process.env.npm_package_json, 'utf8'))
+```
+
+If you maintain a postinstall with per-package options, document which manifest wins. Anything read from `INIT_CWD` in a monorepo is root config wearing a per-package disguise.

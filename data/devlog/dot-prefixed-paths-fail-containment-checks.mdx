@@ -1,0 +1,31 @@
+---
+title: Path Containment Checks Reject Valid Dot-prefixed Names
+summary: |
+  Workspace path suggestions come back empty for a file under a folder named `..docs`, even when you pass its exact path, because the containment helper treats any relative suffix starting with `..` as parent traversal. Test for an actual `..` segment rather than a `..` prefix and the valid name and the traversal guard both survive.
+date: '2026-10-13 02:30:00 +1000'
+tags:
+  - Filesystem
+  - CLI
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+Suggest a path under a directory named `..docs` and the suggestion service returns nothing. Not a wrong answer - nothing. You can hand it the exact path `..docs/notes.md` and still get an empty result, while the same file reads fine through the file explorer and an ordinary `docs/notes.md` control works. The report in [getpaseo/paseo#6719](https://github.com/getpaseo/paseo/issues/6719) reproduces it against the real daemon RPC across relative, `./` and absolute queries.
+
+## Why it happens
+
+A shared containment helper guards path suggestions against parent traversal, and its test is effectively "does the relative suffix start with `..`". A folder named `..docs` does, so the helper reports the path as outside the workspace and the suggestion never happens. `...docs` fails the same way. The guard is asking a question about the string when it means to ask one about the path.
+
+## The fix
+
+Check for a real parent segment instead of a `..` prefix ([PR #6720](https://github.com/getpaseo/paseo/pull/6720)) - split on the platform separator and flag only a segment that is exactly `..`:
+
+```ts
+const segments = relative.split(sep)
+const escapes = segments.some((s) => s === '..')
+```
+
+With a segment check, `..docs` and `...docs` reach suggestions while parent traversal, sibling paths and a different Windows drive all stay excluded. Do not solve this by loosening the containment rule wholesale - the exclusion side is doing real work across POSIX, Windows, UNC and Windows namespace paths.
+
+The general rule: a prefix test and a structural test answer different questions. Anything that decides "is this path escaping" has to look at segments, because dot-prefixed names are legal right up to the name `..` itself.

@@ -1,0 +1,34 @@
+---
+title: AppImage Icons Need an Apps Directory
+summary: |
+  A Linux launcher shows a blank or generic icon for an AppImage even though the icon ships inside it, because the icon theme only looks in `<size>/apps/` and `scalable/apps/` and the build dropped the SVG one level too high. Ship the icon where the theme looks and make the build verify the name resolves rather than that the label exists.
+date: '2026-10-13 02:33:00 +1000'
+tags:
+  - Linux
+  - Packaging
+  - Gotcha
+draft: false
+icon: Package
+---
+
+The AppImage contains its icon, and its desktop entry names it with `Icon=openchamber`, yet the launcher draws a blank page or a generic gear. Extract the image and the layout gives it away ([openchamber/openchamber#4766](https://github.com/openchamber/openchamber/issues/4766)):
+
+```text
+usr/share/icons/hicolor/scalable/openchamber.svg
+```
+
+## Why it happens
+
+`hicolor/index.theme` declares `scalable/apps` and `<N>x<N>/apps` under `Directories=`, never a bare `scalable`. The name lookup for `Icon=openchamber` finds nothing, so launchers fall back to the root `.DirIcon`. The file is one level above the only directories the theme reads.
+
+Two traps alongside it. electron-builder's Go `app-builder` writes an SVG at `scalable/<name>.svg` while its newer JS AppImage path writes `scalable/apps/`, so a fix validated against one code path can still fail in the build you actually run. And hicolor declares sizes only up to 512, so a 1024 PNG lands at `1024x1024/apps/`, which the theme also does not declare - 512 is the largest size that resolves.
+
+## The fix
+
+Ship a PNG that lands where the theme looks ([PR #4779](https://github.com/openchamber/openchamber/pull/4779)):
+
+```text
+usr/share/icons/hicolor/512x512/apps/openchamber.png
+```
+
+Then make the release build check the right thing. The old verification only grepped for the text `Icon=openchamber` in the desktop entry, so an image whose icon never resolved still passed. The check now fails the build unless the icon sits under `hicolor/scalable/apps/` or `hicolor/<N>x<N>/apps/` with N up to 512 and the name actually resolves. Verify the lookup, not the label.

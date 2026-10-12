@@ -1,0 +1,31 @@
+---
+title: Signal the Process Group Not the Runner PID
+summary: |
+  A dev runner that is stopped by SIGTERM exits cleanly and leaves the Vite server and backend watchers alive, still holding their ports, because the children sit in the terminal's process group and only the direct child is stopped. Signal the group, or start it with its own, when anything outside a terminal has to shut it down.
+date: '2026-10-13 02:48:00 +1000'
+tags:
+  - CLI
+  - Process Management
+  - Gotcha
+draft: false
+icon: Workflow
+---
+
+You stop a tracked dev runner with `kill -TERM $pid`, the runner exits with a tidy status, and the next start logs port offsets of 1 because the old web server and backend watchers are still listening. Nothing reports the survivors - they simply hold the ports and the CPU ([pingdotgg/t3code#18625](https://github.com/pingdotgg/t3code/issues/18625)).
+
+## Why it happens
+
+The runner spawns its children with `detached: false` on purpose, so terminal Ctrl+C reaches the whole tree through the process group. That is the right call for a foreground terminal, and it means the runner never forwards signals itself. When only the runner gets SIGTERM, Effect interrupts the runner and stops its direct child; the grandchildren - Vite and the Node watchers - are not in that path. They get reparented to PID 1 and keep running, and a caller that tracks one PID has no way to know.
+
+## What to do
+
+If it is in a terminal, use Ctrl+C. If a script or supervisor has to stop it, signal the group rather than the PID:
+
+```bash
+pgid=$(ps -o pgid= -p "$runner_pid" | tr -d ' ')
+kill -TERM -- "-$pgid"
+```
+
+Or start the runner with `setsid` so it owns a group you can kill in one go, and kill that negative PGID on shutdown. Leftovers do not block anything - the next run shifts to free ports - so this is about reclaiming resources, not unblocking yourself.
+
+The general shape: a supervisor that tracks a single PID only works if that PID owns the whole tree or cleans it up on exit. `detached: false` gives you neither when the caller is outside the terminal, so take the process group as the unit of shutdown.
