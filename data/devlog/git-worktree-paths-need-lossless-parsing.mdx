@@ -1,0 +1,59 @@
+---
+title: Git Worktree Paths Need Lossless Parsing
+summary: |
+  Parsing `git worktree list` line by line breaks when a worktree directory contains a newline or ends in a space - the path gets truncated and the next git call fails with `spawn git ENOENT`. Use the NUL-delimited porcelain format so paths with whitespace survive intact.
+date: '2026-10-12 16:15:00 +1000'
+tags:
+  - Git
+  - Gotcha
+  - CLI
+draft: false
+icon: Bug
+---
+
+The error is `spawn git ENOENT` and it points at git itself, which sends you looking at PATH and installation issues. The actual problem is that the path you handed to the spawn call is not the path that exists on disk. It is the path with its trailing space stripped, or cut off at the first newline in the directory name.
+
+## Why it happens
+
+`git worktree list` without flags prints one worktree per line, with the path as a space-separated field. That format is fine for ordinary directory names and silently lossy for anything with a newline or a trailing space. A directory called `base ` (with a trailing space) and one called `base` are different directories, but line-oriented parsing treats the trailing space as padding and strips it. A directory called `base\ncheckout` (with an embedded newline) becomes two lines, and only the first half reaches your code.
+
+The same trap exists for any git porcelain output that prints paths as text fields. Git has a machine-readable format for exactly this reason.
+
+## The fix
+
+Ask for the NUL-delimited format. Each record ends with a NUL byte, which cannot appear in a path, so the parser can split on record boundaries without guessing:
+
+```bash
+git worktree list --porcelain -z
+```
+
+Or in Node, use `execFileSync` with the `encoding` set and split on `\0`:
+
+```typescript
+import { execFileSync } from 'node:child_process'
+
+function listWorktrees(cwd: string): string[] {
+  const raw = execFileSync('git', ['worktree', 'list', '--porcelain', '-z'], {
+    cwd,
+    encoding: 'utf8',
+    stdio: ['ignore', 'pipe', 'pipe'],
+  })
+  // Records are NUL-delimited; fields within a record are newline-delimited.
+  return raw
+    .split('\0')
+    .filter(Boolean)
+    .flatMap((record) => record.split('\n'))
+    .filter((line) => line.startsWith('worktree '))
+    .map((line) => line.slice('worktree '.length))
+}
+```
+
+This was the fix in [paseo PR #6668](https://github.com/getpaseo/paseo/pull/6668) after [issue #6659](https://github.com/getpaseo/paseo/issues/6659) reproduced the failure with three base worktree names: `plain`, `base\ncheckout`, and `base `.
+
+## What to do
+
+- **Use `--porcelain -z` for any git output you parse programmatically.** The plain format is for humans reading a terminal. The porcelain format is for tools.
+- **Never trust a line split on git path output.** A path with a newline will produce two records and a path with a trailing space will produce a wrong one.
+- **Test with ugly directory names.** A test fixture that only uses `plain` will pass while the bug sits there. Include a trailing space, an embedded newline, and a multi-byte character.
+
+The broader rule: whenever a tool offers a machine-readable output mode, use it. Line-oriented parsing of human output is a bet that the data has no whitespace, and paths always do eventually.

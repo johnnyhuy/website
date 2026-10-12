@@ -1,0 +1,39 @@
+---
+title: Vitest Configs Silently Drop Requested Files
+summary: |
+  A test runner that routes each file to its owning Vitest config will silently skip any requested file that belongs to a config the runner did not start. A focused test run looks green while the suites under test never executed. Route every requested file to its owning config, or fail with an error naming each path you cannot route.
+date: '2026-10-12 16:20:00 +1000'
+tags:
+  - Testing
+  - Vitest
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+The symptom is the worst kind of false confidence. You ask for four specific test files, the runner reports two failed and thirty-two passed, and you move on thinking the other two files were clean. They were never run. The runner only started one Vitest config, and the two missing files belong to a different config that never launched.
+
+## Why it happens
+
+Monorepos and large projects often split tests across several Vitest configs - unit, integration, tooling, runtime-config - each with different setup files, timeouts or environment variables. A wrapper script reads the requested file paths, works out which config owns each one, and starts only the configs it thinks it needs. The logic is usually correct for the common case and silently lossy when a file maps to a config the wrapper skipped.
+
+The failure is silent because the wrapper has no notion of coverage over the requested set. It starts what it starts and reports what it ran. The two paths it dropped are not in the log as errors, so nothing signals that they were missing.
+
+## The fix
+
+The runner must account for every requested file. Two acceptable behaviours:
+
+1. **Route every file to its owning config and start all of them.** This is the obvious fix and the right one when the wrapper already knows the mapping.
+2. **Fail loudly when a file cannot be routed.** Print each requested path that has no owning config and exit non-zero. A green run must mean every requested file executed.
+
+The second option is the safety net when the mapping is incomplete. Either way, the invariant is the same: a focused test run that reports success must have run every file you asked for.
+
+This was reported in [openclaw issue #169591](https://github.com/openclaw/openclaw/issues/169591) where `run-vitest` silently dropped two requested suites because they belonged to `vitest.runtime-config.config.ts`, which the wrapper never started. The workaround was to bypass the wrapper entirely and run the full package entrypoint, then diff the requested set against the executed set.
+
+## What to do
+
+- **Assert the executed set matches the requested set.** A simple `Set` comparison at the end of the run catches dropped files before anyone trusts the result.
+- **Name the dropped files in the error.** A generic "some tests were skipped" is useless. The developer needs to know which paths to chase.
+- **Do not rely on test counts to detect the gap.** A run that dropped two files and passed 32 tests looks identical to a run that executed everything and passed 32 tests.
+
+The generalisable rule applies to any test runner wrapper, coverage tool or CI step that filters a file list: if you accept an explicit set of inputs, verify you processed all of them. A silent drop is worse than a loud failure because it costs a debugging session instead of a re-run.

@@ -1,0 +1,49 @@
+---
+title: Atomic Save Temp Names Must Stay Short
+summary: |
+  A file with a valid 240-character name can be created and read but fails to save with ENAMETOOLONG, because the atomic write path builds its temporary filename from the original name plus a UUID. The temp name ends up longer than the 255-byte filesystem limit. Use a short fixed prefix and the UUID alone - the original name never needs to appear in the temp file.
+date: '2026-10-12 16:10:00 +1000'
+tags:
+  - Filesystem
+  - Node.js
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+The symptom is confusing. You create a file with a long but valid name, read it back fine, then saving even a one-line edit returns `ENAMETOOLONG: name too long`. The original file stays empty. The same edit on `notes.txt` works perfectly. It looks like a filesystem limit on the file itself, but the file already exists on disk - the limit is on the temporary name the save path invented.
+
+## Why it happens
+
+The standard atomic-write pattern writes to a temporary file in the same directory, then renames it over the target. That rename is atomic on POSIX and is the right approach. The mistake is deriving the temporary name from the target name.
+
+A common shape looks like this:
+
+```typescript
+// Broken - temp name grows with the target name
+const tempName = `.${fileName}.${crypto.randomUUID()}.tmp`
+await fs.writeFile(path.join(dir, tempName), content)
+await fs.rename(path.join(dir, tempName), path.join(dir, fileName))
+```
+
+If `fileName` is 240 characters, the temp name becomes 240 plus a dot, a 36-character UUID, and `.tmp` - well past the 255-byte limit that ext4, APFS and NTFS all enforce on a single path component. The target file fits. The temp file does not.
+
+## The fix
+
+The temporary name only needs to be unique within the directory. A short fixed prefix and the UUID is enough, and the original name never has to appear:
+
+```typescript
+// Fixed - short, unique, same directory
+const tempName = `.paseo-${crypto.randomUUID()}.tmp`
+const tempPath = path.join(dir, tempName)
+await fs.writeFile(tempPath, content)
+await fs.rename(tempPath, path.join(dir, fileName))
+```
+
+The dot prefix keeps the temp file hidden on POSIX. The UUID guarantees uniqueness across concurrent saves. The rename is still atomic. The original filename is only used as the rename target, which is the one place the filesystem already accepts it.
+
+This was fixed in [paseo PR #6658](https://github.com/getpaseo/paseo/pull/6658) after [issue #6657](https://github.com/getpaseo/paseo/issues/6657) demonstrated the failure with a 240-character ASCII name and a 232-byte Unicode name on macOS.
+
+## The generalisable rule
+
+Any time you build a temporary path by appending to the original name - backups, saves, uploads, downloads - you are borrowing against a limit the original name already spent most of. Keep temp names short and fixed-length. The only place the full name matters is the final rename target.
