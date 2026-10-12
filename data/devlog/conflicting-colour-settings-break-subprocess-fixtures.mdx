@@ -1,0 +1,48 @@
+---
+title: Conflicting Colour Settings Break Subprocess Test Fixtures
+summary: |
+  Two unrelated fixture tests fail only on machines that export both `NO_COLOR` and `FORCE_COLOR`, and neither failure points at colours. Node prints a warning on stderr during startup when both are set, which contaminates a fixture that asserts on stderr and exits a supervisor fixture before its pipe handlers are installed. Clear both settings in the fixture's child environment.
+date: '2026-10-12 12:25:00 +1000'
+tags:
+  - Testing
+  - Node.js
+  - CI/CD
+draft: false
+icon: Workflow
+---
+
+A pair of subprocess regressions fail on one machine and pass everywhere else. One fixture asserts on a child's stderr and finds a line it never wrote. The other exits 1 before its assertions run, with no useful stack. Neither test mentions colour, and the suite is green in CI.
+
+The trigger is a shell that exports both `NO_COLOR=1` and `FORCE_COLOR=1`. Node refuses to pick between them and says so on stderr at startup:
+
+```text
+$ NO_COLOR=1 FORCE_COLOR=1 node -e "console.log('x')"
+(node:15161) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+```
+
+## Why it happens
+
+That warning is written to the child's stderr before your code runs. A fixture that collects stderr and asserts on its contents now has an extra line in every capture. A fixture that spawns a supervisor and closes stderr fares worse - the warning write hits a closed pipe, raises `write EPIPE`, and the fixture process exits before the pipe handlers that would have tolerated it are installed.
+
+CI is clean because its environment has neither variable set, so the whole class of failure stays invisible until someone runs the suite locally with a colourful prompt config.
+
+## The fix
+
+Strip both settings from the environment you hand to fixture subprocesses, so the tests exercise what they are actually testing:
+
+```ts
+const child = spawnProcess(found, fixture.args, {
+  env: {
+    ...process.env,
+    ...params.env,
+    // Terminal colour settings must not add Node warnings to fixture stderr.
+    NO_COLOR: undefined,
+    FORCE_COLOR: undefined,
+  },
+  stdio: ['ignore', 'pipe', 'pipe'],
+})
+```
+
+Setting them to `undefined` removes them from the child's environment rather than blanking them. The generalisable habit is to treat inherited terminal settings as untrusted input to a test. Any environment variable that changes how a runtime talks on stdio - colour detection is the common one - will one day land in a fixture that reads stdio literally, and the failure will look like a bug in the test rather than in the environment.
+
+This is how [paseo issue #6580](https://github.com/getpaseo/paseo/issues/6580) was resolved in [PR #6648](https://github.com/getpaseo/paseo/pull/6648), with the cleared pair added to both the argv and supervisor fixtures and a regression that runs the suite with the conflicting settings explicitly set.

@@ -1,0 +1,40 @@
+---
+title: Windows Alias Spelling Loads Duplicate Module Instances
+summary: |
+  A plugin that should share the host's module state quietly gets its own copy of the same module, and everything the two write diverges. Alias maps that spell Windows targets with forward slashes hand the resolver a second name for an already-loaded file, so the runtime loads it again. Normalise the alias target with `path.normalize` at the resolve boundary.
+date: '2026-10-12 12:45:00 +1000'
+tags:
+  - Windows
+  - Node.js
+  - Plugin SDK
+draft: false
+icon: Package
+---
+
+The symptom is state that will not stay shared. A plugin writes to what the docs call a shared store, the host reads it back, and the value is not there. Both sides load the same package, both resolve without error, and the bug only appears on Windows - on Linux the same build behaves.
+
+It is two copies of one module. A loader that hands the resolver `C:/app/node_modules/plugin-sdk` for a file already loaded as `C:\app\node_modules\plugin-sdk` gets treated as a new path, the module is registered a second time, and every caller of the second name gets a fresh instance with its own state.
+
+## Why it happens
+
+Alias maps are easy to write with forward slashes. It is the portable spelling, tooling accepts it everywhere, and on POSIX it is already canonical. Native require hands those targets straight to `Module._resolveFilename`, which compares filenames as strings, so the spelling difference is enough to defeat the module cache. Node sidesteps this because its hook path canonicalises before registering; runtimes that do not will hand out duplicates. On an older runtime the same mismatch did not load twice, it crashed outright during startup.
+
+This is [openclaw PR #169482](https://github.com/openclaw/openclaw/pull/169482), where the plugin SDK's Windows aliases loaded a second copy of the SDK through native require on Bun. The upstream crash from the same spelling is [oven-sh/bun#44473](https://github.com/oven-sh/bun/pull/44473).
+
+## The fix
+
+Normalise the alias target at the one boundary where it becomes a filename:
+
+```ts
+import path from 'path'
+
+// One owner for every native-require caller. Forward-slash targets like
+// C:/app/node_modules/plugin-sdk become the platform spelling before
+// the resolver ever sees them.
+const target = path.normalize(aliasTarget)
+const resolved = Module._resolveFilename(target, parent)
+```
+
+Putting `path.normalize` in one place matters more than it looks. Scattering it across callers is how the bug returns when a fifth caller is added, and the failure is silent - no error, just two instances and state that drifts.
+
+The habit to keep: module identity is a string identity. Any interface that turns an alias, a re-export or a virtual module name into a filename needs to say which spelling is canonical, and the platform-native one is the only spelling the runtime's own cache is guaranteed to agree on.

@@ -1,0 +1,44 @@
+---
+title: Shortcut Recording Stores the Key Position Not the Character
+summary: |
+  Rebinding a shortcut on a non-QWERTY layout records the wrong key - pressing B under Dvorak saves Cmd+N, and the action then fires from N. Capture reads the physical key position while dispatch uses the logical character, so the two disagree the moment the layout does. Record from the same character map dispatch uses, and re-record any binding saved before the fix.
+date: '2026-10-12 12:35:00 +1000'
+tags:
+  - Keyboard
+  - Electron
+  - Input Handling
+draft: false
+icon: Bug
+---
+
+The symptom is a shortcut that displays one key and fires from another. On a Dvorak layout, opening the rebind dialog and pressing B records `Cmd+N`. Save it, and the action now runs from N. The label is honest about what was pressed and the dispatcher is honest about what it saved - they are just reading two different things from the same key event.
+
+## Why it happens
+
+A key event carries two useful fields. `key` is the character the layout produces, so B under Dvorak is `key: "b"`. `code` is the physical position on the board, and the Dvorak B key is the QWERTY N position, so it is `code: "KeyN"`. Capture was reading the position and dispatch was reading the character.
+
+QWERTY hides this completely, because both readings agree. The first person to rebind a shortcut on a different layout finds the saved binding is for a key they never pressed. This is [paseo PR #6652](https://github.com/getpaseo/paseo/pull/6652), and it is worth noting what the fix deliberately did not do - it did not change the dispatch policy or migrate saved bindings, it only made capture agree with dispatch.
+
+## The fix
+
+Map the event to the same logical character dispatch resolves before saving:
+
+```ts
+function recordBinding(event: KeyboardEvent) {
+  // Dispatch runs on the logical character, so record the logical character.
+  const character = characterForKeyEvent(event)
+  if (character) return { key: character, modifiers: modifiersFor(event) }
+
+  // Named keys (Escape, F5) and Option combinations whose character is
+  // rewritten fall back to the key name, matching dispatch exactly.
+  return { key: event.key, modifiers: modifiersFor(event) }
+}
+```
+
+Three details make the difference:
+
+- **Letters and punctuation come from the layout**, including shifted combinations, so `Shift+;` records the character the layout actually produces.
+- **Named keys keep their names.** Escape, arrow keys and function keys have no useful character, and Option combinations rewrite `key` into something no longer printable, so both cases must fall back to the same name dispatch uses.
+- **Old bindings are not repaired.** Anything recorded before the fix carries the wrong key and has to be re-recorded. There is no safe migration, because the stored key is a real key the user might also have wanted.
+
+The generalisable rule is narrow: when capture and dispatch must agree, give them one shared mapping. A recorder that reads `code` and a dispatcher that reads `key` is two implementations of keyboard identity, and they diverge for everyone who does not use QWERTY.

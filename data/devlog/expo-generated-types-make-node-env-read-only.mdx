@@ -1,0 +1,45 @@
+---
+title: Expo Generated Types Make NODE_ENV Read-Only
+summary: |
+  A typecheck that is green on a clean checkout goes red once anyone starts Expo, with TS2540 on the `process.env.NODE_ENV = 'test'` line in the test config. Expo generates `expo-env.d.ts`, its types declare `NODE_ENV` read-only, and the direct assignment that pins the test environment becomes a compile error. Assign through `Object.assign` and the pin survives the generated declarations.
+date: '2026-10-12 12:15:00 +1000'
+tags:
+  - TypeScript
+  - Expo
+  - Testing
+draft: false
+icon: Bug
+---
+
+The typecheck is green on a clean checkout, someone starts the web app once, and now it fails forever:
+
+```text
+npm run typecheck --workspace=@getpaseo/app
+vitest.config.ts(7,13): error TS2540: Cannot assign to 'NODE_ENV' because it is a read-only property.
+```
+
+Nothing in the config changed. Starting Expo generated `packages/app/expo-env.d.ts`, and that file pulls in `expo/types`, which redeclares `ProcessEnv.NODE_ENV` as a read-only property. The test suite itself keeps passing, so the only visible damage is a typecheck that started failing on machines that have run the app and not on CI.
+
+## Why it happens
+
+Pinning `NODE_ENV` in the test config is the right move. React ships `act` only in its development build, so a runner that inherits `NODE_ENV=production` from the shell loses the test-only API entirely, and the fix there is to set the value in the config before anything resolves. The wrinkle is that the pin is a property assignment, and property assignments are exactly what a read-only declaration forbids. The runtime behaviour is unchanged; only the compiler objects.
+
+This is what broke in [getpaseo/paseo issue #6649](https://github.com/getpaseo/paseo/issues/6649), and the fix in [PR #6656](https://github.com/getpaseo/paseo/pull/6656) keeps the timing and changes only the spelling of the assignment.
+
+## The fix
+
+```ts
+// vitest.config.ts
+import { defineConfig } from 'vitest/config'
+
+// Set this before Vite resolves dependencies and Vitest starts its workers.
+Object.assign(process.env, { NODE_ENV: 'test' })
+
+export default defineConfig({
+  // ...
+})
+```
+
+`Object.assign` mutates `process.env` without a property assignment, so there is nothing read-only for the compiler to reject, and the value is still set early enough that every dependency resolves against the test environment. Moving the setup later to dodge the error is not an option, because that loses the production-shell protection the pin exists for.
+
+If a generated declaration like this one ever lands in a package you do not control, `Object.assign` is the portable spelling. It compiles whether or not `NODE_ENV` is declared read-only, so the config does not need to know which types are in scope.

@@ -1,0 +1,31 @@
+---
+title: Port Discovery Probes Can Crash Non-Web Listeners
+summary: |
+  An automatic dev-server discovery that sends `GET /` to every listening port will eventually hit something that is not a web server, and some of those things hard-crash when they read HTTP bytes on a binary port. Scope discovery to listeners your tool actually started, and skip a port entirely when any listener on it is unowned.
+date: '2026-10-12 12:55:00 +1000'
+tags:
+  - Networking
+  - Dev Tooling
+  - Debugging
+draft: false
+icon: RefreshCw
+---
+
+The crash report looks unrelated to web anything. A game dies during map load, every time, within a few seconds of a dev tool's sidebar opening. A DCC tool throws a command port warning popup on a timer. Neither is running a web server. Both are listening on a local TCP port, which is all the discovery loop needs to decide it should send them an HTTP request.
+
+The probe is usually innocent in isolation - an unsolicited `GET /` to a port that speaks HTTP is how dev-server detection works at all. The trouble is that a listening socket says nothing about the protocol behind it. A binary protocol server that parses whatever lands on the port will read `GET / HTTP/1.1\r\n` as garbage framing and can exit rather than ignore it.
+
+## Why it happens
+
+Discovery that enumerates every listening port writes to sockets it has no ownership of. On one machine that is a mod tool launched from a terminal; on another it is a Maya `commandPort` or a game's developer console. The probe does not need credentials, it just needs the port to be open, and modern probes often follow the plain HTTP attempt with a TLS handshake, which is more bytes in the same place.
+
+The fix pattern in [t3code PR #16687](https://github.com/pingdotgg/t3code/pull/16687) is the ownership rule: probe only listeners your tool started, and if any listener on a port is not yours, leave that port alone. The report in [issue #18377](https://github.com/pingdotgg/t3code/issues/18377) is a good picture of what leaks through when discovery is not scoped that way.
+
+## What to do
+
+- **Own the listener or skip the port.** Map listeners to the process tree of your tool's own terminals, and treat an unowned listener at the same port as a veto. Co-tenancy is not consent.
+- **Prefer the process over the probe.** If you started the dev server, its port is known from the spawn. Discovery by scanning is the fallback, not the mechanism.
+- **Keep configured URLs exact.** An explicitly configured loopback URL carries the path and query the user set. Rewriting it to `http://host:port/` and probing that instead both breaks the target and widens the blast radius.
+- **Make it possible to turn off.** Anyone who does not use the preview feature should not pay its cost in popups and crashes.
+
+The generalisable rule is that a probe is a request to a program you did not write and cannot see. Send it to sockets you own, and assume anything else on the box is a binary protocol with no error handling, because eventually it will be.
