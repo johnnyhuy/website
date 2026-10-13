@@ -1,0 +1,26 @@
+---
+title: AppImages Fail Silently Without FUSE 2
+summary: |
+  An AppImage that exits with no window and no error on a modern Debian or Ubuntu usually means the FUSE 2 compatibility library is missing - FUSE 3 alone is not enough for the classic runtime. Install `libfuse2t64`, use the distro package, or run a build with the static AppImage runtime.
+date: '2026-10-14 04:45:00 +1000'
+tags:
+  - Linux
+  - Packaging
+  - Gotcha
+draft: false
+icon: Package
+---
+
+Launch the AppImage on Ubuntu 24.04 or 26.04 and the app simply does not start. No window, no error, nothing to debug ([pingdotgg/t3code#19101](https://github.com/pingdotgg/t3code/issues/19101)). The distro ships FUSE 3, which feels like it should cover it. It does not - the classic AppImage runtime mounts through the older FUSE 2 interface, and a silent exit is all you get when the library is absent.
+
+## The fix
+
+Install the compatibility library:
+
+```sh
+sudo apt install libfuse2t64
+```
+
+That resolves it immediately. Two longer-term routes: a `.deb` or `.rpm` build skips the AppImage mount path entirely, and AppImages built with the static runtime ([PR #7765](https://github.com/pingdotgg/t3code/pull/7765)) drop the dependency altogether. Reports of October-dated AppImages still failing mean the library install is the step to trust - treat "just update and it goes away" as unverified until your own build confirms it. If the library is present and it still exits silently, try launching from a shell - the mount errors only show up on stderr, which the desktop launcher swallows.
+
+The general rule: a silent failure on launch with nothing in the log is often the container format, not the application. Check what the runtime needs before debugging the app.

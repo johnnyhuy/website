@@ -1,0 +1,28 @@
+---
+title: OpenClaw 2026.10.3 Recovers Stuck Updates and Protects Repair Data
+summary: |
+  The patch after the update-path release spends its fixes on updates that still refused to finish - lost leases, unrecognised receipts and legacy activation records now recover instead of blocking every retry, and Windows, macOS and pnpm updates stop leaving the Gateway stopped. Doctor repair also stops destroying the data it was asked to save, so retry any update that failed on 2026.10.2.
+date: '2026-10-14 04:05:00 +1000'
+tags:
+  - Releases
+  - OpenClaw
+  - Upgrades
+draft: false
+icon: Package
+---
+
+An update that will not finish is still the headline on the [OpenClaw 2026.10.3 release notes](https://github.com/openclaw/openclaw/releases/tag/v2026.10.3). 2026.10.2 repaired the upgrade out of 2026.10.1; 2026.10.3 cleans up what that left behind. Updates stuck behind lost handoff leases, receipts the updater no longer recognised, or legacy activation records now recover and finish instead of refusing every retry. If an earlier update failed with the Gateway left stopped, this is the release that gets you moving again.
+
+## What actually changed for a user
+
+Three things worth knowing:
+
+- **Windows, macOS and pnpm updates finish.** Machine-qualified scheduled task accounts, short-name install paths, protected service commands and pnpm 12 launchers all used to strand an update mid-flight or roll it back. The Gateway keeps running through the whole update now.
+- **Doctor repair stops destroying data.** An unreadable legacy auth store keeps its OAuth profiles instead of being replaced, malformed UTF-8 memory files stay byte-exact rather than being rewritten with replacement characters, and a plugin blocked by a path-safety check keeps its enabled flag.
+- **A fresh Mac first run works.** The "On this Mac" setup authenticates the app-hosted Gateway instead of failing with "Gateway rejected auth", and the app reconnects after a trusted certificate renewal.
+
+Smaller fixes worth a mention: the turn after native compaction no longer fails, a ChatGPT WebSocket closing mid-stream no longer kills the turn, and switching back to an OpenAI model works with the Codex plugin disabled.
+
+## What to do
+
+Upgrade to 2026.10.3 and, if a previous update failed, run the update repair afterwards. Stale Codex runtimes and rolled-back plugin upgrades from Doctor cleanup are both on the fix list. The Doctor changes matter most if you have been avoiding repair because of what it might delete - that hesitation is no longer warranted.

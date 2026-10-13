@@ -1,0 +1,33 @@
+---
+title: Commit Diffs Come Back Empty in Subdirectory Workspaces
+summary: |
+  A workspace opened at `apps/web` lists a commit's `apps/web/notes.txt` but opening that file's commit diff returns `file: null`, because the commit list hands back repository-relative paths while the diff lookup resolves the requested path against the workspace directory. Resolve the worktree root first and run the Git command from there.
+date: '2026-10-14 04:15:00 +1000'
+tags:
+  - Git
+  - Worktrees
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+Open a commit diff from a workspace that sits at a repository subdirectory and the file comes back `null`. The commit list for `apps/web` shows `apps/web/notes.txt` with one addition and one deletion, the same SHA and path open fine from a workspace at the repository root, and reading `notes.txt` from the subdirectory works. Only the commit-file diff fails, and it fails silently ([getpaseo/paseo#6799](https://github.com/getpaseo/paseo/issues/6799)).
+
+## Why it happens
+
+Two APIs, two path bases. The commit list returns repository-relative paths, and the request for the diff passes that path to `git show`, which resolves it against the workspace directory. From a workspace at `apps/web`, `apps/web/notes.txt` is looked up as a nested `apps/web/apps/web/notes.txt`, matches nothing, and an empty result comes back instead of an error.
+
+## The fix
+
+Resolve the worktree root first and use that directory for the Git command and the file-content lookups ([PR #6801](https://github.com/getpaseo/paseo/pull/6801)):
+
+```ts
+const root = await resolveWorktreeRoot(workspace)
+const diff = await git(root).show([sha, '--', repoRelativePath])
+```
+
+The paths stay repository-relative end to end. Only the working directory changes. Do not patch this by stripping the subdirectory prefix off the path - the path is correct for the repository, it is the lookup base that is wrong. Root workspaces and files that genuinely did not change in the commit keep returning their old answers.
+
+Until a release includes the fix, opening the commit diff from a repository-root workspace is the verified workaround.
+
+The general rule: when one API returns paths in one coordinate system and another resolves them against a different base, normalise the base before the paths cross.

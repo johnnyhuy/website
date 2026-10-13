@@ -1,0 +1,35 @@
+---
+title: Recovery Overwrites the Config Before Its Snapshot Saves
+summary: |
+  A config-clobber repair rewrites the live config even when its forensic `.clobbered.*` snapshot failed to save - a held lock or a full disk returns null and the user's only copy of their edits is lost with just a missing log note. A null snapshot means no copy was written, so defer the recovery instead of committing the overwrite.
+date: '2026-10-14 04:25:00 +1000'
+tags:
+  - Config
+  - Recovery
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+Three recovery paths rewrite a clobbered config - prefix stripping, backup restore and last-known-good - and all three replace the live file even when the forensic `.clobbered.*` snapshot was never written ([openclaw#171187](https://github.com/openclaw/openclaw/issues/171187)). The trigger is not exotic. A held lock on the snapshot path, or a write failure such as a full disk, returns null, the caller reads that as "nothing to preserve" instead of "preservation failed", and the overwrite proceeds. The user's only copy of their edits is gone and the only trace is a missing log line.
+
+## Why it happens
+
+The snapshot helper returns null both when there is nothing to save and when saving failed. Every caller picks the first meaning. By the time anyone looks at the logs the live config has already been replaced.
+
+## The fix
+
+Treat a null snapshot as a failed precondition and defer the destructive step ([PR #171217](https://github.com/openclaw/openclaw/pull/171217)):
+
+```ts
+const snapshot = await saveClobberSnapshot(configPath)
+if (!snapshot) {
+  warn('recovery deferred - no forensic copy')
+  return { recovered: false }
+}
+await replaceLiveConfig(configPath, recoveredBytes)
+```
+
+Recovery stays available for the next read, and the live file is untouched until a copy exists. Four held-lock regressions failed against the old code and pass with the guard, and an ENOSPC during snapshot creation now keeps both the original and the backup bytes. The fix is on main just after 2026.10.3, so the next release carries it.
+
+The general rule: a destructive repair with a safety copy in the flow has to confirm the copy exists before it commits. Null is not consent.

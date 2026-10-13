@@ -1,0 +1,26 @@
+---
+title: Wheel Handler Swallows Scrolls on Scrollbar Tracks
+summary: |
+  The mouse wheel does nothing while the pointer sits on a table's horizontal scrollbar, because the scrollbar's wheel handler calls `preventDefault()` before checking the delta and a plain wheel arrives with `deltaX === 0` there. Check the delta first and only cancel the event when the handler actually scrolls.
+date: '2026-10-14 04:35:00 +1000'
+tags:
+  - React
+  - Scrolling
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+Put the pointer on a chat table's horizontal scrollbar and the mouse wheel goes dead. The chat behind it does not scroll and the strip does not either. Move the pointer a few pixels off the strip and the wheel works again ([pingdotgg/t3code#19096](https://github.com/pingdotgg/t3code/issues/19096)).
+
+## Why it happens
+
+In `@base-ui/react` 1.5.0 the `ScrollAreaScrollbar` wheel handler calls `preventDefault()` first and looks at the delta afterwards. A plain vertical wheel has `deltaX === 0` over a horizontal scrollbar, so there is nothing for the handler to act on and the event has already been swallowed. The scroll never reaches the page or the strip.
+
+## The fix
+
+Base UI 1.6.0 returns early when the delta is zero and at the scroll edges, and only cancels the event when it actually scrolls ([mui/base-ui#4936](https://github.com/mui/base-ui/pull/4936)). If you are on 1.5.0, a dependency bump to 1.6 or later picks up the fix. The `scroll-area.tsx` wrapper needs no change.
+
+Until the bump lands, Shift+wheel over the table cells, a trackpad swipe, or dragging the thumb all still work. Note that upstream does not map a vertical wheel to horizontal scrolling on that strip - on a fixed build a plain wheel over the scrollbar simply passes through to the page.
+
+The general rule: `preventDefault()` is a claim that you handled the event. Check the condition before you claim it.

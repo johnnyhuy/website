@@ -1,0 +1,36 @@
+---
+title: Readline Cuts JSONL Records on Unicode Line Separators
+summary: |
+  A session that hangs on reopen while the same data loads fine elsewhere can mean a pasted `U+2028` or `U+2029` in the history - on Node 24 `node:readline` treats those as line endings and shreds one JSONL message into unparseable fragments, so the request times out. Split the stream on LF yourself.
+date: '2026-10-14 04:55:00 +1000'
+tags:
+  - Node.js
+  - JSON
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+Reopen a chat whose history contains a literal `U+2028 LINE SEPARATOR` - easy to pick up by pasting from a notes app - and the load hangs until it times out, even though the session itself is valid and resuming it through the CLI works. The daemon log shows fragments like `Ignoring non-JSON Codex app-server stdout line` ([getpaseo/paseo#2021](https://github.com/getpaseo/paseo/issues/2021)).
+
+## Why it happens
+
+The transport framed the tool's stdout with `node:readline`, and on Node 24 - the runtime the desktop app ships - `readline` also treats `U+2028` and `U+2029` as line endings. A JSONL record containing either character arrives as two fragments, both fail `JSON.parse`, and the request that needed the response never gets one. Nothing is corrupt. The frame was cut in the wrong place.
+
+## The fix
+
+Split on `\n` only ([PR #5999](https://github.com/getpaseo/paseo/pull/5999)):
+
+```ts
+// wrong on Node 24 - U+2028 and U+2029 also end a line
+readline.createInterface({ input: child.stdout })
+
+// one message is one LF-terminated record
+for await (const record of splitOnLf(child.stdout)) {
+  JSON.parse(record)
+}
+```
+
+Keep `\r\n` handling and characters split across chunk boundaries working, and scan each byte once - a first cut that rescanned the whole unterminated line on every chunk made reopening a long chat several times slower.
+
+The general rule: if the protocol says records end at LF, the reader ends at LF, whatever the platform's line discipline thinks a line is. Anything framing JSONL on Node 24 is one pasted paragraph away from this.
