@@ -1,0 +1,35 @@
+---
+title: Zero-Length Parse Ranges Break the Diff Highlighter
+summary: |
+  A diff view that shows `Invalid inner parse ranges given` instead of the file usually means the nested-range generator emitted a zero-length span - an empty `{}` expression produced a from-equals-to range and the highlighter refuses to paint it. Skip empty spans where the ranges are generated rather than teaching every consumer to tolerate them.
+date: '2026-10-13 20:20:00 +1000'
+tags:
+  - Gotcha
+  - TypeScript
+  - Web
+draft: false
+icon: Bug
+---
+
+Open the changes view on a branch of Astro components and the whole diff is replaced by one error line:
+
+```
+Invalid inner parse ranges given: [{"from":721,"to":1968},{"from":1972,"to":1972}]
+```
+
+No file renders. The clue is in the ranges themselves - the second span runs from 1972 to 1972, which is to say it has no length at all. An empty `{}` expression in the template is enough to trigger it, in text or inside an attribute ([paseo issue #6427](https://github.com/getpaseo/paseo/issues/6427), fixed in [PR #6763](https://github.com/getpaseo/paseo/pull/6763)).
+
+## Why it happens
+
+The shared parser walks nested constructs and emits an inner range for each one - JavaScript inside template expressions, and so on. For an empty expression there is nothing between the braces, so the range it produced had `from === to`. The highlighter validates its nested ranges and treats a zero-length span as malformed input, which kills rendering for the entire file rather than the one construct.
+
+## The fix
+
+Do not emit what nothing can consume. The parser now leaves empty expressions in the markup tree, exactly as it treats the surrounding text, and nested ranges are only produced for expressions that have content:
+
+```js
+// the generator used to emit a span for every expression, including empty ones
+if (from < to) innerRanges.push({ from, to }) // skip - nothing to highlight
+```
+
+Fixing it at the generator beats fixing it in each consumer - a diff highlighter, an editor overlay and a search indexer would all have hit the same rejection. The general shape: if a range, offset or interval API documents that spans must have length, your generator needs the same invariant, not a downstream guard that quietly drops them.

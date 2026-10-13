@@ -1,0 +1,36 @@
+---
+title: Bearer Tokens in argv Leak Into Every Log
+summary: |
+  An MCP bearer token passed inside a process command line sits in `ps` output for the whole session and gets written to disk by anything that logs its parent's command line - one report caught it in a child tool's log three times over. Put the secret in the child environment behind a placeholder, or behind a 0600 file path, so argv carries none of it.
+date: '2026-10-13 20:10:00 +1000'
+tags:
+  - Gotcha
+  - Security
+  - CLI
+draft: false
+icon: Bug
+---
+
+Start a thread that spawns a coding agent with an MCP server and the whole MCP config - bearer token included - is visible in the process arguments:
+
+```bash
+ps -eo args | grep -- --mcp-config
+# claude ... --mcp-config {"mcpServers":{"t3-code":{"headers":{"Authorization":"Bearer <token>"}}}}
+```
+
+It stays there for the lifetime of the session. Every process running as the same user can read it through `ps` or `/proc/<pid>/cmdline`, and tools that log command lines persist it. In the report that closed this out, a child tool wrote the parent's full command line, token and all, into its own log file three separate times ([t3code issue #18952](https://github.com/pingdotgg/t3code/issues/18952), the same leak as #10020, fixed in [PR #17408](https://github.com/pingdotgg/t3code/pull/17408)).
+
+## Why it happens
+
+Process arguments have no privacy boundary. Anything that can observe the process can read them, and command lines flow into monitoring agents, crash reporters, and diagnostics pasted into bug reports. A token passed this way is therefore one log capture away from being public, and if the server it authorises is listening beyond localhost the holder can use it from the network as well.
+
+## The fix
+
+Reference the secret instead of spelling it out. The fix sends a placeholder in the config and the real value through the child's environment, which only the owner can read - the agent CLI expands the placeholder when it connects:
+
+```bash
+export T3_CODE_MCP_AUTHORIZATION="Bearer <token>"
+claude --mcp-config '{"mcpServers":{"t3-code":{"headers":{"Authorization":"${T3_CODE_MCP_AUTHORIZATION}"}}}}'
+```
+
+The other sound option is a per-session file with mode 0600 under `$XDG_RUNTIME_DIR`, removed when the session ends, with only its path on the command line. The wider rule is blunt: if a value is a credential, it does not go in argv. Environment, a locked-down file, or an inherited file descriptor - anything but the argument vector.

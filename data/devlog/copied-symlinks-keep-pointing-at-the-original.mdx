@@ -1,0 +1,31 @@
+---
+title: Copied Symlinks Keep Pointing at the Original
+summary: |
+  Duplicate a folder of relative symlinks and the copies silently re-target the source - edit through the copied link and the original file changes, delete the original and the copy breaks. The copy resolved each link to an absolute path instead of carrying its text across. Copy the link text verbatim so relative targets resolve inside the copied tree.
+date: '2026-10-13 20:15:00 +1000'
+tags:
+  - Gotcha
+  - Filesystem
+draft: false
+icon: Bug
+---
+
+Take a template folder with `alias.txt -> data.txt` and duplicate it. The copy looks right until you write through `copy/alias.txt` and the original `template/data.txt` changes instead. Delete the template and every copied alias breaks. Read the copied link and the cause is plain - it contains the absolute path back to the original rather than `data.txt` ([paseo issue #6768](https://github.com/getpaseo/paseo/issues/6768), fixed in [PR #6771](https://github.com/getpaseo/paseo/pull/6771)).
+
+## Why it happens
+
+The duplication path resolved each symlink before re-creating it - `realpath` on the source, `symlink` on the result - so a relative link text like `data.txt` became `/tmp/template/data.txt` in the copy. Every alias in the copied tree then reads and writes against the original, and they all die with it. The copy is not a template any more, it is a second set of pointers at the thing it was copied from.
+
+## The fix
+
+Carry the link text across unchanged and let it resolve in its new home:
+
+```js
+// wrong - resolve-then-copy re-targets the link at the source
+await symlink(await realpath(src), dest)
+
+// right - the text is data, not a path to look up first
+await symlink(await readlink(src), dest) // "data.txt" stays "data.txt"
+```
+
+Explicit absolute targets stay absolute because their text says so, and ordinary files are unaffected. The regression test worth writing is the one the fix used - edit both sides through the copy, confirm the original is untouched, then delete the original and read the copy again. If anything in your own file operations rewrites symlink targets while duplicating a tree, this is the bug it has.

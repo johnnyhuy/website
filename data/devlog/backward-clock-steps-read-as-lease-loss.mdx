@@ -1,0 +1,37 @@
+---
+title: Backward Clock Steps Read as Lease Loss
+summary: |
+  A long-running service restarts itself every time NTP nudges the host clock backwards - a 0.1 second step is enough - and again after a laptop lid-close sleep. The lease heartbeat compared wall-clock timestamps, so any negative age looked like a stolen lock. Prove liveness by verifying the held lock itself, and renew on rolled-back timestamps instead of fencing on them.
+date: '2026-10-13 20:00:00 +1000'
+tags:
+  - Gotcha
+  - Node.js
+  - Linux
+draft: false
+icon: Bug
+---
+
+The restart loop looks like an ownership bug but the host is healthy. A gateway service exits with `heartbeat clock moved backwards; restart the Gateway`, the supervisor brings it back, and the cycle repeats several times an hour - with an agent turn in flight every time. A routine NTP correction of 0.1 to 0.7 seconds triggers it. The same signature appears after a lid-close sleep on a laptop, and on bare-metal hardware, so it is not a VM artefact ([openclaw issue #169829](https://github.com/openclaw/openclaw/issues/169829), with #170525 and #170597 covering sleep and stale lock records, fixed in [PR #170790](https://github.com/openclaw/openclaw/pull/170790)).
+
+## Why it happens
+
+The lease freshness check does arithmetic on the wall clock:
+
+```js
+const age = Date.now() - lastBeatAt
+if (age < 0 || age > 60_000) revokeLease()
+```
+
+A backward step makes `age` negative, and the code reads that as another process having taken ownership. Wall-clock time is not monotonic - NTP corrections step it in both directions, VM clock sync steps it, and sleep and resume move it relative to any counter that kept running. So both a 0.1-second correction and an overnight lid-close land in the same revoke branch.
+
+## The fix
+
+Timestamps can expire, but they cannot prove theft. The owner now verifies the held file, its inode and the acquisition bytes before acting on an expired or future timestamp, and renews when the lock is still its own:
+
+```js
+const held = await readLock(lockPath) // file, inode, acquisition bytes
+if (isStillOurs(held)) renewLease() // runs even when age < 0
+else revokeLease()
+```
+
+Use a monotonic clock for interval maths and keep wall-clock time for display only. If you cannot change the code yet, the operational workaround is to make the clock slew instead of step - under chrony that is `makestep 0 0` with a sane `maxslewrate` - but on any drifting VM or container the code fix is the real one, because not every clock correction can be smoothed away.

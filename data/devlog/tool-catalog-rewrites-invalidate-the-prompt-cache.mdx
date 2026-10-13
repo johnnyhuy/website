@@ -1,0 +1,36 @@
+---
+title: Tool Catalog Rewrites Invalidate the Whole Prompt Cache
+summary: |
+  A long agent session suddenly pays full input cost on every turn after a plugin loads late, even though nothing in the conversation changed. Providers cache the prompt from the tools array down, and a tool description that embeds a live catalog index rewrites itself whenever the catalog drifts. Keep tool declarations byte-identical within a session and surface new tools through a discovery call instead.
+date: '2026-10-13 20:05:00 +1000'
+tags:
+  - Gotcha
+  - API Design
+  - Performance
+draft: false
+icon: Bug
+---
+
+The symptom is a cost cliff, not an error. A session that has been running happily for hours loses its cached prompt prefix and every later turn re-sends the whole thing - one deployment watched full rewrites of a 170k to 950k token prompt whenever the tool catalog changed size within a minute of each other. The trigger is anything that adds a tool mid-session: a late MCP connection, a plugin loading, a client shadowing a tool ([openclaw issue #170233](https://github.com/openclaw/openclaw/issues/170233), fixed in [PR #170282](https://github.com/openclaw/openclaw/pull/170282)).
+
+## Why it happens
+
+Provider requests put the tools array first, then the system prompt, then messages. Prefix caching works on bytes from the top, so the cached prefix covers the tools along with everything after them. A tool whose description embeds a generated catalog index therefore rewrites the one part of the request that is supposed to stay frozen:
+
+```js
+{ tools: [{ name: "exec", description: catalogIndexText }], system, messages }
+// any byte change in catalogIndexText drops the cache for system and messages too
+```
+
+The catalog drifts during a session while the conversation does not, so the description is the only thing changing - and it is changing in the worst possible place.
+
+## The fix
+
+Freeze the declarations for the life of a session. Discovery moves behind a tool that itself never changes:
+
+```js
+{ name: "exec", description: "Run a catalog tool by name. List tools with catalog.search." }
+// new tools appear in catalog.search results without touching the declaration
+```
+
+The practical rule from the fix is simple. Within one session the model-visible tool definitions should stay byte-identical, and a new session is where a grown catalog shows up. If you are building agent tooling, grep for anything that regenerates a description from live state - indexes, counts, timestamps - and move that state into a call the model makes on demand. The same reasoning applies to any dynamic preamble, not just tools: anything ahead of the conversation is part of the cache key.

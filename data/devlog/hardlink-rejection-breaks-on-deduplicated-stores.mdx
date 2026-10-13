@@ -1,0 +1,32 @@
+---
+title: Hardlink Rejection Breaks on Deduplicated Stores
+summary: |
+  A plugin panel that loads fine from a normal install reports "panel unavailable - assets could not be loaded" on any host whose package store deduplicates files into hard links. A security policy rejecting hardlinked files was applied at one call site without its trusted-root exemption, and a bare catch turned the real error into a generic message. Route every read through the same policy decision and keep the failure visible.
+date: '2026-10-13 20:25:00 +1000'
+tags:
+  - Gotcha
+  - Linux
+  - Filesystem
+draft: false
+icon: Bug
+---
+
+The panel is built, its assets are on disk, and the UI still says "Plugin panel unavailable - Control UI assets could not be loaded. Build the plugin and reload its UI." It only happens on hosts where the package store deduplicates identical files by hard link - every NixOS machine with `auto-optimise-store` enabled, for example - so the same install works elsewhere ([openclaw issue #170409](https://github.com/openclaw/openclaw/issues/170409), fixed in [PR #170646](https://github.com/openclaw/openclaw/pull/170646)).
+
+## Why it happens
+
+Rejecting hardlinked files is a sensible anti-tamper policy for untrusted plugin roots - a link count above one can mean something outside the install rewrote shared storage. Deduplication flips the meaning. Identical files legitimately share an inode, so `nlink > 1` is the normal state of a store-managed install and the policy rejects every asset it sees.
+
+The policy itself already knew this - there was an exemption for bundled and store-backed roots. One reader simply never consulted it, and a bare `catch {}` swallowed the resulting rejection, leaving only the generic build-the-plugin message. A silent catch is what turned a policy mismatch into an afternoon of dead ends.
+
+## The fix
+
+One decision, consulted everywhere:
+
+```js
+// every asset and manifest read goes through the same call
+if (shouldRejectHardlinkedPluginFiles(root, record)) throw new HardlinkError()
+// trusted bundled and store roots are exempt; external mutable roots still reject
+```
+
+And keep the underlying error - the raw code and message belong in the gateway log even when the UI shows something friendlier. Two rules carry over anywhere: a security check with an exemption has to be applied through the helper that knows the exemption, and a failure that gets swallowed becomes someone else's mystery.
