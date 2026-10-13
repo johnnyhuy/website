@@ -1,0 +1,36 @@
+---
+title: Letter Shortcuts Go Dead Under Non-Latin Layouts
+summary: |
+  With a Russian layout active, Ctrl plus the physical B key records `Ctrl+B` and then never fires. The event arrives as `key: "и"` and dispatch matches characters against an A-Z vocabulary that is empty for that layout. Let dispatch fall back to the physical A-Z key when the character sits outside the vocabulary, without touching how ASCII layouts match.
+date: '2026-10-13 15:45:00 +1000'
+tags:
+  - Gotcha
+  - Keyboard
+  - Input Handling
+draft: false
+icon: Bug
+---
+
+Rebind a shortcut with a non-Latin system layout - Russian tested - and the binding saves correctly as `Ctrl+B` but the action never runs. Press the same keys and nothing happens. The key event is `key: "и", code: "KeyB"`: the character the layout produces is Cyrillic, the physical position is still B ([paseo issue #6655](https://github.com/getpaseo/paseo/issues/6655), fixed in [PR #6755](https://github.com/getpaseo/paseo/pull/6755)).
+
+## Why it happens
+
+Dispatch resolves a shortcut to a logical character and compares it with the saved binding. That works for every Latin layout, including non-QWERTY ones - Dvorak and friends produce real letters, just in different places. A non-Latin layout produces no Latin letter at all, so the character match has nothing to compare and the shortcut is dead. The recording side is honest - it saves `Ctrl+B` - and the pressing side is honest too - it reports `и` - and once again the two readings of the same key event disagree.
+
+This is the mirror of the capture bug fixed in [PR #6652](https://github.com/getpaseo/paseo/pull/6652), where recording stored the physical position while dispatch used the character. That fix made capture agree with dispatch on ASCII layouts. It could not help here, because the problem is not which field each side reads - it is that neither field carries a Latin letter to agree on.
+
+## The fix
+
+Give dispatch a physical fallback, scoped so ASCII layouts are untouched:
+
+```ts
+function matchesBinding(event: KeyboardEvent, binding: Binding) {
+  const character = event.key.toLowerCase()
+  // ASCII layouts keep logical-character matching, shifted quirks and all.
+  if (isSupportedLetter(character)) return character === binding.key
+  // Outside the vocabulary the only letter left is the physical one.
+  return physicalLetterFromCode(event.code) === binding.key
+}
+```
+
+The order is the whole design. Logical character first, so Dvorak keeps matching the key the layout produces and existing behaviour does not shift. Physical position only when the character is outside the supported set, so non-Latin layouts reach the binding that Settings showed them. Saved bindings work without re-recording because they were always the physical letter. If you only match `code`, Latin layouts start firing from the wrong keys; if you only match `key`, everyone without a Latin layout is locked out.

@@ -1,0 +1,41 @@
+---
+title: Random UUIDs Need a Secure Context
+summary: |
+  Toasts and background actions fail with `crypto.randomUUID is not a function` the moment the app is served over plain HTTP to another machine, while localhost works perfectly. `randomUUID` only exists in secure contexts, so route every call through one helper that falls back to `getRandomValues`, which is not gated at all.
+date: '2026-10-13 14:00:00 +1000'
+tags:
+  - Gotcha
+  - Web
+  - API Design
+draft: false
+icon: Bug
+---
+
+Open an internal web app over plain HTTP from another machine and some features die with `TypeError: crypto.randomUUID is not a function`. On localhost the same build is flawless. OpenChamber hit this in its extension surfaces - a guest toast with a `copy` button never rendered, and a background guest action rejected before it queued any request, both with the same missing-method error ([openchamber issue #4747](https://github.com/openchamber/openchamber/issues/4747), fixed in [PR #4775](https://github.com/openchamber/openchamber/pull/4775)).
+
+## Why it happens
+
+`crypto.randomUUID` is only exposed in a secure context. HTTPS counts, and so does `localhost`, which is why development never shows the problem. A plain-HTTP origin reached over the LAN has `window.isSecureContext === false` and `crypto.randomUUID` is simply `undefined` - not broken, not throwing on its own, just absent until something calls it. Every generation site is one more place to forget.
+
+The trap is that the call usually sits in plumbing - toast ids, request ids, optimistic keys - so the feature fails away from the line that is actually wrong.
+
+## The fix
+
+One helper, called everywhere, with the fallback in it:
+
+```ts
+export function generateUuid(): string {
+  if (typeof crypto.randomUUID === "function") return crypto.randomUUID()
+
+  // getRandomValues is not gated behind a secure context, so it is always there.
+  const bytes = crypto.getRandomValues(new Uint8Array(16))
+  bytes[6] = (bytes[6] & 0x0f) | 0x40 // version 4
+  bytes[8] = (bytes[8] & 0x3f) | 0x80 // variant 10
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("")
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
+}
+```
+
+The version and variant bits matter if anything downstream parses the string as a v4 UUID - the OpenChamber tests assert the shape, not just uniqueness. Then grep for the raw call. OpenChamber had already crashed on this at module load and added a generator, and two call sites had quietly grown back around it. A lint rule forbidding bare `crypto.randomUUID` is the only thing that keeps the helper exclusive.
+
+The wider rule is thin but worth stating. Anything that reads like a core language feature can still be a secure-context or polyfill gap, so the code that runs in more than one environment needs a compatibility seam at the call site, not a comment saying it works on localhost.

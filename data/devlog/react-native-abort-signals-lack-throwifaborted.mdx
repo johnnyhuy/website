@@ -1,0 +1,44 @@
+---
+title: React Native Abort Signals Lack throwIfAborted
+summary: |
+  A plugin calling waitForReady on mobile rejects with `TypeError: undefined is not a function` while the same code runs fine on desktop and web. React Native installs an abort-controller polyfill that never grew `throwIfAborted`, so check `signal.aborted` and throw yourself instead of calling a method the signal does not have.
+date: '2026-10-13 13:15:00 +1000'
+tags:
+  - Gotcha
+  - React Native
+  - TypeScript
+draft: false
+icon: Bug
+---
+
+The symptom is a rejection that only exists on the phone. Any plugin that calls `providers.waitForReady()` through the [paseo](https://github.com/getpaseo/paseo) client SDK fails on the iOS app with `TypeError: undefined is not a function`, and the identical code resolves on Electron and in the browser. The call stack points at the signal - `signal.throwIfAborted()` right after the awaited readiness check.
+
+## Why it happens
+
+`AbortController` and `AbortSignal` are native in browsers and Electron, and they carry `throwIfAborted` as a real method. On React Native they come from the `abort-controller` 3.0.0 polyfill that `react-native/Libraries/Core/setUpXHR.js` installs, and that polyfill has no `throwIfAborted` at all. Calling it throws `undefined is not a function` on Hermes. Desktop never sees the problem because the native signal has the method, which is exactly why this survives until the first mobile run. It is [paseo issue #6757](https://github.com/getpaseo/paseo/issues/6757), fixed in [PR #6760](https://github.com/getpaseo/paseo/pull/6760).
+
+The trap is wider than one call site. Every `signal.throwIfAborted()` in shared client code is a mobile time bomb, including ones that never fire today because no caller passes a signal yet. The SDK had a second one sitting in a terminal observer waiting for exactly that.
+
+## The fix
+
+Say it in two lines that work everywhere:
+
+```ts
+async function waitForReady(signal: AbortSignal) {
+  await observation.ready
+  // throwIfAborted is native in browsers and Electron but missing from React Native's polyfill.
+  if (signal.aborted) throw new Error("API is disposed")
+  return snapshot
+}
+```
+
+Or feature-detect once and wrap it:
+
+```ts
+function throwIfAborted(signal: AbortSignal) {
+  if (typeof signal.throwIfAborted === "function") signal.throwIfAborted()
+  else if (signal.aborted) throw new Error("Aborted")
+}
+```
+
+Two things worth copying from the fix. It tests against React Native's actual polyfill in a separate runtime rather than trusting Node globals, because Node has the native method and would have passed everything. And the fallback keeps the same rejection shape callers already handle, so no caller had to change. When a platform polyfill is in play, the test has to run on that platform's implementation - the one your CI's globals are happy to fake.

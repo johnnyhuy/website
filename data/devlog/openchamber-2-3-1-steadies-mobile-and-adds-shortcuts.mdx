@@ -1,0 +1,26 @@
+---
+title: OpenChamber 2.3.1 Steadies Mobile Sessions and Adds iOS Shortcuts
+summary: |
+  The patch after movable panels spends its fixes on mobile - the connect, drop, reconnect loop on slow servers is gone and sessions load right away after backgrounding over the private relay. iOS 18 gets a Shortcuts action that opens a session and sends the first message, so update if mobile reconnects have been chewing through your data.
+date: '2026-10-13 11:00:00 +1000'
+tags:
+  - Releases
+  - OpenChamber
+  - Upgrades
+draft: false
+icon: Package
+---
+
+The [OpenChamber v2.3.1 release notes](https://github.com/openchamber/openchamber/releases/tag/v2.3.1) lead with a mobile fix rather than a feature. On a slow server the app could loop through connect, drop and reconnect, and a session opened over the private relay took its time loading after the app came back from the background. Both are gone. If you have been watching mobile chew through battery or data on a remote connection, this is the patch that stops it.
+
+## What actually changed for a user
+
+- **iOS Shortcuts and Siri can start a session.** On iOS 18 the "New OpenChamber Session" action opens a session in the project you pick and sends your message as the first one, so a voice request lands as a real turn instead of an empty composer.
+- **Antigravity accounts get their own usage card** with 5-hour and weekly limits instead of borrowing the Google one.
+- **Queued messages now wait for nested background subagents** to finish before they deliver, so a follow-up no longer lands mid-task.
+- **A cluster of git fixes** - "Continue after a resolved rebase conflict" works on NixOS, diffs show up when git points at an external diff tool such as difftastic, and the Git tab finds nested repositories next to large folders.
+- **Two smaller things that bite daily** - the Default thinking level no longer makes `/btw` and follow-up messages fail, and the app no longer crashes when two sessions link the same pull request with different letter case.
+
+## What to do
+
+Update to 2.3.1. If you are on iOS 18, the Shortcuts action is worth wiring up once - it turns a Siri phrase into a started session. If mobile was reconnecting in a loop, no extra settings are needed, the fix is in the update.

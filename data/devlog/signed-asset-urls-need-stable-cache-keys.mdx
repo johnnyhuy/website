@@ -1,0 +1,40 @@
+---
+title: Signed Asset URLs Need Stable Cache Keys
+summary: |
+  A phone re-downloads every attachment image on every reconnect - one photo was fetched 33 times in an afternoon under 25 different signed URLs. The image cache is keyed on the URL and the signature rotates on each mint, so every lookup is a permanent miss. Give the cache a key built from the resource id instead.
+date: '2026-10-13 14:45:00 +1000'
+tags:
+  - Gotcha
+  - Caching
+  - iOS
+draft: false
+icon: Bug
+---
+
+The numbers tell on it. One phone, one thread, one afternoon - a single 0.5 MB photo fetched 33 times, 176 image requests total, 124 distinct URLs for 13 distinct images, all `200`, roughly 95 MB moved for pictures already on the device ([t3code issue #18812](https://github.com/pingdotgg/t3code/issues/18812)). Lock and unlock the phone while an agent runs and every unlock reconnects, every reconnect mints fresh signed URLs, and every visible attachment downloads again.
+
+## Why it happens
+
+The disk cache is keyed on the image URL, and a signed URL is a different string every time it is minted. The bytes are identical but the key never matches, so the cache cannot hit even once. This is not a cache that is too small or a policy set wrongly - it is a cache answering the wrong question. It asks "have I seen this URL?" when the app needs "have I seen this attachment?"
+
+Rotating signatures are the norm, not a bug in the signer, so any image cache that takes the URL as its identity will behave this way. HTTP caching has the same shape - a signed URL with no validator header is a fresh fetch every time.
+
+## The fix
+
+Pass a stable key alongside the rotating URL. [The fix](https://github.com/pingdotgg/t3code/pull/18824) builds the source through one helper so no call site can forget:
+
+```ts
+import type { ImageSource } from "expo-image"
+
+export function assetImageSource(environmentId: string, attachmentId: string, uri: string): ImageSource {
+  // Every mint signs a new URL, so a URL-keyed cache misses each time.
+  // Attachments never change once stored, so they cache under their id instead.
+  return { uri, cacheKey: `attachment:${environmentId}:${attachmentId}` }
+}
+```
+
+```tsx
+<Image source={assetImageSource(environmentId, attachment.id, uri)} cachePolicy="memory-disk" />
+```
+
+Two constraints make the key trustworthy. It includes the environment so the same id in two remote environments cannot collide, and it is only used for content that is immutable once stored - a cache key this stable must never be pointed at something that can change under the same id. For anything mutable, keep the URL in the key or add a version. Attachments qualify. Avatars and generated previews usually do not.

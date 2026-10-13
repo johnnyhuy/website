@@ -1,0 +1,40 @@
+---
+title: Dash Guards Must Not Validate Opaque Digests
+summary: |
+  A repository whose remote fingerprint starts with `-` fails every fetch, pull, push and sync with "Invalid Git network operation request", and no retry or restart changes it. A validator written to stop CLI-argument injection was reused to check an opaque base64url digest, and those begin with `-` about one time in 64. Keep the dash guard for values that become arguments and validate digests for control characters only.
+date: '2026-10-13 15:15:00 +1000'
+tags:
+  - Gotcha
+  - API Design
+  - Git
+draft: false
+icon: Bug
+---
+
+The failure is deterministic and it is per remote. Every git network operation on one repository dies with the toast `Invalid Git network operation request`, the server log names `remote fingerprint is invalid`, and nothing is registered - the request is rejected during validation, before the operation exists ([openchamber issue #4831](https://github.com/openchamber/openchamber/issues/4831), the same root cause as #4466, fixed in [PR #4475](https://github.com/openchamber/openchamber/pull/4475)).
+
+## Why it happens
+
+The endpoint fingerprint is a base64url SHA-256 digest. Base64url includes `-` in its alphabet, so a digest starts with `-` roughly one time in 64. About one remote in sixty-four is therefore permanently broken, which is exactly the frequency that survives testing and lands on a user.
+
+The validator rejecting it was a `requiredString` helper whose leading-`-` check exists to stop a value being read as a CLI argument later. That is a good guard for anything that reaches a command line. Applied to an opaque identifier it is nonsense - a fingerprint is compared, never executed - but the helper was shared, so the injection guard silently became a digest format rule. The same helper also covered submodule and LFS auxiliary fingerprints, so those broke the same way.
+
+## The fix
+
+Split the two concerns. The dash guard stays on anything that can become an argument, and digests get their own check:
+
+```js
+function requiredString(value, name) {
+  // This value may become a CLI argument - a leading dash would be read as a flag.
+  if (value.startsWith("-") || /[\0\r\n]/.test(value)) throw new Error(`${name} is invalid`)
+  return value
+}
+
+function parseDigest(value, name) {
+  // Opaque server-generated digest - compared, never executed. Reject only control characters.
+  if (typeof value !== "string" || /[\0\r\n]/.test(value)) throw new Error(`${name} is invalid`)
+  return value
+}
+```
+
+Then audit what each caller actually does with the value. The tell is a validator that knows about dashes but not about the format of what it is validating. Argument injection is about where a value is headed, not what it looks like, so the check belongs at the boundary where a value becomes an argument - not on every string that enters the system.
