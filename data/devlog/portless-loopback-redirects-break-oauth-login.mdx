@@ -1,0 +1,38 @@
+---
+title: Portless Loopback Redirects Break OAuth Login
+summary: |
+  An OAuth login that succeeds in the browser and then dies at the code exchange with "Existing OAuth client information is required" has usually lost its client registration to an exact redirect URI match. Servers normalise loopback redirects without a port while the client binds an ephemeral one. Match loopback redirects on host and path, and keep exact matching for remote URIs.
+date: '2026-10-13 23:37:00 +1000'
+tags:
+  - Gotcha
+  - Security
+  - Web
+draft: false
+icon: Bug
+---
+
+The browser round trip works. The consent screen is approved, the page says "Authorization received", and the CLI then fails the token step with:
+
+```
+Existing OAuth client information is required when exchanging an authorization code
+```
+
+No credentials are saved and a retry repeats the whole dance for the same result. It reproduces against OAuth servers that register loopback redirect URIs without a port - Dropbox's MCP endpoint being the case that surfaced it ([openclaw issue #170848](https://github.com/openclaw/openclaw/issues/170848), fixed in [PR #170876](https://github.com/openclaw/openclaw/pull/170876)).
+
+## Why it happens
+
+The client binds a redirect like `http://127.0.0.1:8989/oauth/callback`. At dynamic client registration the server normalises loopback URIs and stores them without a port - `http://127.0.0.1/oauth/callback`. When the client later loads its stored registration it keeps it only if the registered `redirect_uris` contain the exact redirect URL. The exact match fails, the client registration is discarded, and the authorization code then arrives with no client to exchange it against. The port is not part of a loopback identity - it is ephemeral by design - so the check rejects the only registration it has.
+
+## The fix
+
+Compare loopback redirects on host and path, ignoring the port, and keep strict comparison for remote URIs where the port genuinely is part of the identity:
+
+```js
+const loopbackHosts = ["127.0.0.1", "localhost", "::1"]
+const matches = (registered, actual) =>
+  loopbackHosts.includes(actual.hostname)
+    ? registered.hostname === actual.hostname && registered.pathname === actual.pathname
+    : registered.href === actual.href
+```
+
+What to do if you are debugging one: when a login fails only at the code exchange, immediately after a successful browser round trip, look at redirect URI equality and at whether the stored client survived to the exchange step. The token endpoint is rarely the culprit - it is being asked to exchange a code with credentials the client has already thrown away.

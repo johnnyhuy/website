@@ -1,0 +1,32 @@
+---
+title: Stress Tests Need a Drain Between Phases
+summary: |
+  A thousand-write stress test that times out only in the full suite, and passes alone in a second, is usually measuring the scheduler rather than the observer. Writes and deletions fired back to back let delete notices land while earlier classifications are still queued, so the assertions wait for events that never arrive. Drain active work between phases inside the test.
+date: '2026-10-13 23:34:00 +1000'
+tags:
+  - Testing
+  - Gotcha
+  - Node.js
+draft: false
+icon: Workflow
+---
+
+The test is `observes a thousand concurrent writes and remains healthy after delete and rename churn`, and it is a liar about where the bug is. Run the file alone and all thirteen tests pass in about a second. Run the full server unit suite on Linux and the same test eats its whole 90-second budget while thousands of unrelated tests pass ([paseo issue #6563](https://github.com/getpaseo/paseo/issues/6563), repaired in [PR #6785](https://github.com/getpaseo/paseo/pull/6785)).
+
+Temporary diagnostics narrowed the stall to deletion delivery. All writes were observed, but several delete notices were missing afterwards, with no pending observer work and no recorded observer failure - the events were simply never seen.
+
+## Why it happens
+
+The test fires its write phase and then its delete phase without letting the pipeline between them settle. Classifications and deliveries run queued behind the writes, and under a full suite - less CPU, more contention - the deletes start while earlier work is still in flight. Assertions that expect every deletion to be observable then wait on events that were superseded before they were delivered. The failure scales with machine load, which is exactly why it hides in CI and dies in a full run.
+
+## The fix
+
+Inside the test, drain the pipeline between phases. The repair drains active classifications and queued deliveries after the writes and before the deletes, keeping every deletion assertion and all stress counts intact:
+
+```js
+await writePhase()
+await drainObserver() // classifications and deliveries finish before anything is deleted
+await deletePhase()
+```
+
+The wider rule: a concurrency stress test that mixes phases owns the synchronisation between them. If phase two asserts on events from phase one, put an explicit drain at the boundary. Otherwise the test measures how busy the runner is, and the first thing it burns is an afternoon of someone diagnosing the production code it was supposed to protect.

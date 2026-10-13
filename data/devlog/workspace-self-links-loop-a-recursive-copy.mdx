@@ -1,0 +1,36 @@
+---
+title: Workspace Self-Links Loop a Recursive Copy
+summary: |
+  An updater that stages a candidate copy of a pnpm workspace on Windows dies with `cp returned EINVAL` and a tree nested a dozen `node_modules` deep, because each extension's `node_modules/openclaw` is a junction back to the checkout root and the copy follows it into itself. Copy links as links instead of walking them, and restart the previous build when staging fails before anything is replaced.
+date: '2026-10-13 23:28:00 +1000'
+tags:
+  - Windows
+  - Monorepos
+  - Gotcha
+draft: false
+icon: Package
+---
+
+Run the git-source updater on Windows and the staging step dies partway through the candidate copy:
+
+```
+cp returned EINVAL
+candidate\extensions\buzz\node_modules\openclaw\dist\extensions\buzz\node_modules\...
+```
+
+The staged tree has expanded the workspace into itself until a path limit trips, and the cleanup then fails too with "Filename too long" style errors from the same depth. Worse, the failure is classified restart-unsafe, so the gateway is left stopped even though nothing on disk was actually replaced ([openclaw issue #170700](https://github.com/openclaw/openclaw/issues/170700)).
+
+## Why it happens
+
+A pnpm workspace links its own package into every extension - `extensions/<id>/node_modules/openclaw` is a symlink or junction pointing back at the repository root. That is normal for development. A recursive copy that dereferences links re-enters the root through the first extension's link, copies `dist/` inside it, finds that copy's own `node_modules/openclaw` link, and follows that back to the root again. Each lap grows the path until Windows refuses it.
+
+## The fix
+
+Copy links as links. The staged tree should contain the same junction or the same relative link text, never a resolved copy of what it points at, and the self-link arguably should not be materialised in a staged runtime at all. The same lesson as [copied symlinks that keep pointing at the original](https://github.com/getpaseo/paseo/issues/6768) - a copy routine that resolves links is wrong for any tree that contains workspace links.
+
+```bash
+# while a staged update fails before anything is replaced, the old build still works
+openclaw gateway start
+```
+
+Two smaller rules ride along. A staging failure that changed nothing must restore service rather than leave it stopped - "restart unsafe" is a claim about what was replaced, not about why the copy failed. And if you write a copy helper, decide its link semantics explicitly: preserve, follow, or reject. Silently following is the one that turns a workspace layout into a denial of service on the next update.

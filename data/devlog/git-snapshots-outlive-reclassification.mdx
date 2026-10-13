@@ -1,0 +1,39 @@
+---
+title: Git Snapshots Outlive Reclassification
+summary: |
+  A folder added before `git init` still fails worktree creation with "Create worktree requires a git repository" after the project already reports `kind: git`. A failed earlier attempt cached the non-git answer per working directory and the cache never expires on read, so the classification flips and the snapshot does not. Refresh an existing snapshot whenever a fresh read disagrees with it.
+date: '2026-10-13 23:31:00 +1000'
+tags:
+  - Gotcha
+  - Git
+  - Caching
+draft: false
+icon: Bug
+---
+
+The sequence is small enough to hit by accident. Create a plain folder, register it as a project, try a worktree - rejected, correctly, because there is no repository yet. Then `git init`, commit something, and try again:
+
+```bash
+paseo project ls --json
+# kind: git
+paseo workspace create --isolation worktree --path ~/repro
+# still fails: "Create worktree requires a git repository"
+```
+
+Restarting the app or daemon fixes it, so the state is clearly recoverable - it is just not recovered ([paseo issue #2356](https://github.com/getpaseo/paseo/issues/2356), fixed in [PR #6785](https://github.com/getpaseo/paseo/pull/6785)).
+
+## Why it happens
+
+The failed first attempt is what poisons it. A worktree request reads a per-directory Git snapshot, and that snapshot does not expire on read. After `git init` the project record is reclassified to `kind: git`, but the worktree path resolves the repository root from the cached snapshot, which still says `isGit: false`. The new capability is published before the snapshot backing it has been refreshed - the two views of the same directory disagree and the stale one is the one consulted.
+
+## The fix
+
+A fresh checkout read now refreshes an existing snapshot when its Git classification disagrees with what is on disk, so the same request succeeds after initialization with no restart. Cache reuse is kept for unchanged classifications, which is what makes the cache worth having.
+
+```js
+const snap = readSnapshot(cwd)
+const now = classify(cwd)
+if (snap.git.isGit !== now.isGit) refreshSnapshot(cwd) // the capability changed - the cache is stale
+```
+
+Until you have that, the workaround is a forced refresh - `DaemonClient.checkoutRefresh(cwd)` - or an app restart. The general rule: a cache keyed by path that stores a capability has to be invalidated when the capability changes. A TTL does not help, because the transition is external and invisible to the cache. If a tool reports a project as capable but refuses the capability, assume a stale snapshot before you assume a parser bug.

@@ -1,0 +1,37 @@
+---
+title: Azure DevOps Squash Merges Drop the PR Text
+summary: |
+  A squash merge completed through the Azure DevOps CLI lands as `Merge pull request <id> from ...` with an empty body, so the pull request title and description vanish from branch history. There is no repository setting for a default merge message - pass `--merge-commit-message` explicitly or complete the merge in the web UI where the message is editable.
+date: '2026-10-13 23:40:00 +1000'
+tags:
+  - Git
+  - Gotcha
+  - CLI
+draft: false
+icon: Bug
+---
+
+Link a pull request with a real title and description, press merge, and inspect the commit that lands on the target branch. The subject is `Merge pull request <id> from <source> into <target>` and the body is empty - everything written into the pull request is gone from the history it was meant to document ([t3code issue #19017](https://github.com/pingdotgg/t3code/issues/19017)).
+
+## Why it happens
+
+The completion goes through the host CLI:
+
+```bash
+az repos pr update --id <id> --status completed --squash true --output json
+```
+
+No `--merge-commit-message` is passed, so Azure DevOps generates its own text. Unlike GitHub, whose default merge message already carries the pull request title and body, Azure DevOps has no repository setting for a default merge message - its generic line is all you get.
+
+## The fix
+
+Set the message yourself when the host offers a flag for it. Either complete the pull request in the Azure DevOps web UI, where the completion dialog lets you edit the message before confirming, or store the completion options ahead of time:
+
+```bash
+az repos pr update --id <id> --squash true \
+  --merge-commit-message "Merged PR <id>: <title>
+
+<description>"
+```
+
+What to do more generally: when a tool completes a merge through a host CLI, the host's default message becomes your permanent history. Check what the host generates before you trust it with the only copy of why the change exists, and pass the message explicitly whenever the flag exists.

@@ -1,0 +1,38 @@
+---
+title: Reflink Clones Fail With EIO on ZFS
+summary: |
+  A gateway that will not start after a container reboot, with `native file copy failed (code=EIO)` in every snapshot and doctor call, usually means the copy fast path tried a reflink clone on a filesystem that refuses clones with EIO. A fallback list that only knows ENOTSUP and EXDEV turns a recoverable copy failure into a startup failure. Treat EIO and EAGAIN from the clone as "no reflink here" and fall back to a guarded byte copy.
+date: '2026-10-13 23:25:00 +1000'
+tags:
+  - Gotcha
+  - Linux
+  - Filesystem
+draft: false
+icon: Bug
+---
+
+The service reads its database through a private snapshot, and the snapshot is taken with a native file copy. On a ZFS root the copy dies and everything downstream dies with it - `openclaw doctor --fix` aborts with `SQLite read-only worker failed while creating its private snapshot: native file copy failed (code=EIO)`, plain config writes fail the same way, and after a container reboot the gateway retries the snapshot about a dozen times and exits before systemd gives up ([openclaw issue #169071](https://github.com/openclaw/openclaw/issues/169071), fixed in [PR #170812](https://github.com/openclaw/openclaw/pull/170812) picking up [fs-safe PR #972](https://github.com/openclaw/fs-safe/pull/972)).
+
+A second signature shows up in plugin loading: `guarded synchronous file copy failed | FICLONE: Resource temporarily unavailable (os error 11) | EIO`.
+
+## Why it happens
+
+The copy helper tries a reflink clone first - one ioctl, no data copied, ideal for snapshotting a database file. If the filesystem cannot clone, it is supposed to fall back to an ordinary byte copy. The fallback list looked like this:
+
+```js
+if (["ENOTSUP", "EOPNOTSUPP", "ENOSYS", "EXDEV"].includes(err.code)) byteCopy()
+else throw err
+```
+
+ZFS answers a FICLONE clone with EIO, and transiently with EAGAIN, neither of which is on that list. So the exact case the fallback exists for - a filesystem that simply has no clones - is read as a hard I/O error and the copy aborts.
+
+## The fix
+
+Answered in the copy layer, not in each caller. A refused or momentarily unavailable clone now falls back to a guarded byte copy, while a genuine transfer failure or failed cleanup still throws ([fs-safe 0.26.3](https://github.com/openclaw/fs-safe/pull/972)):
+
+```js
+// the clone is an optimisation - any "the filesystem said no" should reach the byte copy
+const CLONE_FALLBACK = ["ENOTSUP", "EOPNOTSUPP", "ENOSYS", "EXDEV", "EIO", "EAGAIN"]
+```
+
+The wider rule: a fast path with a slow fallback owns the decision of what counts as unavailable. Error-code allowlists are compatibility surfaces - when a new filesystem answers with an errno nobody expected, the failure should land in the fallback, not in the caller. If you see a copy or clone failure on a filesystem that is healthy for ordinary writes, check the fallback list before you suspect the disk.
