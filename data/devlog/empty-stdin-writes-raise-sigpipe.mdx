@@ -1,0 +1,34 @@
+---
+title: Empty Stdin Writes Raise SIGPIPE
+summary: |
+  A health check that exits 141 with no output, intermittently, is usually SIGPIPE from writing to a probe that already exited - a zero-byte payload is still a write, and on a short-lived `--version` child it lands on a closed pipe. Give a probe that reads nothing no stdin at all.
+date: '2026-10-14 08:10:00 +1000'
+tags:
+  - Node.js
+  - Processes
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+A diagnostics command that prints a JSON report fails about one run in thirteen: `exit 141`, empty stdout, no error text. Run it again and it passes, so the first instinct is flaky hardware ([openclaw#171169](https://github.com/openclaw/openclaw/issues/171169)). It is a race in the version probe.
+
+## Why it happens
+
+The check spawns a short-lived child like `codex --version` with `input: ""`. The probe parses its flag and exits without ever reading stdin. When the child wins the race and closes the pipe first, the empty write returns `EPIPE`, the resulting `SIGPIPE` takes the whole CLI down before it prints anything, and the shell reports 141 (128 + 13). Whether the child or the write lands first depends on event-loop interleaving, so a multi-plugin config under CPU load fails a few percent of the time and a quiet run proves nothing.
+
+## The fix
+
+Do not create or write an input pipe for a command that reads nothing ([PR #171248](https://github.com/openclaw/openclaw/pull/171248)):
+
+```ts
+// wrong - the probe never reads stdin, so this write can race its exit
+run('codex', ['--version'], { input: '' })
+
+// no input pipe, nothing to race
+run('codex', ['--version'])
+```
+
+If a child genuinely takes input, expect `EPIPE` on the write and treat it as the child having exited early rather than a fatal transport error. And when testing for a race like this, use a fixture executable that closes stdin immediately - waiting for the real frequency makes the regression invisible in CI.
+
+The general rule: an empty payload is still a write. A probe that reads nothing gets no stdin, and a CLI that must survive short-lived children decides its own exit behaviour on `EPIPE` instead of letting `SIGPIPE` choose.

@@ -1,0 +1,30 @@
+---
+title: Probe Timeouts Must Scale With RTT
+summary: |
+  A readiness probe that times each request at one second loses every attempt on a high-latency link - even a generous overall budget cannot save probes that keep getting cut off just before the answer arrives. Size per-request timeouts from the measured round trip, and never let a staleness check sit near the link RTT.
+date: '2026-10-14 08:30:00 +1000'
+tags:
+  - Networking
+  - Timeouts
+  - Gotcha
+draft: false
+icon: RefreshCw
+---
+
+Reconnect to a remote host over a high-latency link and the app reports `Timed out waiting 20000ms for backend readiness` even though `ssh` to the same host works and the remote server answers locally in about a millisecond ([pingdotgg/t3code#19123](https://github.com/pingdotgg/t3code/issues/19123)).
+
+## Why it happens
+
+The client was on a phone hotspot relayed through a distant relay - 470 to 620 ms round trip, about 6 s for an SSH command, 1.08 to 1.67 s for a forwarded request. The readiness wait has a generous 20 s budget, but each probe request inside it is capped at a fixed 1 s. All 69 probes were cut off just before their answer arrived and the budget ran out. The same 1 s probe inside a 2 s window also decides whether an existing tunnel is stale, so on that link a healthy tunnel gets torn down on every reconnect attempt.
+
+## What to do
+
+Size the per-request timeout from the link, not from the data centre. A probe on a remote connection wants a timeout of several round trips:
+
+```ts
+const probeTimeoutMs = Math.max(1000, smoothedRttMs * 4)
+```
+
+Track a smoothed RTT from completed requests and raise the timeout as it climbs. Keep the overall budget for giving up entirely, and give the staleness check the same latency-aware timeout - a detector whose window is comparable to the RTT will always read a slow reply as a dead tunnel. Where the UI can, distinguish a slow link from a server that is down, because they need different fixes.
+
+The general rule: a fixed per-request timeout inside a larger budget is still a fixed per-request timeout. On a link where the answer takes longer than the cap, every attempt fails and the generous budget buys nothing.

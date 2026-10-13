@@ -1,0 +1,32 @@
+---
+title: Session Rewinds Look in the Default Config Directory
+summary: |
+  Rewind failing with "session not found" while chat works fine means the fork reads transcripts from the default config directory and the agent wrote them elsewhere - a provider env var can relocate the session store without the fork helper ever seeing it. Pass the store path explicitly instead of letting the library guess.
+date: '2026-10-14 08:25:00 +1000'
+tags:
+  - Claude
+  - Sessions
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+On a Claude provider whose `env` sets a custom `CLAUDE_CONFIG_DIR`, rewinding the conversation to an earlier message fails with `Session <id> not found` and leaves the conversation untouched, while normal turns work all along ([getpaseo/paseo#6321](https://github.com/getpaseo/paseo/issues/6321)).
+
+## Why it happens
+
+Rewind forks the session through the Claude Agent SDK's `forkSession`. The fork runs in the daemon and looks for the transcript under the daemon's own `CLAUDE_CONFIG_DIR` or `~/.claude`. The provider's variable only reaches the Claude Code process, which wrote the transcript under the custom directory. Same machine, two different session stores, and the fork reads the one with nothing in it.
+
+## The fix
+
+Hand the fork an explicit session store pointing at the folder the agent already resolved with the provider's config dir ([PR #6325](https://github.com/getpaseo/paseo/pull/6325)):
+
+```ts
+await forkSession(sessionId, {
+  sessionStore: storeAt(resolveConfigDir(providerEnv))
+})
+```
+
+The SDK still does the slicing, re-keying and title work. The store only decides where the transcript is read from and where the fork is written - the same folder Claude Code used. One boundary worth knowing: a wrapper launcher that sets `CLAUDE_CONFIG_DIR` inside its own process is invisible to both the daemon and the provider env, and no store fix can see it either.
+
+The general rule: when the location of state is configurable through an environment variable, every later reader of that state gets told the path explicitly. A helper library that falls back to the default is right up until the day the config dir moves.

@@ -1,0 +1,32 @@
+---
+title: System Role Updates Break Replayed History
+summary: |
+  A second tool-using turn in the same session rejected with a 400 about role placement means the replayed history carries system-role updates in an illegal position - the Messages API only accepts them in specific slots. Re-validate role ordering on every rebuild and anchor stray updates behind a user turn.
+date: '2026-10-14 08:20:00 +1000'
+tags:
+  - Anthropic
+  - Message History
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+The first consult in a session answers fine. The second is rejected before the model runs - `messages.4: role 'system' must follow a 'user' message or an 'assistant' message ending in a server tool result` - and every later request in that session fails the same way until a fresh one ([openclaw#171227](https://github.com/openclaw/openclaw/issues/171227)).
+
+## Why it happens
+
+The replay path rebuilt the request from stored history while dropping the generated user prompt but keeping the system updates that landed alongside it. The result starts with, or continues into, a system-role message in a position the [Messages contract](https://platform.claude.com/docs/en/build-with-claude/mid-conversation-system-messages) does not allow - the top-level `system` parameter is for the initial prompt only. Nothing in the stored transcript is invalid. The wire order is.
+
+## The fix
+
+Insert a neutral user anchor before any retained system update that would lead the messages or follow an assistant message ([PR #171267](https://github.com/openclaw/openclaw/pull/171267)):
+
+```ts
+if (isFirst || previous.role === 'assistant') {
+  messages.splice(i, 0, { role: 'user', content: '.' })
+}
+```
+
+The update keeps its content, order and lifetime at a valid wire position. Dropping the updates instead is tempting and wrong - a prompt owner advances its rendered checkpoint and does not re-emit unchanged sections, so the drop silently loses persistent instruction changes. Cleared turn-scoped messages also have to remain verbatim in history.
+
+The general rule: a stored transcript is not a wire format. Anything that replays history to a chat API re-validates role ordering on every rebuild, because the history that was valid when it was written is not the request you are about to send.

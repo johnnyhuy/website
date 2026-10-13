@@ -1,0 +1,33 @@
+---
+title: Large Downloads Need Ranged Resume
+summary: |
+  A big archive that fails at a different offset on every attempt, with a generic download error, is a single whole-object GET with nowhere to resume to - one mid-stream reset discards everything already fetched. Read sequential ranges, resume each at the bytes already delivered, and pin every GET to the object's ETag.
+date: '2026-10-14 08:15:00 +1000'
+tags:
+  - Cloud Storage
+  - Reliability
+  - Gotcha
+draft: false
+icon: RefreshCw
+---
+
+Verify or restore a 49 GB offsite backup and the download dies 10 to 21 minutes in with `R2 download failed; check the bucket settings, credentials, and connection`. Retry and it fails at a different offset - 29.7 GB here, 33 GB there - while credentials, disk space and the object itself are all fine ([openclaw#171165](https://github.com/openclaw/openclaw/issues/171165)).
+
+## Why it happens
+
+The backend issues one `GetObjectCommand` for the whole object and pipes it to a scratch file. A mid-stream connection reset throws away everything already downloaded, and the error path drops the cause for anything that is not a service exception, so the message blames the bucket. Retrying restarts from byte zero, which is why retrying never helps.
+
+## The fix
+
+Read sequential ranges, resume each interrupted range at the bytes already delivered, and pin object identity ([PR #171292](https://github.com/openclaw/openclaw/pull/171292)):
+
+```ts
+// 64 MiB ranges, matching the multipart upload size
+for (let offset = 0; offset < size; offset += PART_BYTES) {
+  await getRange({ start: offset, end: offset + PART_BYTES - 1, ifMatch: etag, retries: 8 })
+}
+```
+
+Two details that matter. Pin every GET to the ETag from the initial HEAD with `If-Match`, so an object that changes under you stops the download instead of splicing two versions into one archive. And keep the resume logic below any decryption, so integrity checks still see one uninterrupted byte stream. Final errors should carry the bytes downloaded, the next offset, and the transport code.
+
+The general rule: anything large enough that a reset mid-transfer is likely needs resumable ranged reads. A whole-object download has no resume point, so its only failure mode is starting over.

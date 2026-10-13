@@ -1,0 +1,27 @@
+---
+title: Verification Code Autofill Needs an Opt-Out
+summary: |
+  A popup offering the code from your last Messages or Mail thread above an app's plain text inputs is macOS 26 system autofill, not the app - it offers recent verification codes in any focused field unless the bundle opts out. Set NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac to true and codes only appear where they are expected.
+date: '2026-10-14 08:05:00 +1000'
+tags:
+  - macOS
+  - Desktop
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+Type into a desktop app's composer on macOS 26 and a popup offers the verification code from the latest Messages or Mail thread - in a field that has nothing to do with signing in ([pingdotgg/t3code PR #19118](https://github.com/pingdotgg/t3code/pull/19118)). The app is not doing this. macOS 26 and later offer recent verification codes in any focused text field by default, so every unmarked input in a bundled app gets the suggestion, including text fields inside an embedded web view.
+
+## The fix
+
+Opt out in the bundle's `Info.plist` so suggestions stay in fields explicitly marked for one-time codes:
+
+```xml
+<key>NSAutoFillRequiresTextContentTypeForOneTimeCodeOnMac</key>
+<true/>
+```
+
+Apple documents the key [here](https://developer.apple.com/documentation/bundleresources/information-property-list/nsautofillrequirestextcontenttypeforonetimecodeonmac). It has to be present in packaged builds and in local desktop launchers alike, and bumping the launcher version forces cached bundles to rebuild with the setting - without that, a fix that is present in the repo still reproduces from the cached copy. The suggestion is system-level, so it also shows over web pages in an embedded browser panel and patching the web content will not help. Reproducing it needs a machine with Messages signed in, which is worth knowing before testing the fix.
+
+The general rule: system autofill reads what a field claims to be. An unmarked text input is fair game for every suggestion service on the machine, so a desktop wrapper around web content either labels its fields or opts out at the bundle level.
