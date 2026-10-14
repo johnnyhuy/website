@@ -92,6 +92,11 @@ canonicalUrl: string
 2. ContentLayer processes them automatically during `pnpm dev`
 3. TypeScript types are generated for all content
 
+**Publishing**: Raise a PR and review it. Then, per surface:
+- `data/blog/` - stop at review. Never merge, never enable automerge. A human publishes blog posts.
+- `data/devlog/` - review and merge. The `4h devlog sweep` schedule owns this surface and merges its own PRs.
+- Anything else - stop at review.
+
 **Styling**: Minimal industrial design system (flat hairlines, sharp corners, IBM Plex Mono labels). Follow the conventions in `.agents/skills/site-conventions/SKILL.md` for any page or component work.
 
 **Site Archive**: Frozen snapshots of past designs live in `public/archive/` and are served as-is. See `.agents/skills/archive-snapshots/SKILL.md` before adding a new snapshot.

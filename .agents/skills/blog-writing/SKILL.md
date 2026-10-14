@@ -203,6 +203,8 @@ Before committing:
 
 ## Commit Process
 
+Open a PR, review it, and stop. Never merge a blog post yourself, never enable automerge - a human publishes blog posts. Drafts may sit unmerged indefinitely.
+
 Backdate commits to match the note date or natural writing date.
 
 ```bash
