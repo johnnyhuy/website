@@ -1,0 +1,32 @@
+---
+title: OpenChamber 2.3.2 Adds Project Knowledge for Agents
+summary: |
+  A patch release that hands agents a tool for the project's notes, todos and plans, adds .deb and .rpm Linux packages, and quietly fixes config writes that could leave a file truncated mid-save. If project notes have been living outside the chat because agents could not see them, this is the release that moves them into the session.
+date: '2026-10-15 09:45:00 +1000'
+tags:
+  - OpenChamber
+  - Release Notes
+  - Agents
+draft: false
+icon: Package
+---
+
+[OpenChamber v2.3.2](https://github.com/openchamber/openchamber/releases/tag/v2.3.2) is a patch release that gives agents their own tool for the project's notes, todos and plans, plus Linux packages and a batch of fixes that used to bite at the worst times.
+
+## What changed for you
+
+Project knowledge is the headline. Agents read and change the project's notes, todos and plans through their own tool, switched on in Settings next to memory. A plan an agent writes opens straight into the Project knowledge panel, so the artefact lands where you will look for it instead of scrolling away in chat history. The panel itself picked up tabs and search in its header, one shared add field across notes, todos and plans, Markdown formatting preserved while editing, and a five-second undo on deletes.
+
+Linux gets proper packages. The .deb and .rpm builds for x64 and arm64 sit next to the AppImage, register in the app menu with an icon, and update from inside the app once the system prompts for your password. No more replacing an AppImage by hand.
+
+Links to issues, pull requests and merge requests from GitHub, GitLab and Linear now open on the issues board next to the session. On desktop, a new "Open links in the built-in browser" setting routes everything else into the browser panel.
+
+## The quieter fixes worth knowing
+
+Config writes are now atomic. The OpenCode config file is replaced in one step, so a crash can no longer leave a half-written file behind for the next start to trip over. Agent and command files save the same way, a symlinked config keeps pointing into your dotfiles, and a read-only config stays untouched. If you have ever chased a mysteriously truncated config after a bad shutdown, that is the fix.
+
+Agent settings got honest failure modes. A yes/no tool setting sent as text, such as `returnResult` or `goal`, now fails with a message naming the bad value so the agent can retry. It used to quietly do the opposite of what you asked.
+
+## What to do
+
+Update in-app or grab the packages from the [v2.3.2 release](https://github.com/openchamber/openchamber/releases/tag/v2.3.2). Turn on project knowledge in Settings next to memory if you want agents working against the same notes and plans you are. If you are upgrading from further back, 2.3.0 and 2.3.1 landed earlier the same week with movable panels, mirrored Arabic and Hebrew layouts, and iOS Shortcuts session starts.
