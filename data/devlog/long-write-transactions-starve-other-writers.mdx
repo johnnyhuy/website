@@ -1,0 +1,28 @@
+---
+title: Long Write Transactions Starve Every Other Writer
+summary: |
+  A cron tick logging "database is locked" while an update runs is one write transaction holding SQLite's single writer across a wait - 14 seconds of commit admission inside a BEGIN starves every other writer past its own lock timeout. Do the waiting before BEGIN and bound whatever remains before COMMIT.
+date: '2026-10-14 12:25:00 +1000'
+tags:
+  - Gotcha
+  - SQLite
+  - Concurrency
+draft: false
+icon: Bug
+---
+
+While an updater validates its candidate state, the serving application's cron reservation fails with `database is locked` after its five-second lock wait, and scheduled secret-store cleanup fails the same way a minute later ([openclaw issue #169260](https://github.com/openclaw/openclaw/issues/169260)). The log names the culprit - one `update.run` transaction held SQLite's writer for 14.3 seconds, and every other write in the process queued behind it.
+
+## Why it happens
+
+SQLite allows exactly one writer at a time. The transaction did its planning and host admission while already inside `BEGIN IMMEDIATE`, then waited on a busy machine before `COMMIT` with the writer lock still held - an unbounded wait inside the critical section. Every other writer pays for it and gives up when its own lock timeout expires ([PR #171493](https://github.com/openclaw/openclaw/pull/171493)).
+
+## The fix
+
+Move the waiting out of the transaction and bound what remains inside it:
+
+1. Finish any slow planning, validation or remote admission before `BEGIN`.
+2. Give the final commit admission a timeout - one second here, not open-ended.
+3. On failure, retry only a confirmed rollback, inside the same worker command, so later writes cannot overtake the retry.
+
+With the wait bounded, the writer is released inside the admission window and the affected cron and cleanup writes stopped timing out. The general rule - a write transaction is a lock-holding critical section. Keep it short and synchronous, and treat every wait inside it as downtime for every other writer in the process.

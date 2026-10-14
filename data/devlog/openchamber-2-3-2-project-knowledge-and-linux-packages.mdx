@@ -1,0 +1,26 @@
+---
+title: OpenChamber 2.3.2 Gives Agents Project Knowledge and Ships Linux Packages
+summary: |
+  The minor after the mobile patch hands agents a tool of their own for the project's notes, todos and plans, and finally replaces the AppImage-only Linux story with .deb and .rpm packages that update in-app. Config saves are atomic and a release only appears once every platform build is up, so update if auto-update has ever put an Apple Silicon Mac on the Intel build.
+date: '2026-10-14 12:05:00 +1000'
+tags:
+  - Releases
+  - OpenChamber
+  - Upgrades
+draft: false
+icon: Package
+---
+
+The [OpenChamber v2.3.2 release notes](https://github.com/openchamber/openchamber/releases/tag/v2.3.2) open on a feature aimed at agents rather than people - Project knowledge, a tool that lets an agent read and change the project's notes, todos and plans the same way it uses memory. It is switched on in Settings next to memory, and a plan an agent shows opens straight into the Project knowledge panel.
+
+## What actually changed for a user
+
+- **Agents get project knowledge.** Notes, todos and plans become something an agent reads and writes with its own tool. The panel keeps tabs and search in its header, entries open in place of the list, notes keep their Markdown while you edit, and a delete can be undone for 5 seconds.
+- **Issue and pull request links open where they belong.** A GitHub, GitLab or Linear link pasted into chat opens on the issues board next to the session. On desktop, "Open links in the built-in browser" routes other links to the browser panel, and Cmd/Ctrl-click still escapes to the system browser.
+- **Linux gets real packages.** .deb and .rpm builds for x64 and arm64 sit next to the AppImage, land in the app menu with their icon, and update from inside the app after the system asks for your password.
+- **Small daily wins** - a collapsed sidebar slides out when the pointer rests on the window edge, Mini Chat opens as a pinned window, images in a reply land where the text puts them, and the diff layout you pick is remembered across the Changes view and chat previews.
+- **Fixes worth the update alone** - the OpenCode config is replaced in one step so a crash cannot leave it half-written and OpenCode never reads a partial file, a release appears only once every platform's build is uploaded so Apple Silicon Macs stop auto-updating onto the Intel build, and a yes/no tool setting sent as text now fails with a message naming the field instead of quietly doing the opposite.
+
+## What to do
+
+Update to 2.3.2 from the app or from the new Linux packages. If you keep notes, todos or plans in OpenChamber and run agents against the project, turn on Project knowledge in Settings - it is the first version where an agent can work on the project's own record instead of only the chat.

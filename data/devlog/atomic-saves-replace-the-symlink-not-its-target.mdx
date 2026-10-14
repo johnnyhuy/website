@@ -1,0 +1,30 @@
+---
+title: Atomic Saves Replace the Symlink Not Its Target
+summary: |
+  A config symlinked out of a dotfiles repo turns into a regular file the first time anything saves it - the rename that makes the save atomic lands on the link itself, so the tracked file never sees the change and the diff shows a deleted symlink. Resolve the real path first and replace the file the link points at.
+date: '2026-10-14 12:10:00 +1000'
+tags:
+  - Gotcha
+  - Filesystem
+  - Config
+draft: false
+icon: Bug
+---
+
+Symlink `~/.paseo/config.json` into a dotfiles repository, change one setting, then check git status. The symlink is gone from the home directory and the tracked file still holds the old value ([paseo issue #5932](https://github.com/getpaseo/paseo/issues/5932)). The save replaced the link with a regular file, so the change landed in the wrong place and the diff shows a deleted symlink next to an untracked config.
+
+## Why it happens
+
+The atomic write helper builds a temporary file beside the target and renames it over the path. That is the right shape for crash safety, but a rename replaces whatever directory entry sits at that path - including a symlink. The link is replaced by the new regular file and the file it pointed at is never written ([PR #6023](https://github.com/getpaseo/paseo/pull/6023)). Anything else saved through the same helper - the terminal agent hook configs such as `settings.json` and `hooks.json` - breaks the same way.
+
+## The fix
+
+Resolve the symlink first and rename over the real target ([PR #6023](https://github.com/getpaseo/paseo/pull/6023)):
+
+```ts
+// resolve the link first, then let the atomic write land on the real file
+const target = fs.realpathSync(configPath)
+writePrivateFileAtomicSync(target, contents)
+```
+
+The link stays where it is, the linked file gets the change, and the dotfiles diff shows only the setting that moved. The wider rule - an atomic rename is not a transparent write. When the destination may be a symlink, decide explicitly whether you mean the link or its target. Most callers mean the target.

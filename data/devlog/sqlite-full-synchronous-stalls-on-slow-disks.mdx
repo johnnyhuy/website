@@ -1,0 +1,30 @@
+---
+title: SQLite FULL Synchronous Stalls a Server on a Slow Disk
+summary: |
+  Clients cycling between Connected and reconnecting while agents run is often the server stuck in uninterruptible I/O wait - the default synchronous = FULL fsyncs every commit on the main thread, and when each provider event is its own commit on a disk with 150 ms fsyncs the event loop stops answering. In WAL mode, synchronous = NORMAL fsyncs at checkpoints instead.
+date: '2026-10-14 12:20:00 +1000'
+tags:
+  - Gotcha
+  - Performance
+  - SQLite
+draft: false
+icon: Bug
+---
+
+Several agent sessions run fine for an hour and then the desktop and mobile clients start cycling between Connected and "connect to the environment" ([t3code issue #15707](https://github.com/pingdotgg/t3code/issues/15707)). The server process sits in uninterruptible I/O wait, SQLite transactions stretch to nearly 2 seconds, and the trace is dominated by event-write spans of 40 to 500 ms each. The disk is not dying - it is an HDD under LUKS and btrfs where one fsync averages 156 ms, and the application fsyncs on every commit.
+
+## Why it happens
+
+SQLite runs at the default `synchronous = FULL`, so every commit fsyncs the write-ahead log before it returns, and every provider stream delta is its own transaction. On the main thread of an evented server each fsync pauses the loop - keepalives miss their timeout, the environment endpoint stops answering, and clients report a transient connection error while the agents keep working.
+
+## The fix
+
+Set the pragma with the other connection options ([PR #19205](https://github.com/pingdotgg/t3code/pull/19205)):
+
+```sql
+PRAGMA synchronous = NORMAL;
+```
+
+In WAL mode that fsyncs at checkpoints instead of on every commit. An app crash still loses nothing and the database cannot corrupt - only an OS crash or power loss can roll back commits since the last checkpoint, which is the standard WAL setting. On the affected servers fsync time dropped from 17.6 s to 0.4 s per minute and the reconnects stopped; on the original disk the median commit went from 41.8 ms to 0.05 ms.
+
+What this does not fix - slow reads still stall the same thread. `synchronous = NORMAL` buys back commit latency; anything scanning large tables on the hot path needs to move off the main thread as well.

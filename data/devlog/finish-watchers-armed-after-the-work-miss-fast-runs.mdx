@@ -1,0 +1,34 @@
+---
+title: A Finish Watcher Armed After the Work Misses Fast Runs
+summary: |
+  A create call that promises exactly one finish notification can deliver none at all when the child is fast - the run completes in the window between starting it and arming the watcher, and the notification is lost for good. Arm the watcher before the work starts, not after.
+date: '2026-10-14 12:15:00 +1000'
+tags:
+  - Gotcha
+  - Concurrency
+  - API Design
+draft: false
+icon: Bug
+---
+
+An agent-scoped create with `notifyOnFinish: true` promises the caller exactly one finish notification and tells it to wait rather than poll. A sufficiently fast child delivers nothing - it completes its initial turn before the finish watcher is armed, the completion event has no listener, and the caller waits on a notification that never comes ([paseo issue #5928](https://github.com/getpaseo/paseo/issues/5928)).
+
+## Why it happens
+
+The implementation armed the watcher after starting the initial prompt. A child that finishes between those two steps - a short turn, a warm cache, a fake provider in a test - emits its completion into empty space. The event is not queued, so it is lost permanently and the parent has no way to learn the child is done ([PR #6008](https://github.com/getpaseo/paseo/pull/6008)). Whether it reproduces depends entirely on which side wins the race, so a run that hangs at the end once a week is the same bug as one that never fails in development.
+
+## The fix
+
+Arm the watcher before starting the work:
+
+```ts
+// wrong - the child can finish before the watcher exists
+startTurn(child)
+watchForFinish(child)
+
+// right - the watcher is already listening when the first event lands
+watchForFinish(child)
+startTurn(child)
+```
+
+The regression worth copying does not use sleeps - a fake provider emits `turn_started` and `turn_completed` before `startTurn` returns, so the race is deterministic and fails in CI every time the ordering is wrong ([PR #6008](https://github.com/getpaseo/paseo/pull/6008)). The general rule - when a promise is exactly-one-event, registration must happen before the earliest possible emission. Anything else turns timing into correctness.
