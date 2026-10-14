@@ -1,0 +1,42 @@
+---
+title: IPv6 Only Services Return 502 Through Proxies That Hardcode IPv4
+summary: |
+  A dev service that binds only to ::1 works on localhost but returns 502 through a reverse proxy or workspace URL, because the proxy forces 127.0.0.1 as the upstream address. Try both loopback literals instead of resolving localhost or hardcoding one family.
+date: '2026-10-15 09:40:00 +1000'
+tags:
+  - Networking
+  - Proxy
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+A workspace service binds to `::1` and answers perfectly on `http://[::1]:3000`. Open it through the generated workspace URL and you get `502 Bad Gateway` from the proxy, with no error from the service itself ([getpaseo/paseo#678](https://github.com/getpaseo/paseo/issues/678)).
+
+The service is running. The proxy just cannot reach it.
+
+## Why it happens
+
+The proxy's forwarding and health-check code hardcodes `127.0.0.1` as the upstream address. When the service listens only on `::1`, that IPv4 loopback literal has nothing to connect to. Resolving `localhost` instead does not reliably help either - DNS may return only `127.0.0.1` even when a working IPv6 loopback listener exists.
+
+The confusing part is where the error surfaces. The 502 is manufactured by the proxy, so it lands in the proxy log and in the browser, while the service's own log stays completely quiet. That asymmetry is what sends people debugging a perfectly healthy service when the fault is one address literal away.
+
+## The fix
+
+Try both loopback literals and let the connection succeed on whichever family the service actually bound to:
+
+```js
+const targets = ['127.0.0.1', '::1']
+for (const host of targets) {
+  try {
+    const res = await fetch(`http://[${host}]:${port}${path}`)
+    return res
+  } catch {
+    continue
+  }
+}
+```
+
+Use the same selection logic for health probes so a service that answers on `::1` is not reported as unhealthy. Keep IPv4 as the first candidate to preserve connection pooling behaviour on stacks where both families are available.
+
+The same trap applies to any local reverse proxy, dev tunnel, or port-forwarding tool. If the upstream address is a literal, the service needs to be listening on that exact literal - dual-stack listeners avoid the problem entirely.
