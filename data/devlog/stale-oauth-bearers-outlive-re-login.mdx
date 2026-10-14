@@ -1,0 +1,44 @@
+---
+title: Stale OAuth Bearers Outlive Re-Login In Long-Lived Processes
+summary: |
+  A long-running service that resolved its OAuth bearer once at startup keeps sending the expired token after you re-login, and every call fails with 401 token_expired until the process restarts. A fresh process with the same profile works, and local expiry checks stay green, because the provider invalidated the token server-side while the stored expiry still looks days away.
+date: '2026-10-15 13:33:00 +1000'
+tags:
+  - OAuth
+  - Credentials
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+Embeddings and semantic search in a long-running service start failing with a 401 that nothing seems able to fix:
+
+```
+openai embeddings failed (401): Provided authentication token is expired. [code=token_expired]
+```
+
+You re-login. The login reports success. Nothing changes. You run the same query from a freshly started command-line process with the same profile and it works. The service still fails. Only a restart clears it.
+
+This is [openclaw/openclaw#172156](https://github.com/openclaw/openclaw/issues/172156), and the trap generalises to any client that resolves credentials once and then reuses them forever.
+
+## Why it happens
+
+Two things collide. The provider invalidated the token server-side, so the stored expiry is still days in the future and every local status check keeps reporting that the credential is fine. And the client captured its bearer at construction time, so the re-login writes a fresh profile to disk that the running process never reads. The in-memory headers are the old token until the process dies.
+
+That combination is what makes it hard to diagnose. The health check reports all clear, the login succeeds, and only one process is affected - which sends you looking at the account instead of at the client.
+
+## The fix
+
+Do not capture a bearer once. Resolve credentials at dispatch time through whatever owns the profile, and when a request comes back `token_expired`, release that response, refresh once, and retry the request once. That is what [PR #172237](https://github.com/openclaw/openclaw/pull/172237) does for the embedding client - it resolves OAuth through the same auth-profile owner as model requests before each HTTP dispatch and retries once on an expired-token response. Retry nothing else. Any other auth failure is a real failure.
+
+```js
+// the shape, not the library
+const res = await send(withBearer(await auth.current()))
+if (res.status === 401 && isTokenExpired(res)) {
+  return send(withBearer(await auth.refresh()))
+}
+```
+
+If you are hitting this today in a client you cannot patch, restarting the service after the re-login is the only way the new token lands.
+
+One more thing worth stealing. A credential check that only compares the local expiry date cannot see a server-side invalidation. The check was green the whole time here. If your monitoring asserts freshness that way, it is measuring the wrong thing.
