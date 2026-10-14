@@ -1,0 +1,26 @@
+---
+title: Window Bounds Rewrites Churn A Symlinked Settings File
+summary: |
+  Keep a settings file in a dotfiles repo and symlink it into the app, and every window move dirties the repo. The file stores preferences and machine-local window state together, and saves write through the symlink. Keep the file unlinked until window state is split out from preferences.
+date: '2026-10-15 14:20:00 +1000'
+tags:
+  - Dotfiles
+  - Desktop Apps
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+Symlink the desktop app's settings file into a dotfiles repo so preferences stay versioned, then move or resize the main window. Check `git diff`. The dotfiles copy changed, and it will change again on every move, resize, maximise and unmaximise, debounced at 500 ms. This is [pingdotgg/t3code#19595](https://github.com/pingdotgg/t3code/issues/19595).
+
+## Why it happens
+
+The settings file holds both things you care to track and things only this machine should know. Preferences like the update channel sit next to `mainWindowBounds` and the maximised flag, and the window handlers write those through the same save path as everything else. Since saves started writing through the symlink, every window event rewrites the tracked target with state that is meaningless everywhere else.
+
+It is not a bug in the symlink handling. The write-through is working. The problem is what gets written.
+
+## What to do
+
+Keep the settings file unlinked. That is the stated workaround until window state is separated from preferences, so a settings file in version control stops picking up machine-local churn.
+
+If you want the preferences tracked anyway, the general rule is to symlink only files whose entire contents are worth versioning. A config that mixes durable preferences with per-machine state, like window geometry, last opened path, device identifiers or cached sizes, will fight you every time the app moves. Split the state out, or leave the file out of the repo and track only the parts you would actually restore on a new machine. The test is simple. If you would not paste a value from the file into your dotfiles on purpose, it does not belong in a tracked file.
