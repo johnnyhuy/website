@@ -92,10 +92,10 @@ canonicalUrl: string
 2. ContentLayer processes them automatically during `pnpm dev`
 3. TypeScript types are generated for all content
 
-**Publishing**: Open a PR, leave the merge to a human.
-- `data/blog/` - create drafts and open PRs. Never merge, never enable automerge.
-- `data/devlog/` - owned by the `4h devlog sweep` Paseo schedule, which reviews against `data/devlog/sweep-status.md` and merges its own PRs.
-- Anything else - open a PR and stop.
+**Publishing**: Raise a PR and review it. Then, per surface:
+- `data/blog/` - stop at review. Never merge, never enable automerge. A human publishes blog posts.
+- `data/devlog/` - review and merge. The `4h devlog sweep` schedule owns this surface and merges its own PRs.
+- Anything else - stop at review.
 
 **Styling**: Minimal industrial design system (flat hairlines, sharp corners, IBM Plex Mono labels). Follow the conventions in `.agents/skills/site-conventions/SKILL.md` for any page or component work.
 
