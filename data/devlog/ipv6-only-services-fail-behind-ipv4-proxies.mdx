@@ -23,13 +23,14 @@ The confusing part is where the error surfaces. The 502 is manufactured by the p
 
 ## The fix
 
-Try both loopback literals and let the connection succeed on whichever family the service actually bound to:
+Try both loopback literals and let the connection succeed on whichever family the service actually bound to. Bracket only the IPv6 literal - `http://[127.0.0.1]:3000` is not a valid URL and throws before any connection is attempted:
 
 ```js
 const targets = ['127.0.0.1', '::1']
 for (const host of targets) {
+  const authority = host.includes(':') ? `[${host}]` : host
   try {
-    const res = await fetch(`http://[${host}]:${port}${path}`)
+    const res = await fetch(`http://${authority}:${port}${path}`)
     return res
   } catch {
     continue

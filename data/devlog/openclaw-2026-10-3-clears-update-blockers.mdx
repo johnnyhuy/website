@@ -1,0 +1,30 @@
+---
+title: OpenClaw 2026.10.3 Clears Update Blockers and Compaction Failures
+summary: |
+  Mostly an update and repair release, and the trap it removes is nasty - an interrupted update could leave a record behind that blocked every later upgrade, with the stuck updater unable to clear it. Recovery comes first now, Doctor repairs keep saved sign-ins and memory files, and conversations no longer die at a compaction boundary.
+date: '2026-10-15 09:50:00 +1000'
+tags:
+  - OpenClaw
+  - Release Notes
+  - Updates
+draft: false
+icon: Package
+---
+
+[OpenClaw 2026.10.3](https://github.com/openclaw/openclaw/releases/tag/v2026.10.3) is a maintenance release - 79 pull requests - and its [changelog](https://github.com/openclaw/openclaw/blob/main/CHANGELOG/2026.10.3.md) reads like a list of ways an upgrade used to strand itself.
+
+## The update trap
+
+An interrupted update could leave a completed update record behind, and that record blocked the next upgrade. The stuck updater could not work around it either, so the fix was never another self-update. This release teaches updates to archive those records and clear eligible leftover recovery work. If you are already blocked, the way out is the manual installation or the recovery first step - the independent recovery helper can preserve the completed record and unblock the original updater.
+
+A related one. An abandoned updater copy can stop the next update entirely. Wait for updater workers to finish, run `openclaw doctor --fix` from the affected installation, then retry, and keep the recovery journal and its permissions intact.
+
+## What else changed for you
+
+Repairs now preserve the things that are painful to lose. Doctor keeps saved sign-ins and memory files during affected repairs, and new recovery copies include older Canvas documents and Memory Core files before migration. If malformed UTF-8 has ever blocked merging `MEMORY.md` and the older `memory.md`, the repair preserves the original bytes.
+
+Conversations survive their own internals. After compaction the next message waits for saved history to become readable instead of failing while it rebuilds, and a ChatGPT reply cut off by a connection close can continue from the saved conversation. The Mac app also connects again in eligible "On this Mac" setups that used to fail with "Gateway rejected auth".
+
+## What to do
+
+If an update is blocked today, recover first and update second - the stuck updater cannot save itself. Follow the recovery steps in the [update guide](https://docs.openclaw.ai/cli/update) rather than retrying the same updater, and keep the recovery journal until the upgrade is through.
