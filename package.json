@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently \"contentlayer2 dev\" \"next dev --turbopack\"",
     "build": "contentlayer2 build && next build",
-    "postbuild": "pnpm generate-sitemap && pnpm generate-rss && pnpm generate-robots && pnpm generate-llms",
+    "postbuild": "pnpm generate-sitemap && pnpm generate-rss && pnpm generate-robots && pnpm generate-llms && pnpm generate-redirects",
     "contentlayer": "contentlayer2 build",
     "start": "next start",
     "lint": "eslint .",
@@ -14,7 +14,8 @@
     "generate-sitemap": "node --no-warnings scripts/generate-sitemap.mjs",
     "generate-rss": "node --no-warnings scripts/rss.mjs",
     "generate-robots": "node --no-warnings scripts/generate-robots.mjs",
-    "generate-llms": "node --no-warnings scripts/generate-llms.mjs"
+    "generate-llms": "node --no-warnings scripts/generate-llms.mjs",
+    "generate-redirects": "node --no-warnings scripts/generate-redirects.mjs"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "^1.4.0",

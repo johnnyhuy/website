@@ -6,12 +6,12 @@ import siteMetadata from '../data/siteMetadata.js'
 const tagData = JSON.parse(
   readFileSync(new URL('../app/tag-data.json', import.meta.url), 'utf8')
 )
-import { allBlogs, allNotes } from '../.contentlayer/generated/index.mjs'
+import { allBlogs, allDevlogs } from '../.contentlayer/generated/index.mjs'
 import { sortPosts } from 'pliny/utils/contentlayer.js'
 
 const outputFolder = process.env.EXPORT ? 'out' : 'public'
 
-// `section` is the URL prefix a doc lives under, so Blog and Notes share one
+// `section` is the URL prefix a doc lives under, so Blog and Devlog share one
 // item builder instead of duplicating the template. `overrides` replaces the
 // channel-level title/description when a surface needs its own identity.
 const generateRssItem = (config, post, section) => `
@@ -26,10 +26,10 @@ const generateRssItem = (config, post, section) => `
   </item>
 `
 
-const NOTES_CHANNEL = {
-  title: 'Johnny - Notes',
+const DEVLOG_CHANNEL = {
+  title: 'Johnny - Devlog',
   description:
-    'Short, self-contained, actionable write-ups. Each note is something a reader could act on, or would otherwise have to rediscover.',
+    'Short, self-contained, actionable write-ups. Each entry is something a reader could act on, or would otherwise have to rediscover.',
 }
 
 const generateRss = (config, posts, page = 'feed.xml', section = 'blog', overrides = {}) => {
@@ -51,7 +51,7 @@ const generateRss = (config, posts, page = 'feed.xml', section = 'blog', overrid
 `
 }
 
-async function generateRSS(config, allBlogs, allNotes) {
+async function generateRSS(config, allBlogs, allDevlogs) {
   const publishPosts = allBlogs.filter((post) => post.draft !== true)
   // RSS for blog post
   if (publishPosts.length > 0) {
@@ -59,13 +59,13 @@ async function generateRSS(config, allBlogs, allNotes) {
     writeFileSync(`./${outputFolder}/feed.xml`, rss)
   }
 
-  // Notes get their own feed at /notes/feed.xml. Deliberately a separate
+  // Devlog entries get their own feed at /devlog/feed.xml. Deliberately a separate
   // feed rather than extra items in the blog one: they are a different
   // cadence and a different reader, and mixing them buries both.
-  const publishNotes = allNotes.filter((note) => note.draft !== true)
-  if (publishNotes.length > 0) {
-    const rss = generateRss(config, sortPosts(publishNotes), 'notes/feed.xml', 'notes', NOTES_CHANNEL)
-    const rssPath = path.join(outputFolder, 'notes')
+  const publishEntries = allDevlogs.filter((entry) => entry.draft !== true)
+  if (publishEntries.length > 0) {
+    const rss = generateRss(config, sortPosts(publishEntries), 'devlog/feed.xml', 'devlog', DEVLOG_CHANNEL)
+    const rssPath = path.join(outputFolder, 'devlog')
     mkdirSync(rssPath, { recursive: true })
     writeFileSync(path.join(rssPath, 'feed.xml'), rss)
   }
@@ -86,7 +86,7 @@ async function generateRSS(config, allBlogs, allNotes) {
 }
 
 const rss = () => {
-  generateRSS(siteMetadata, allBlogs, allNotes)
+  generateRSS(siteMetadata, allBlogs, allDevlogs)
   console.log('RSS feed generated...')
 }
 

@@ -3,33 +3,33 @@
 import { Suspense, useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { X } from 'lucide-react'
-import NoteList from '@/components/note-list'
+import DevlogList from '@/components/devlog-list'
 import type { CoreContent } from 'pliny/utils/contentlayer.js'
-import type { Notes } from 'contentlayer/generated'
+import type { Devlog } from 'contentlayer/generated'
 
-interface NotesIndexProps {
+interface DevlogIndexProps {
   // Body-free rows, computed on the server, for the same reason as
   // components/blog-index.tsx.
-  notes: CoreContent<Notes>[]
+  entries: CoreContent<Devlog>[]
 }
 
-export default function NotesIndex({ notes }: NotesIndexProps) {
+export default function DevlogIndex({ entries }: DevlogIndexProps) {
   return (
     <Suspense>
-      <NotesIndexInner notes={notes} />
+      <DevlogIndexInner entries={entries} />
     </Suspense>
   )
 }
 
-function NotesIndexInner({ notes }: NotesIndexProps) {
+function DevlogIndexInner({ entries }: DevlogIndexProps) {
   const searchParams = useSearchParams()
   const [selectedTags, setSelectedTags] = useState<string[]>(() => {
     const tag = searchParams.get('tag')
     return tag ? [tag] : []
   })
 
-  const filteredNotes = notes.filter((note) => {
-    return selectedTags.length === 0 || selectedTags.some((tag: string) => note.tags.includes(tag))
+  const filtered = entries.filter((entry) => {
+    return selectedTags.length === 0 || selectedTags.some((tag: string) => entry.tags.includes(tag))
   })
 
   const removeTag = (tagToRemove: string) => {
@@ -39,8 +39,8 @@ function NotesIndexInner({ notes }: NotesIndexProps) {
   return (
     <div className="px-6 py-16">
       <div className="mb-3 flex items-baseline justify-between">
-        <h1 className="mono-label">Notes</h1>
-        <span className="mono-label">{filteredNotes.length} notes</span>
+        <h1 className="mono-label">Devlog</h1>
+        <span className="mono-label">{filtered.length} entries</span>
       </div>
       <p className="mb-8 max-w-prose text-sm text-gray-500 dark:text-gray-400">
         Short write-ups of things that cost me time to work out. Each one is something a reader
@@ -68,11 +68,11 @@ function NotesIndexInner({ notes }: NotesIndexProps) {
         </div>
       )}
 
-      {filteredNotes.length > 0 ? (
-        <NoteList notes={filteredNotes} />
+      {filtered.length > 0 ? (
+        <DevlogList entries={filtered} />
       ) : (
         <p className="py-12 text-center font-mono text-sm text-gray-500">
-          No notes found for this filter.
+          No entries found for this filter.
         </p>
       )}
     </div>
