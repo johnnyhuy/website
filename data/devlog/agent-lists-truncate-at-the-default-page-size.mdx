@@ -1,0 +1,41 @@
+---
+title: Agent Lists Truncate at the Default Page Size
+summary: |
+  `paseo agent ls -ag` prints 200 agents and stops, with no hint that more exist, because the command makes a single fetch call and never follows `pageInfo.nextCursor` past the daemon's default page size. Follow the cursor until the daemon reports no next page, and page in a stable `created_at` order so a row that updates mid-listing cannot jump the cursor and vanish.
+date: '2026-10-14 13:25:00 +1000'
+tags:
+  - CLI
+  - Pagination
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+The listing lies by omission. On a daemon holding 270 stored agents, `paseo agent ls -ag --json` returns exactly 200 rows, with no truncation marker - and the same storage reports all 270 once you page it yourself ([getpaseo/paseo#6031](https://github.com/getpaseo/paseo/issues/6031)).
+
+```bash
+paseo agent ls -ag --json | jq 'length'   # 200
+# the daemon holds 270 agents
+```
+
+## Why it happens
+
+The command makes one `fetchAgents` call and reads only the first response. The daemon's default page size is 200, and `pageInfo.nextCursor` on that response points at the rest, which nothing follows. Because the cap is an ordinary page size rather than an error, nothing marks the list as short - every list view with the same shape truncates at the same boundary.
+
+Paging it yourself has a second trap. The daemon's default order is `updated_at`, so an agent that updates while the listing is in flight jumps ahead of the cursor, lands on a page already passed, and is skipped entirely.
+
+## The fix
+
+Follow the cursor until the daemon reports no next page, and page in `created_at` order ([PR #6033](https://github.com/getpaseo/paseo/pull/6033)). The loop `paseo workspace ls` and `paseo agent delete --all` already use the same pattern.
+
+```ts
+const rows = []
+let cursor = undefined
+do {
+  const page = await fetchAgents({ limit: 200, after: cursor, orderBy: 'created_at' })
+  rows.push(...page.rows)
+  cursor = page.pageInfo.nextCursor
+} while (cursor)
+```
+
+Sort the rows client-side before printing. The pagination order only has to be stable, it does not have to be the order the user sees.
