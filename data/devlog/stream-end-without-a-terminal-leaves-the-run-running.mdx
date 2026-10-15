@@ -11,7 +11,7 @@ draft: false
 icon: Bug
 ---
 
-A delegated run stays "running" on its compaction step for six hours and forty-one minutes. The native turn finished in under three minutes. Steering the run fails with
+A delegated run stays marked "running" on a compaction step for six hours and forty-one minutes. The compaction it was stuck on finished in under three minutes and the native turn completed after it, but nothing ever recorded that. Steering the run fails with
 
 ```
 provider turn is not active
@@ -27,7 +27,7 @@ The hole is deterministic - any subscription that ends early, drops or routes wr
 
 ## The fix
 
-Stream end without a terminal marker now raises an ingestion error instead of returning, and the existing failure finalisation does the rest:
+Stream end without a terminal marker now raises an ingestion error instead of returning, and the existing failure finalisation does the rest. The shape of that change
 
 ```js
 for await (const event of subscription) {
