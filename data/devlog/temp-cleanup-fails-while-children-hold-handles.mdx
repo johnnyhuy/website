@@ -1,0 +1,32 @@
+---
+title: Temp Cleanup Fails While Children Hold Handles
+summary: |
+  An installer that validates a runtime and then deletes its temporary profile can report a failure after a perfectly successful run, because the removal hits EBUSY on Windows while spawned children still hold the executable and unpacked DLLs. Kill the process tree before the pipes close and retry the removal, and a green validation stops looking like a disk fault.
+date: '2026-10-16 04:25:00 +1000'
+tags:
+  - Windows
+  - Processes
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+The download and extraction succeed. Validation succeeds. Then the install fails at "Checking the downloaded runtime" with a message telling you to check disk space and directory access, and there is nothing wrong with either. This is [pingdotgg/t3code#18551](https://github.com/pingdotgg/t3code/issues/18551), fixed in [PR #18472](https://github.com/pingdotgg/t3code/pull/18472).
+
+## Why it happens
+
+The validation step runs the runtime from a disposable temporary profile. That runtime is itself a launcher, and its children - a PyInstaller-packaged process here - keep handles on the executable and the unpacked DLLs. Closing the validation wrapper does not wait for those children to exit, so when the installer removes the temporary directory the removal fails with `EBUSY` or `EPERM`. The run is marked failed and the error blames the disk.
+
+Windows is where this bites hardest. A file with open handles cannot be deleted, and the delete fails immediately rather than waiting. A retry loop alone is nearly enough - the children exit on their own shortly after - but the timing window is wide enough to fail a whole install.
+
+## The fix
+
+Terminate the process tree before the wrapper's pipes close, while the launcher still exists for the tree kill to walk, then retry the cleanup:
+
+```bash
+taskkill /T /F /PID <launcher-pid>
+```
+
+The upstream fix does exactly that, and retries disposable-profile removal up to ten times at 100 ms intervals for the `Busy`, `PermissionDenied` and `Unknown` errors that linger while handles drain.
+
+The general shape matters more than the product. Any installer, test harness or sandbox that spawns children out of a temp directory owns their exit before it owns the delete. Join child exit first, remove second, and never let a cleanup failure overstate itself as a corrupt download.

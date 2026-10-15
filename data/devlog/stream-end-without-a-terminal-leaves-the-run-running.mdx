@@ -1,0 +1,41 @@
+---
+title: Stream End Without a Terminal Leaves the Run Running
+summary: |
+  A provider event subscription that ends normally without its terminal event leaves the run marked running forever, because the consumer sees a clean stream end and returns without settling anything. A real run sat on a compaction step for nearly seven hours and later steering failed with "provider turn is not active". Treat a stream that ends without the terminal marker as an ingestion error.
+date: '2026-10-16 04:30:00 +1000'
+tags:
+  - Async
+  - State
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+A delegated run stays marked "running" on a compaction step for six hours and forty-one minutes. The compaction it was stuck on finished in under three minutes and the native turn completed after it, but nothing ever recorded that. Steering the run fails with
+
+```
+provider turn is not active
+```
+
+and restarting the app is what finally clears it. The run never persisted a terminal state because none was ever seen. This is [pingdotgg/t3code#19127](https://github.com/pingdotgg/t3code/issues/19127), fixed in [PR #19131](https://github.com/pingdotgg/t3code/pull/19131).
+
+## Why it happens
+
+In this protocol the turn ends when a terminal event arrives, not when the stream closes. The consumer loop iterates its subscription, and when the subscription ended without that event it closed cleanly and returned. A normal end of stream looked like a normal end of work. Nothing failed the run, the attempt or the run-owned subagents, and the provider thread was never returned to idle, so every later call saw a run that was still current.
+
+The hole is deterministic - any subscription that ends early, drops or routes wrong walks into it - and the symptom is a run that is only dead in the app's mind.
+
+## The fix
+
+Stream end without a terminal marker now raises an ingestion error instead of returning, and the existing failure finalisation does the rest. The shape of that change looks like this:
+
+```js
+for await (const event of subscription) {
+  if (event.type === 'turn.terminal') return finalize(event)
+  ingest(event)
+}
+// without this line the run stays "running" forever
+throw new IngestionError('provider stream ended without a terminal')
+```
+
+The pattern generalises to any job whose completion is an event rather than the end of its stream. A loop that exits normally on stream end has to ask whether the completion marker ever arrived, and fail the job when it did not. Otherwise the cleanest possible failure mode is the worst one - a state machine convinced work is still in progress that nothing will ever finish.
