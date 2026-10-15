@@ -1,0 +1,34 @@
+---
+title: Another Member's Voice State Overwrites Your Discord Connection
+summary: |
+  A Discord voice bot that forwards every voice state update to its voice adapter lets any member's mute, deaf or channel change overwrite the bot's own connection config. Joins time out, the bot comes back self-muted, or it lands in the wrong channel. Forward only the packets whose user_id is the bot's own.
+date: '2026-10-15 12:06:00 +1000'
+tags:
+  - Discord
+  - Voice
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+A Discord voice bot joins fine when the channel is quiet, then breaks as soon as the guild gets busy. Joins abort after the connect timeout, the bot comes back self-muted, or it quietly moves to someone else's channel. Nothing is wrong with the bot's own voice state. It is being overwritten by everyone else's. This is [openclaw/openclaw#172648](https://github.com/openclaw/openclaw/issues/172648), fixed in [PR #172660](https://github.com/openclaw/openclaw/pull/172660).
+
+## Why it happens
+
+The Discord gateway sends a `VOICE_STATE_UPDATE` for every member of the guild - joins, leaves, moves, mutes, deafens. If all of those reach the voice adapter, the adapter contract breaks. `@discordjs/voice` expects only the client's own voice state. Its connection stores the latest packet as the bot's own, so a packet about another member becomes the bot's session identity, its mute and deaf flags, and its channel.
+
+One member toggling mute is enough to make the next join fail. The failure looks like a networking or timeout problem, because the symptom is a join that never completes.
+
+## The fix
+
+Filter before forwarding. Record the bot's user id from the gateway `READY` event and pass on only that member's voice state. Everything that watches other people - rosters, occupancy, follow-user behaviour - keeps receiving the rest.
+
+```js
+if (event.t === 'VOICE_STATE_UPDATE' && event.d.user_id === botUserId) {
+  adapter?.onVoiceStateUpdate?.(event.d)
+}
+```
+
+Voice server updates carry no user id and keep routing by guild, so they are unaffected. Participant rosters and occupancy tracking still see every event. They just no longer reach the connection adapter.
+
+If a Discord voice bot misbehaves only when the channel is busy, look at whose voice state is reaching the connection layer before you blame the network.
