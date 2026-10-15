@@ -22,7 +22,7 @@ Cursor's local SDK requires a paid plan - [confirmed on Cursor's own forum](http
 Sign in with a paid account, or set `CURSOR_API_KEY` from one:
 
 ```bash
-export CURSOR_API_KEY=sk-...
+export CURSOR_API_KEY=<key-from-a-paid-account>
 ```
 
 The wider lesson is worth keeping. When a sign-in reports failure immediately after a successful browser round trip, look at the status code before blaming the token. A `403` that is not `401` is usually the product saying no - a plan, a licence, an enterprise policy - and any client that folds every rejection into "your session expired" will send you chasing credentials that were never the problem. An enterprise account whose identity lookup returns `403` fails through the same path, so the same check applies there. The fix upstream is to surface the plan rejection instead of the generic message ([pingdotgg/t3code#15075](https://github.com/pingdotgg/t3code/issues/15075)).
