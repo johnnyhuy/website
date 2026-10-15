@@ -23,7 +23,7 @@ const key = JSON.stringify([runtimeKey, directory, sessionId])
 
 Move the session to a worktree and its directory changes, so the identity changes with it. On that change the composer saves the outgoing draft under the old directory key and loads the incoming one - which is empty for the new worktree. The typed text is not lost, it is filed under the previous identity where nothing looks for it. Every move path behaves this way.
 
-It is a small cousin of the classic stale-key bug. Any piece of state keyed on a tuple is only findable while every member of the tuple holds still, and a change to any member silently orphans it.
+It is a small cousin of the classic stale-key bug. Any piece of state keyed on a tuple is only findable while every member of the tuple holds still, and a change to any member silently orphans it. The text is never actually lost - it sits in the draft store under the previous identity, which is how the report was traced.
 
 ## The fix
 
