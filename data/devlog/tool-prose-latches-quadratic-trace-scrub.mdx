@@ -1,0 +1,24 @@
+---
+title: Tool Prose Latches a Quadratic Trace Scrub
+summary: |
+  A streamed reply that merely mentions a tool call in ordinary prose stalls the Gateway event loop for seconds, because a substring latch turns the trace scrub on and then re-scans the whole accumulated reply on every delta. The scrub now activates only on bounded trace-line heads - if you write per-delta filters, gate the expensive pass on candidate heads, not substrings.
+date: '2026-10-15 21:05:00 +1000'
+tags:
+  - Streaming
+  - Performance
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+A long streamed reply locks up the process serving it. Measured against 2026.10.3, streaming a reply in the 4-character deltas providers send took 4.3 s of main-thread time at 83 KB, 18.9 s at 166 KB and 85.1 s at 333 KB - roughly four times the cost for every doubling. The reply does not have to contain any internal trace output at all. Ordinary prose that says "tool call" or "function call" is enough to trigger it. This is [openclaw/openclaw#172629](https://github.com/openclaw/openclaw/issues/172629), fixed in [PR #172631](https://github.com/openclaw/openclaw/pull/172631).
+
+## Why it happens
+
+The visible-text projection runs a chain of per-delta filters, and one of them scrubs internal trace lines out of the accumulated reply. Its trigger is a substring match. The moment the reply text contains `tool call` or `function call`, the filter latches on and stays on. From then on every incoming delta re-runs the scrub over the entire accumulated buffer, so the work per delta grows with the reply length and the total cost is quadratic. A prose reply that never mentions those phrases streams at close to the linear rate - the table in the report shows a 67 KB reply finishing in 610 ms while the 83 KB reply that trips the latch takes 4.3 s.
+
+## The fix
+
+[PR #172631](https://github.com/openclaw/openclaw/pull/172631) replaces the substring latch with a bounded check for canonical trace-line heads, so mentioning a tool call in prose no longer switches the rest of the reply into whole-buffer scrubbing. Genuine trace lines still get stripped.
+
+The shape is worth stealing for any streaming filter. If an expensive pass re-processes accumulated text, its trigger must be cheap and region-scoped, not a substring that can appear in ordinary content. Otherwise one unlucky sentence turns a linear stream into an O(n^2) one, and the cost only shows up on long replies. The remaining trace cases - actual trace lines and repeated fenced payload markers - are tracked separately in [#172832](https://github.com/openclaw/openclaw/issues/172832).
