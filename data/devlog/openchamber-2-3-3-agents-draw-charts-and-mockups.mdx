@@ -1,0 +1,34 @@
+---
+title: OpenChamber 2.3.3 Lets Agents Draw Charts and Mockups
+summary: |
+  A patch release that lets an agent render a chart, table, diagram or interface mockup above its reply, adds end-to-end encrypted mobile push that names the outcome, and fixes checkouts on repositories where Git LFS is installed at both the global and local level. If agents have been describing visuals in text because there was nowhere to put them, this is the release that gives them a canvas.
+date: '2026-10-15 12:04:00 +1000'
+tags:
+  - OpenChamber
+  - Release Notes
+  - Agents
+draft: false
+icon: Package
+---
+
+[OpenChamber v2.3.3](https://github.com/openchamber/openchamber/releases/tag/v2.3.3) is a patch release that gives agents somewhere to put visuals, makes mobile push say what actually happened, and clears a batch of papercuts that used to bite mid-session.
+
+## What changed for you
+
+Charts and mockups are the headline. An agent can show a chart, table, diagram or interface mockup directly above its answer. The page follows your theme, opens full screen, and downloads as HTML on desktop. If it is not your thing, turn it off under OpenChamber Tools in Settings.
+
+Mobile push now says what happened. A notification carries the session name and the agent's reply, its question, the command it asks to run, or the error. The text is end-to-end encrypted, so the relay and the push services see only a generic title.
+
+The issues board got review threads. Replies sit under the comment that started them, resolved threads fold to one line, and you can answer, resolve and reopen threads on GitHub and GitLab. Videos now play in chat and in issue and pull request descriptions and comments, including clips an agent recorded on your machine. The Plans tab shows how many steps of each plan are done.
+
+## The quieter fixes worth knowing
+
+Git LFS at both levels no longer breaks worktrees. If you ran `git lfs install` globally and again inside a repository, the canonical filter keys repeat across the config layers and worktree setup used to reject the repo outright ([openchamber#4869](https://github.com/openchamber/openchamber/issues/4869)). Checkouts work again on those repositories.
+
+A worktree from a pull request can be created after the PR was force-pushed. A leftover branch that diverged is kept as a backup rather than deleted, and a message names it.
+
+The providers page lists your providers when no project is added, instead of saying "No providers yet" while chat happily shows the models and you sign in again and again. GitLab merge requests show correct line counts and keep their labels when you edit them. A session started in a plain folder next to a project no longer gets filed inside that project.
+
+## What to do
+
+Update in-app or grab the build from the [v2.3.3 release](https://github.com/openchamber/openchamber/releases/tag/v2.3.3). The bundled OpenCode is now 2.0.29. If you are upgrading from further back, 2.3.2 landed just before it with project knowledge for agents and proper Linux packages.
