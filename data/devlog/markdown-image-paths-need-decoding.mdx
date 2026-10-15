@@ -1,0 +1,35 @@
+---
+title: Markdown Image Paths Need Decoding First
+summary: |
+  An inline markdown image at a path with spaces or non-ASCII characters fails with ENOENT even though the file exists, because the renderer reads the percent-encoded path from disk. Decode the destination before the file read and accept the angle-bracket form so spaces survive CommonMark parsing.
+date: '2026-10-15 15:52:00 +1000'
+tags:
+  - Markdown
+  - Rendering
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+An inline markdown image fails to render when the absolute local path contains spaces or non-ASCII characters. The widget reports the file as missing:
+
+```text
+ENOENT: no such file or directory, open '/Volumes/Disk/%D0%9C%D0%BE%D0%B8%20.../icon/sheet-app.png'
+```
+
+The file is there. The same image at an ASCII-only path renders fine. This is [getpaseo/paseo#6871](https://github.com/getpaseo/paseo/issues/6871), fixed in [PR #6877](https://github.com/getpaseo/paseo/pull/6877).
+
+## Why it happens
+
+All three spellings of the destination fail for different reasons. A bare path with a space does not render at all, because CommonMark ends the URL at the space. The wrapped and percent-encoded forms parse, but the renderer then opens the encoded string as a filesystem path. Nothing decodes it first, so the file lookup runs against the literal percent escapes and misses. The reproduction is minimal - drop a PNG into a directory whose name contains a space and a non-ASCII word, reference it with either parsing form, and watch the ENOENT name the escapes rather than the file.
+
+```md
+![test](</tmp/My Apps/Мои/test.png>)
+![test](/tmp/My%20Apps/Мои/test.png)
+```
+
+## The fix
+
+Decode the destination - `decodeURIComponent` - before the file read, and accept the `<...>` destination form so spaces survive parsing. Bare destinations containing spaces still need the angle brackets or percent encoding, because that part is the CommonMark spec, not a bug.
+
+This is the same class of failure as local file links. The link renderer in the same app had already been fixed to decode, while the image renderer kept reading the encoded path. If one consumer of URL-ish paths in a codebase decodes and another does not, the one that does not is a bug waiting for a file with a space in its name.

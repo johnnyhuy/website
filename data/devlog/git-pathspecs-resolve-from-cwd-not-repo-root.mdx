@@ -1,0 +1,29 @@
+---
+title: Git Pathspecs Resolve From the Working Directory
+summary: |
+  A diff call against a workspace opened at a repository subdirectory returns every changed file with its counts but empty hunks, because the per-file patch is requested with a repo-root-relative path while git runs from the subdirectory. Pathspecs resolve against the process working directory, not the repo root.
+date: '2026-10-15 15:48:00 +1000'
+tags:
+  - Git
+  - Tooling
+  - Gotcha
+draft: false
+icon: Workflow
+---
+
+A checkout diff against a workspace opened at a repository subdirectory lists every changed file with correct addition and deletion counts, but each file comes back with empty hunks. The same call from the repository root returns the patch, and so does the live changes subscription for the identical workspace. This is [getpaseo/paseo#6867](https://github.com/getpaseo/paseo/issues/6867), fixed in [PR #6882](https://github.com/getpaseo/paseo/pull/6882).
+
+## Why it happens
+
+The file list is produced with paths relative to the repository root. The per-file patch is then requested with one of those paths as a pathspec, while git runs from the workspace subdirectory. Pathspecs resolve against the process working directory, not the repository root, so the spec matches nothing and git prints nothing. No error - just an empty patch.
+
+```text
+cd repo/sub && git diff HEAD -- ':(literal)sub/n.txt'   # empty output
+cd repo     && git diff HEAD -- ':(literal)sub/n.txt'   # the patch
+```
+
+## The fix
+
+Run git from the repository root and pass the paths as they come back, or rewrite each path relative to the current directory before calling. Anchoring the spec at the repository root works too. The fix here was to read diffs from the worktree root so callers keep passing their workspace directory and still get repository-relative paths out.
+
+The same mismatch bit the discard and commit-diff paths in the same project before it ([getpaseo/paseo#6769](https://github.com/getpaseo/paseo/issues/6769), [getpaseo/paseo#6799](https://github.com/getpaseo/paseo/issues/6799)). If your tooling shells out to git from a workspace subdirectory, audit every place a stored path meets a pathspec. The failure mode is silent, and it only shows up for people who do not open the repo root.
