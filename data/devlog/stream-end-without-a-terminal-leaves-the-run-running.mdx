@@ -27,7 +27,7 @@ The hole is deterministic - any subscription that ends early, drops or routes wr
 
 ## The fix
 
-Stream end without a terminal marker now raises an ingestion error instead of returning, and the existing failure finalisation does the rest. The shape of that change
+Stream end without a terminal marker now raises an ingestion error instead of returning, and the existing failure finalisation does the rest. The shape of that change looks like this:
 
 ```js
 for await (const event of subscription) {
