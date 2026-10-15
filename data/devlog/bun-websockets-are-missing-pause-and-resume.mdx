@@ -1,0 +1,37 @@
+---
+title: Bun WebSockets Are Missing Pause And Resume
+summary: |
+  Run a Node WebSocket server under Bun and every connection dies on arrival with `TypeError: ws.pause is not a function`. Bun's WebSocket is not a Node stream, so the stream control methods are simply not there. Guard the calls with optional chaining, or run the server on Node where the methods exist.
+date: '2026-10-16 10:28:00 +1000'
+tags:
+  - Bun
+  - WebSocket
+  - Runtime
+draft: false
+icon: Bug
+---
+
+Start a Node WebSocket server under Bun and every incoming connection is rejected the moment it arrives:
+
+```
+TypeError: ws.pause is not a function
+```
+
+The stack points at the socket attach path, wherever it calls `pause()` and `resume()` on the WebSocket to hold the stream while the auth handshake runs. Under Node those methods exist on the underlying stream and the same code has always been fine. Under Bun they are not implemented at all - the gap is tracked upstream at [oven-sh/bun#44453](https://github.com/oven-sh/bun/issues/44453). The report that surfaced it is [paseo#7055](https://github.com/getpaseo/paseo/issues/7055), and the guard is proposed in [paseo#5915](https://github.com/getpaseo/paseo/pull/5915).
+
+## Why it happens
+
+Bun's WebSocket is not a Node stream. It implements enough of the surface to send and receive, but `pause()`, `resume()` and `isPaused` are absent, so a bare call throws and takes the connection with it. Any server that reaches for stream control on a WebSocket is relying on a runtime detail that not every runtime honours.
+
+## The fix
+
+Guard the calls so the code tolerates either shape:
+
+```js
+ws.pause?.()
+ws.resume?.()
+```
+
+That keeps the buffering and resume behaviour under Node and degrades to a no-op under Bun rather than throwing. If you need real pause semantics on Bun you would have to buffer frames yourself - the optional chaining only buys compatibility, not stream control.
+
+If you would rather not carry the workaround, run the server on Node. The project's documented install path uses Node for exactly this reason, and Bun is not a supported runtime for the daemon. The general lesson holds whichever way you go - feature-detect stream control before you call it, because the methods are not part of the WebSocket contract everywhere.

@@ -1,0 +1,32 @@
+---
+title: Next.js 16.4.2 Fixes Turbopack Lazy Import Chunk Collisions
+summary: |
+  Dev on Turbopack falls over with a Build Error about different assets landing on the same output path, and the page 500s, when lazy dynamic imports reach a shared module through different parent chunk groups. Next.js 16.4.2 patches the chunk-list identity so the collision cannot happen. If `next/dynamic` and nested `React.lazy` have been flaky in dev, this is the patch to take.
+date: '2026-10-16 09:12:00 +1000'
+tags:
+  - Next.js
+  - Turbopack
+  - Release Notes
+draft: false
+icon: Package
+---
+
+Dev on Turbopack throws a Build Error saying assets with different content were emitted to the same output path, and the page comes back as a 500. It shows up when lazy dynamic imports reach a shared target through different parent chunk groups - two routes that both pull in the same module with `next/dynamic`, with a nested `React.lazy` inside it.
+
+[Next.js v16.4.2](https://github.com/vercel/next.js/releases/tag/v16.4.2) ships the fix.
+
+## Why it happens
+
+Dynamic HMR chunk-list contents depend on which modules the parent chunk group already has available. The chunk-list identity left that availability context out, so two different contents hashed to the same output path and Turbopack reported the collision as a Build Error. The fix folds the availability identity into the key while keeping HMR paths and lazy-compilation activation keys stable, in [PR #99940](https://github.com/vercel/next.js/pull/99940).
+
+The reliable reproduction is two parallel page branches that both `next/dynamic`-import a shared target, with that target itself pulling in a nested `React.lazy` import. Both leaves fail to hydrate and the error overlay shows the collision. The same fault showed up in a streaming markdown component rendering three copies of one lazy diagram - the page 500ed and the overlay complained about the shared output path.
+
+## What to do
+
+```bash
+npm install next@16.4.2
+```
+
+The rest of the patch is Turbopack dev stability work - Pages Router dev module graph chaining, two garbage collection paths that used to leave half-torn-down dependency edges, module resolution tolerating realpath errors the way Node does, and code frames snapping to character boundaries. None of it changes production output.
+
+This drop is on the 16 line. The current 15.5 patch is still 15.5.28 and the release list carries no 15.5 build with these fixes, so if you are on 15 and hitting the collision there is nothing to take yet.

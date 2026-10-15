@@ -1,0 +1,41 @@
+---
+title: Fresh Workers Re-Run Full SQLite Integrity Checks
+summary: |
+  Every write to a large SQLite database can cost a fixed couple of seconds because each newly spawned worker thread runs a full `PRAGMA integrity_check` when it opens the file, and workers that idle out are replaced constantly. The verification result lives in one thread's async context, so the next worker never learns the database was already proven good. Cache the proof against the file identity, or drop the per-worker gate to `quick_check`.
+date: '2026-10-16 09:40:00 +1000'
+tags:
+  - SQLite
+  - Performance
+  - Workers
+draft: false
+icon: Bug
+---
+
+A steady-state write to a large SQLite file costs a fixed couple of seconds, on a database that is not corrupt and is not being migrated. The slow-transaction log names a different thread every time, and a raw write to the same file with the sqlite3 CLI is instant. `PRAGMA quick_check` is fast enough to miss, but a full `PRAGMA integrity_check` accounts for the whole delay.
+
+This came up in [openclaw#173440](https://github.com/openclaw/openclaw/issues/173440), where a 250 MB state database paid roughly 2 s on almost every write.
+
+## Why it happens
+
+A short-lived worker thread opens the database and runs a full integrity check as part of its admission gate. The flag that says this file was already verified is scoped to one thread's async context, so a brand new worker thread never sees it and re-proves the file from scratch. When workers retire after a short idle timeout, a fresh worker is spawned for nearly every write, and the check is the write.
+
+The same shape bites any pool where a verification result is held in thread-local or request-local state instead of against the file itself.
+
+## The fix
+
+Key the proof on the file identity rather than on the thread or the async context - device and inode plus a schema or data generation - and reuse it across workers and reopens for as long as that identity holds. Where you cannot share the proof, drop the per-worker gate to `quick_check` and keep the full check for the one place that actually opens the file cold.
+
+```js
+// Proof belongs to the file, not to the worker that opened it
+const proven = new Map() // file identity -> integrity result
+
+function openWorker(path) {
+  const key = fileIdentity(path) // dev/ino + schema generation
+  if (!proven.has(key)) {
+    proven.set(key, assertIntegrity(path, 'quick_check'))
+  }
+  return open(path)
+}
+```
+
+Upstream fixed it by transporting the schema and integrity facts into each new worker and publishing a reusable seal on clean close, so a later worker restores the proof instead of recomputing it. If you are on an older build, the `quick_check` swap alone takes the per-spawn cost from seconds to fractions of a second.
