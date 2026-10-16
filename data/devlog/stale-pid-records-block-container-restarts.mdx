@@ -1,0 +1,32 @@
+---
+title: Stale Pid Records Block Container Restarts
+summary: |
+  A server refuses to start after an unclean container restart with an "already running" error, because its preflight only checks that a recorded pid is alive - and in a container the recycled pid is the new server itself. Move the leftover runtime record aside to start, and treat a recorded pid equal to your own as stale.
+date: '2026-10-17 09:02:00 +1000'
+tags:
+  - T3 Code
+  - Containers
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+After a container is killed and restarted, the server inside it refuses to boot and reports that an instance is already running. Nothing else is in the container, nothing is listening on the port, and restarting again does not help. Every start attempt fails the same way. This is [pingdotgg/t3code#20320](https://github.com/pingdotgg/t3code/issues/20320).
+
+## Why it happens
+
+The startup preflight reads a persisted runtime record and refuses to launch when the recorded pid is alive. Liveness is a bare `kill(pid, 0)`, so it reports only that some process holds that pid, not that it is the recorded server. The record stores a pid and a wall-clock start time but nothing that ties the pid to a particular process.
+
+In a container the pid namespace always hands out the same small numbers, so a record left behind by a killed instance meets the new server's own pid on the next boot. The preflight then matches the process that is trying to start - it never skips `process.pid` - and startup is refused on every restart. A recycled pid that happens to belong to an unrelated process blocks you the same way. On a host with a wide pid space this is rare, which is why the bug hides until it runs in a container.
+
+## The fix
+
+Move the leftover record aside before launch:
+
+```bash
+mv userdata/server-runtime.json userdata/server-runtime.json.bak
+```
+
+Then start the server. The path is wherever the install keeps its runtime state.
+
+If you are writing the check yourself, the pattern is worth stealing in reverse. A pid-only liveness probe is not a process identity check. Record something that identifies the process - a process start time, a boot id, a random token written by the instance at startup - and compare that alongside the pid. At minimum, treat a recorded pid equal to `process.pid` as stale, since the only way that can match is the record outliving the process that wrote it. A stale record from a crash should never be able to lock out the one process that could replace it.

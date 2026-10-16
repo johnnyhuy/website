@@ -1,0 +1,26 @@
+---
+title: Instructed Silence Gets a Fabricated Reply
+summary: |
+  An automation turn told to end silently that emits no final text is booked as a failed answer, burns a tools-disabled retry, and has a made-up summary reply injected into the session. The harness cannot tell deliberate silence from a dropped answer, so have the automation emit its sentinel token out loud instead of just stopping.
+date: '2026-10-17 09:06:00 +1000'
+tags:
+  - OpenClaw
+  - Automation
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+A bounded automation prompt ends with an instruction like "if nothing needs to be delivered, reply NO_REPLY." The turn runs its tools, everything lands, and the model ends without emitting any final text. The run is then booked as failed anyway - the harness logs that the turn lacked a final answer, runs one isolated retry with tools disabled, and injects a fabricated reply ("The tool run finished, but no final summary was produced.") into the session. Every such turn costs a retry and pollutes the transcript. This is [openclaw/openclaw#174620](https://github.com/openclaw/openclaw/issues/174620).
+
+## Why it happens
+
+A settled turn with successful tool calls and no final assistant text is indistinguishable from an answer that got dropped on the floor. The finaliser plays it safe, so deliberate silence gets the same recovery treatment as a real failure. Models make this worse by reading "reply NO_REPLY" as "reply nothing" rather than "type this string," especially after a long tool chain - so the instructed-silence path is the one that reliably produces an empty final answer. In one report, every fallback reply that day was this class of turn, with no provider or tool errors in any of them.
+
+## The fix
+
+Have the automation emit the sentinel out loud. The instruction is doing double duty, so phrase it so the literal token is the deliverable - for example "end your turn by typing exactly NO_REPLY and nothing else." When the model emits the token, the turn closes as a silent success and none of the recovery runs.
+
+Two smaller things help. Keep automation prompts short at the tail - the sentinel instruction after a long tool chain is the case that gets swallowed. And if you see the fabricated summary reply in a transcript, treat it as a signal that a silent turn was misclassified rather than as content, so it does not get carried into later context as if the model wrote it.
+
+For context, the empty-answer handling is being repaired on the product side - current main accepts an empty completion on optional turns without the retry or the fabricated reply - but a released install still does this, and the prompt fix works everywhere a sentinel is expected.
