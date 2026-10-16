@@ -1,0 +1,26 @@
+---
+title: Cleanup Timestamps Advance Before The Work
+summary: |
+  A maintenance pass that stamps its completion time before it starts deleting lets one interrupted pass suppress every retry in the window. Short-lived commands exit mid-scan, the hour is marked done, and the cache grows to fifty times its documented cap. Stamp after the pass completes and let the cleanup outlive the process that started it.
+date: '2026-10-16 13:10:00 +1000'
+tags:
+  - Node.js
+  - Caching
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+A CLI's compile cache directory grows to about 26 GB on a machine that runs short commands all day, roughly fifty times the 512 MiB cap its own maintenance code claims to enforce. The directory's modification time keeps advancing about once an hour, so the trim looks like it is running. It never finishes. This is [openclaw/openclaw#173568](https://github.com/openclaw/openclaw/issues/173568), fixed in [PR #173603](https://github.com/openclaw/openclaw/pull/173603).
+
+## Why it happens
+
+The pass is meant to run at most once an hour, and it records that fact by advancing a timestamp on the namespace directory. The problem is the order. The worker advanced the timestamp first, then started the directory walk and the sort that eventually reach a deletion. A short-lived command exits on its own schedule. When it exits after the stamp but before any file is removed, the pass is recorded as done and every invocation in the next hour skips cleanup entirely.
+
+A workload of quick commands - a scheduler firing a CLI every few minutes, release prewarming, a build hook - produces exactly this. The backlog compounds quietly because the timestamp keeps moving.
+
+## The fix
+
+Stamp the window only after a completed pass, and let the cleanup outlive the process that started it. The landed fix runs the work detached from the command that triggered it, streams and prunes incrementally, and serialises passes behind a filesystem lock so concurrent writers cannot interleave. It trims toward 512 MiB and 4,096 files with a seven-day expiry.
+
+Two things to carry beyond this bug. Do not read a maintenance timestamp as evidence that anything was trimmed - check the size. And treat a documented size cap enforced by in-process housekeeping as a target rather than a guarantee. A large backlog needs several bounded passes, and concurrent writers can push past the target in between.
