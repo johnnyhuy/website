@@ -1,0 +1,40 @@
+---
+title: shadcn 4.22.0 Moves Registry Schemas to Zod 4
+summary: |
+  shadcn@4.22.0 and @shadcn/registry@0.2.0 upgrade to Zod 4, so the exported schemas no longer typecheck against Zod 3's `z` helpers and error objects carry `issues` instead of `errors`. Registry authors on Zod 3 switch to the exported types and the schema's own methods to stay compiling.
+date: '2026-10-17 09:30:00 +1000'
+tags:
+  - shadcn
+  - Zod
+  - Release
+draft: false
+icon: Package
+---
+
+Updating the shadcn CLI past 4.21.5 can break a registry build that never touched the CLI - the schema types stop compiling against Zod 3. [shadcn@4.22.0](https://github.com/shadcn-ui/ui/releases/tag/shadcn%404.22.0) and `@shadcn/registry@0.2.0` both upgrade to Zod 4 via [PR #12298](https://github.com/shadcn-ui/ui/pull/12298).
+
+## What changed
+
+`shadcn/schema` and `@shadcn/registry/schema` now export Zod 4 schemas. Passing them to Zod 3's `z` helpers no longer typechecks, so a registry that leans on `z.infer` or `z.array` over these schemas gets compile errors after an otherwise routine dependency bump. Three details bite:
+
+- Type inference goes through the exported types - `RegistryItem`, `RegistryItemFile`, `Config` - rather than `z.infer`.
+- Composition uses the schema's own methods, for example `registryItemSchema.array()`, rather than wrapping it in `z.array`.
+- Zod 4 error objects expose `issues`, not `errors`, and validation messages use Zod 4 wording, so anything that parsed or asserted on the old shape needs updating.
+
+## What to do
+
+If you are staying on Zod 3, stop inferring through `z` and use what the package exports directly:
+
+```ts
+import type { RegistryItem, RegistryItemFile, Config } from '@shadcn/registry/schema'
+
+// instead of z.infer<typeof registryItemSchema>
+const item: RegistryItem = { ... }
+
+// instead of z.array(registryItemSchema)
+const items = registryItemSchema.array().parse(raw)
+```
+
+If you control your own Zod version, move to Zod 4 alongside the schemas and the `z.infer` and `z.array` forms keep working - the break is only the Zod 3 pairing.
+
+This is the kind of minor that hides its impact. The changelog line reads like an internal dependency bump, but the schemas are a public export, so the version floor moves for every consumer that typed against them. Worth checking before the next registry publish.
