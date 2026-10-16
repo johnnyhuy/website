@@ -6,7 +6,7 @@ date: '2026-10-17 09:30:00 +1000'
 tags:
   - shadcn
   - Zod
-  - Release
+  - Release Notes
 draft: false
 icon: Package
 ---
@@ -37,4 +37,4 @@ const items = registryItemSchema.array().parse(raw)
 
 If you control your own Zod version, move to Zod 4 alongside the schemas and the `z.infer` and `z.array` forms keep working - the break is only the Zod 3 pairing.
 
-This is the kind of minor that hides its impact. The changelog line reads like an internal dependency bump, but the schemas are a public export, so the version floor moves for every consumer that typed against them. Worth checking before the next registry publish.
+This is the kind of minor that hides its impact. The changelog line reads like a routine dependency bump, but the schemas are a public export, so the version floor moves for every consumer that typed against them. Worth checking before the next registry publish.
