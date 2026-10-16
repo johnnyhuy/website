@@ -1,0 +1,33 @@
+---
+title: npx Cache Can Drop the Platform Binary
+summary: |
+  `npx t3@latest serve` can refuse to start with "no T3 Code CLI build is available for this platform" while naming the platform in its own supported list, because the cached install is missing the optional per-platform package. Clearing the npx cache is the fix, and checking what npm is told to omit stops it coming back.
+date: '2026-10-16 19:50:00 +1000'
+tags:
+  - T3 Code
+  - Node.js
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+The launcher refuses to start and says no CLI build exists for this platform (linux-x64), then prints a supported-platform list that includes linux-x64. The package is published and its tarball downloads fine, so the error reads like a packaging gap when it is not. This is [pingdotgg/t3code#20186](https://github.com/pingdotgg/t3code/issues/20186).
+
+## Why it happens
+
+The launcher resolves its binary through an optional dependency - one package per platform triple, `@t3code/t3-linux-x64` and friends. npx builds its cached install once per package version. If that cache entry was created before the platform package existed, or npm was configured to skip optional dependencies, the cache holds an install with no binary for your triple and every later run reuses it. The platform is fine. The cache is lying to you.
+
+## The fix
+
+Throw the cache away and let npm refetch the optional dependency:
+
+```bash
+npx clear-npx-cache   # or: rm -rf ~/.npm/_npx
+npx t3@latest serve
+```
+
+If it fails again after a clean fetch, check that npm is allowed to install optional dependencies at all - `npm config get omit` and `npm config get optional` should not be filtering them out. That combination is the whole failure mode.
+
+One heads-up for later versions. [PR #20148](https://github.com/pingdotgg/t3code/pull/20148), merged after 0.1.0 was published, drops the optional-dependency install path and has the launcher download the binary from GitHub Releases instead, so the cached install stops mattering. It is not in a published release yet, so on 0.1.0 the cache is still in the loop.
+
+The general shape is worth remembering for any npx-run tool that ships per-platform binaries behind optional dependencies. A stale `_npx` cache produces errors that point at the platform rather than at npm, and the supported list printed in the error message can contradict the error itself.

@@ -1,0 +1,24 @@
+---
+title: Windows Update Repair Refuses on Protected Processes
+summary: |
+  Update repair on Windows can refuse with "Handoff descendants remain alive or unverified" while naming only a protected antivirus helper as the blocker, and a reboot just hands it a new PID. The fix lets same-account repair exclude system processes it cannot read instead of treating the whole host as suspect.
+date: '2026-10-16 19:58:00 +1000'
+tags:
+  - Windows
+  - Updates
+  - Gotcha
+draft: false
+icon: Bug
+---
+
+`update repair` refuses to run and names one PID as a surviving handoff holder. The process is Microsoft Defender's protected `DefenderSessionHelper.exe`, parent `MsMpEng.exe`. Running the repair from an elevated shell changes nothing, and after a reboot the error names Defender's fresh PID instead. Nothing about the update is actually blocked - the check is looking in the wrong place. This is [openclaw/openclaw#173430](https://github.com/openclaw/openclaw/issues/173430).
+
+## Why it happens
+
+The process census covers every PID on the host rather than the update's own job or process tree. Any row whose command line or working directory cannot be read lands in an unverified bucket and is treated as a possible holder of the update's files. Protected system processes are exactly the ones an ordinary account can never read, so on any machine with antivirus running the repair holds itself hostage.
+
+## The fix
+
+[PR #173783](https://github.com/openclaw/openclaw/pull/173783) lets same-account repair exclude fully access-denied system processes and positively unrelated readable ones, while genuine retained-artifact holders and unresolved surviving update work still block. The refusal it keeps is the conservative one for unreadable processes on old handoffs with no recorded launching account, and the error now says to run repair as the same Windows account that started the update.
+
+The transferable rule is the census scope. When a cleanup waits for children, scope the check to the process tree it started. A host-wide scan cannot distinguish your descendants from the operating system's, and the rows you most want to ignore are the ones you are least allowed to inspect.
