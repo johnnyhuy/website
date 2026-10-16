@@ -1,0 +1,33 @@
+---
+title: Windows Updates Fail Silently On Signature Timeout
+summary: |
+  An in-app update on Windows can fail with no useful error when the installer signature check takes longer than electron-updater's 20 second PowerShell limit, because the timeout is reported like a signature failure and the summary drops the fields that would show it. Download the installer from the releases page, or verify the leftover temp file against the published checksum and run it.
+date: '2026-10-17 09:04:00 +1000'
+tags:
+  - Windows
+  - Electron
+  - Gotcha
+draft: false
+icon: RefreshCw
+---
+
+An in-app update on Windows downloads and then goes quiet. No error dialog, no rollback message, and the app is still on the old version after a restart. The log carries a signature-check failure, which reads like the installer was rejected, but the installer from the releases page runs fine. This is [pingdotgg/t3code#20345](https://github.com/pingdotgg/t3code/issues/20345).
+
+## Why it happens
+
+electron-updater wraps the download in a PowerShell `Get-AuthenticodeSignature` check and kills that check after 20 seconds. On a busy or cold machine the check can exceed the limit, and the killed process is recorded as a plain failure. The error summariser then keeps only the tag, the code and the first line of the message, so a timeout and a genuine bad signature come out looking the same. The update fails, the cause is flattened away, and the download it already verified well enough to run sits on disk unused.
+
+## The fix
+
+Take the update by hand. Close the app and install from the releases page.
+
+If you want the copy the updater already fetched, it is waiting in the updater's temp directory as `pending\temp-*.exe`. Check it against the SHA-512 in the release's `.yml` before you run it:
+
+```powershell
+Get-FileHash .\pending\temp-1234.exe -Algorithm SHA512
+# compare with the sha512 entry in the release's latest.yml
+```
+
+If the hash matches the release you were updating to, that file is the installer.
+
+The wider lesson is for anyone shipping an Electron app. A verification step with a hard timeout will fail on slow machines as surely as on a corrupt download, so the two cases have to be distinguishable in the error - keep the `killed` and `signal` fields when you summarise a child-process failure. And a timed-out check is not the same as a failed one, so retrying the check, or verifying in-process without a shell, is the fix rather than failing the update.
