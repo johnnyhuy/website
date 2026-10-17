@@ -1,4 +1,4 @@
-import { writeFileSync, mkdirSync } from 'fs';
+import { writeFileSync, mkdirSync, readdirSync, rmSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -45,6 +45,13 @@ async function generateLlms() {
   // Markdown versions of each entry at /devlog/<slug>.md
   const devlogOutDir = path.join(projectRoot, outputFolder, 'devlog');
   mkdirSync(devlogOutDir, { recursive: true });
+  // Remove generated markdown for entries that were withdrawn or deleted.
+  const publishedMarkdown = new Set(entries.map((entry) => `${entry.slug}.md`));
+  for (const filename of readdirSync(devlogOutDir)) {
+    if (filename.endsWith('.md') && !publishedMarkdown.has(filename)) {
+      rmSync(path.join(devlogOutDir, filename), { force: true });
+    }
+  }
   for (const entry of entries) {
     const body = entry.body.raw
       .split('\n')

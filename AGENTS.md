@@ -94,7 +94,7 @@ canonicalUrl: string
 
 **Publishing**: Raise a PR and review it. Then, per surface:
 - `data/blog/` - stop at review. Never merge, never enable automerge. A human publishes blog posts.
-- `data/devlog/` - review and merge. The `4h devlog sweep` schedule owns this surface and merges its own PRs.
+- `data/devlog/` - review and merge. Follow the editorial standards in `NOTES.md`.
 - Anything else - stop at review.
 
 **Styling**: Minimal industrial design system (flat hairlines, sharp corners, IBM Plex Mono labels). Follow the conventions in `.agents/skills/site-conventions/SKILL.md` for any page or component work.

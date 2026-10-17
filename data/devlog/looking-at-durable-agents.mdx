@@ -1,0 +1,50 @@
+---
+title: Looking at Durable Agents With OpenCode and Pi
+summary: |
+  I researched what it would take for an agent to survive a restart and remain usable across interfaces. The useful distinction was between saving a conversation, recovering execution and safely repeating an external action.
+date: '2026-10-15'
+tags:
+  - AI Agents
+  - OpenCode
+  - Pi
+draft: false
+icon: Workflow
+---
+
+I looked into durable agents with OpenCode v2 and Pi v1, using the Syntax discussion
+about a shared backend across terminal, web and desktop interfaces alongside the
+framework documentation.[^discussion]
+This was a research pass, not a new service I had deployed.
+
+The part I wanted to get clear was what actually survives a restart. Being able
+to reload the conversation is useful, but it does not tell me whether unfinished
+work resumes, whether the checkout still exists or whether a tool call is about
+to happen twice.
+
+## Four things to keep separate
+
+- The conversation and its configuration.
+- The execution state of unfinished work.
+- The files and environment the tools operate on.
+- External actions that may already have succeeded.
+
+The Cloudflare integrations helped make the distinction concrete. The OpenCode
+example replaces unsupported local file and shell tools rather than pretending
+a Worker has a normal coding checkout.[^opencode] Pi's recovery documentation
+distinguishes tools safe to replay from other interrupted tools, which return
+control to the model instead of automatically running again.[^pi]
+
+Neither observation gives arbitrary external actions an exactly-once guarantee.
+A saved transcript cannot, by itself, tell me whether an API request succeeded
+just before the process died.
+
+The prototype I would want next is deliberately small: one persistent
+conversation, one replay-safe read and one idempotent write, with crashes injected
+around the write and the result recording. That remains a proposed test, not a
+result from this research pass.
+
+[^discussion]: [The OpenCode and personal-agent section of Syntax Weekly](https://www.youtube.com/watch?v=Ov_KPnwuu0U&t=773s).
+
+[^opencode]: [Cloudflare's OpenCode harness integration](https://developers.cloudflare.com/agents/harnesses/opencode/).
+
+[^pi]: [Cloudflare's Pi harness recovery behaviour](https://developers.cloudflare.com/agents/harnesses/pi/#recovery).
