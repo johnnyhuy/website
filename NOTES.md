@@ -44,6 +44,8 @@ Do not write one if:
 - No em dashes. No bold-as-speech. No AI slop openers or endings.
 - Link to the primary source when there is one. A note that cites a GitHub doc is
   worth ten notes that cite a forum.
+- Use relevant images with descriptive alt text and captions. Identify prototypes
+  and simulated data accurately; exclude sensitive content and embedded metadata.
 
 ## Drafts
 
