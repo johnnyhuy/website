@@ -1,0 +1,40 @@
+---
+title: A Bench Studio for the S2000 Dash
+summary: |
+  I revised the S2000 cluster preview and gave it a bench workspace for telemetry, scenarios and playback. There is now a separate 3D inspector for the OLED and Raspberry Pi enclosure prototype.
+date: '2026-09-20 21:14:52 +1000'
+tags:
+  - S2000
+  - Design
+  - Prototyping
+draft: false
+icon: Package
+---
+
+I moved the S2000 dash preview towards something I could use as a bench tool,
+rather than just a picture of the cluster.
+
+This pass corrected the readout proportions and shared warning artwork, then
+grouped the face, scenario and playback controls around the display. Telemetry is
+readable without opening a JSON dump, and the raw JSON is still available when I
+need it. Light, dark and system appearance settings persist between visits.[^change]
+
+The separate display route hides the web controls and uses mock telemetry, so the
+cluster can be previewed fullscreen on the Pi. It is a preview, not a claim that
+the live car integration is finished.
+
+## Looking at the physical setup
+
+I also added a 3D workspace for inspecting and downloading the OLED/Pi enclosure
+prototype. That puts the face design and its housing next to each other in the
+workflow, instead of treating the enclosure as something to work out afterwards.
+
+There is still an important physical unknown: the exact panel model, native
+resolution and active area need recording. The target is a seven-inch OLED and
+Raspberry Pi for the AP1, but the downloadable geometry is not evidence of a
+measured fit in the car.
+
+That boundary matters. The studio makes the design easier to inspect and iterate;
+the hardware measurements still have to decide what gets built.
+
+[^change]: [The cluster layout, bench studio and CAD inspector](https://github.com/johnnyhuy/s2000-digital-dash/pull/69).

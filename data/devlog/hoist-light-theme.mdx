@@ -1,0 +1,38 @@
+---
+title: Giving Hoist a Proper Light Theme
+summary: |
+  Hoist was still carrying dark-mode assumptions into macOS light mode. I added a warm surface palette, replaced hardcoded status colours and let the native glass follow the system appearance.
+date: '2026-08-24 21:57:03 +1000'
+tags:
+  - Hoist
+  - Design
+  - Electron
+draft: false
+icon: Bug
+---
+
+Hoist needed a proper light theme. Switching the system appearance was not enough
+while the app still had dark-only status colours and a permanent tint on its native
+glass.
+
+I brought the light side into the same design system as the dark side: warm paper
+surfaces, off-white panels, readable text and borders, with shared tokens for
+statuses and controls. The two appearances use the same depth ladder rather than
+separate component styles.[^change]
+
+The native window needed attention too. Its liquid-glass treatment now follows
+macOS instead of applying a dark tint regardless of the selected appearance.
+That was a different layer from the renderer CSS, so fixing only the web colours
+would have left the window looking wrong.
+
+## Checking both appearances
+
+The change passed the build, typecheck, lint and tests. I also checked Watchtower
+in macOS light mode and the dark token path through browser emulation.
+
+The useful lesson from this pass was how many assumptions sit outside the main
+background and text colours. Status badges, borders, controls and the native
+window all need to agree. A theme can look nearly finished while one of those
+layers still belongs to the other appearance.
+
+[^change]: [Hoist's light-theme change](https://github.com/echohello-dev/hoist/pull/44).

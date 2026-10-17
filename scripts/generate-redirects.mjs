@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync, copyFileSync, existsSync } from 'fs'
+import { mkdirSync, writeFileSync, copyFileSync, existsSync, readdirSync, rmSync } from 'fs'
 import path from 'path'
 
 // Keep old /notes/ URLs alive after the surface was renamed to /devlog.
@@ -37,6 +37,14 @@ async function main() {
 
   const notesRoot = path.join(projectRoot, outputFolder, 'notes')
   mkdirSync(notesRoot, { recursive: true })
+
+  // Do not retain generated redirects for entries that no longer publish.
+  const publishedSlugs = new Set(published.map((entry) => entry.slug))
+  for (const entry of readdirSync(notesRoot, { withFileTypes: true })) {
+    if (entry.isDirectory() && !publishedSlugs.has(entry.name)) {
+      rmSync(path.join(notesRoot, entry.name, 'index.html'), { force: true })
+    }
+  }
 
   // /notes/ -> /devlog/
   const indexTarget = `${basePath}/devlog/`
