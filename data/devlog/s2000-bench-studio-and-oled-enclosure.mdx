@@ -19,6 +19,10 @@ grouped the face, scenario and playback controls around the display. Telemetry i
 readable without opening a JSON dump, and the raw JSON is still available when I
 need it. Light, dark and system appearance settings persist between visits.[^change]
 
+![Simulated AP1 cluster in the S2000 bench studio, with warning scenarios and playback controls](/images/devlog/s2000-bench.webp)
+
+_The bench studio's AP1 preview with simulated telemetry and warning controls._
+
 The separate display route hides the web controls and uses mock telemetry, so the
 cluster can be previewed fullscreen on the Pi. It is a preview, not a claim that
 the live car integration is finished.
@@ -28,6 +32,10 @@ the live car integration is finished.
 I also added a 3D workspace for inspecting and downloading the OLED/Pi enclosure
 prototype. That puts the face design and its housing next to each other in the
 workflow, instead of treating the enclosure as something to work out afterwards.
+
+![Exploded 3D view of the front frame, display, enclosure and rear cover for the S2000 OLED and Raspberry Pi prototype](/images/devlog/s2000-enclosure.webp)
+
+_Exploded CAD view of the OLED and Raspberry Pi enclosure prototype._
 
 There is still an important physical unknown: the exact panel model, native
 resolution and active area need recording. The target is a seven-inch OLED and
