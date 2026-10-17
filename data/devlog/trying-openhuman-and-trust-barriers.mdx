@@ -1,0 +1,92 @@
+---
+title: Trying OpenHuman and Thinking About Trust Barriers
+summary: |
+  I tried OpenHuman, TinyHumans' open-source personal assistant in the same space as OpenClaw and Hermes, to see what its setup asks before it does anything useful. The memory step and the broken bring-your-own harness paths taught me more than the assistant did: when a product asks for memory, OAuth and keys before showing anything working, failures read as a trust problem.
+date: '2026-10-17'
+tags:
+  - AI Agents
+  - OpenHuman
+  - Product Design
+draft: false
+icon: Bot
+---
+
+I spent an evening with OpenHuman, TinyHumans' open-source desktop personal
+assistant, because it is competing in the same space as OpenClaw and Hermes and I
+wanted to see what its version of the category looks like.[^openhuman] It
+promises a persistent memory of your life, agent fleets and workflows on a small
+Rust core. I never got far enough to judge any of that. The setup taught me
+more.
+
+The install asks for a lot before the assistant does anything. You choose
+between a TinyHumans account that bundles inference, search, memory and billing,
+and bringing your own API keys and endpoints. I took the bring-your-own path and
+the OpenAI login wanted me to paste in a redirect to complete it, which is a
+strange first impression. Web search is its own setup step rather than something
+the harness simply has. It reads like a custom vertical you get pushed into more
+than a capability.
+
+## The memory step is the trust question
+
+OpenHuman's memory lives in CortexDB, and the path of least resistance is a free
+instance hosted by TinyHumans that you sign into. There is a bring-your-own
+CortexDB key option and a local option underneath it, but as far as I could tell
+there is no obvious way to sign up for a CortexDB account yourself, and
+self-hosting looked harder than it should be.[^memory]
+
+![OpenHuman's memory setup step offering CortexDB through a free TinyHumans-hosted instance, a bring-your-own CortexDB key, or local storage](/images/devlog/openhuman-memory-setup.webp)
+
+_The memory setup step in the early beta, where the hosted option is the easy
+one._
+
+Most people will take the hosted default, so the memories of your life end up on
+someone else's infrastructure through the smoothest route. That is a product
+decision, not a bug, but it is exactly where I wanted the app to slow me down
+instead of speed me up.
+
+## Where it fell apart
+
+The bring-your-own harness paths did not work. The claude-code provider loaded
+no model list at all, just an error and a box to type a model ID into by hand.
+
+![OpenHuman's provider picker with the claude-code provider selected and a "Could not load models from this provider" error](/images/devlog/openhuman-provider-picker.webp)
+
+_The bring-your-own claude-code provider, with nothing to choose from._
+
+A simple calendar question came back "Something went wrong: the AI provider
+rejected the request." Parts of the UI are rough in the way early betas are
+rough, but the failures went further than polish. It was bad enough that I
+started questioning whether the app was legitimate. When a product asks for your
+memories, your OAuth connections to email and chat, and your API keys before it
+has shown you anything working, failures do not read as beta bugs. They read as
+a trust problem.
+
+## What I took from it
+
+Anything asking for that much trust needs trust barriers and a clean but
+comprehensive demo of what you are asking the user to try. A few concrete ideas
+on meeting users where they are:
+
+- Show a snippet example of a chat session up front, so the first screen answers
+  "what does this do for me".
+- Lead users to your distribution channels at startup, with a follow step
+  enabled by default instead of a hunt for a Discord link.
+- Show latest updates with visuals, not just a GitHub changelog. OpenCode's and
+  Pi's release pages carry before-and-after images and videos, and that is the
+  bar.
+- Integrate deeply with harnesses downstream so AI usage, settings and updates
+  can be managed from the main app.
+
+One idea I did like: the assistant preloads OpenRouter free models so you can
+start quickly before wiring any keys. Automatic crons are in the default
+toolbelt too. Open question: none of this says anything about whether the
+assistant is any good once it actually runs. That test still has to happen.
+
+[^openhuman]:
+    [OpenHuman](https://github.com/tinyhumansai/openhuman) on GitHub
+    and the [product page](https://tinyhumans.ai/openhuman).
+
+[^memory]:
+    The [privacy and security docs](https://tinyhumans.gitbook.io/openhuman/features/privacy-and-security)
+    describe memory stored in CortexDB, either hosted by TinyHumans or pointed at
+    an endpoint you run yourself.
