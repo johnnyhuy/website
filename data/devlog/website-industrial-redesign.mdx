@@ -1,0 +1,40 @@
+---
+title: Rebuilding This Site Around the Blog
+summary: |
+  I replaced the bento homepage with a flatter, blog-first layout and kept three older versions in an archive. The redesign removed activity and presence widgets rather than adding more things to the dashboard.
+date: '2026-07-18 16:29:00 +1000'
+tags:
+  - Website
+  - Design
+  - Archives
+draft: false
+icon: Package
+---
+
+I rebuilt this site around the blog. The bento homepage gave way to a flatter
+industrial layout: hairline borders, sharp corners, mono labels and one yellow
+accent. The introduction became smaller, with the writing list doing more of
+the work.[^redesign]
+
+I changed the title to Builder and removed the activity and presence widgets.
+The experience timeline no longer needed to compete with the posts on the home
+page either. Eighteen dead components came out in the same pass.
+
+## Keep the old versions somewhere
+
+I added an archive for the 2020 Jekyll site, the first Next.js cut and the bento
+version. They are separate saved builds served under `/archive`, rather than
+old layouts reconstructed inside the current component tree.
+
+![A blog-row detail from the archived bento-era website, with a rounded panel, date, summary and outlined tags](/images/devlog/website-archive-blog-list.webp)
+
+_A blog-row detail in the archived bento-era site. Relative dates reflect this later screenshot, not the redesign day._
+
+That kept the earlier work viewable without making the new site carry all three
+designs. I also added robots rules for the archived copies.
+
+The redesign included lint-tooling repair as well: the old `next lint` path no
+longer fitted Next 16. The changed files were checked, while existing errors in
+untouched UI files remained separate work.
+
+[^redesign]: [The blog-first redesign and version archive](https://github.com/johnnyhuy/website/pull/9).

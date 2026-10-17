@@ -1,0 +1,37 @@
+---
+title: Giving the OpenRouter Terraform Provider Its Actual API
+summary: |
+  The OpenRouter repository still contained a Discord implementation. I replaced that mismatch with model and balance data sources, a chat-completion resource, examples and CI for the OpenRouter API.
+date: '2026-05-31 11:55:04 +1000'
+tags:
+  - OpenRouter
+  - Terraform
+  - Developer Tools
+draft: false
+icon: Package
+---
+
+The OpenRouter provider repository had an awkward starting point: its name said
+OpenRouter, but the implementation still contained Discord code. I corrected
+that and landed the first actual OpenRouter provider surface.[^provider]
+
+The initial data sources listed models, looked up an individual model and read
+the balance endpoint. The `openrouter_chat_completion` resource added a request
+path with import support.
+
+## Make the first version usable
+
+I included documentation and examples alongside the implementation, including
+model-comparison and documentation-generation examples. The provider needed
+enough surrounding material to show how the data sources and resource fitted
+together, not just Go types that happened to compile.
+
+The PR records the build, vet and seven tests passing, with lint and test jobs
+in CI. That was the initial provider baseline, rather than a claim to cover every
+OpenRouter endpoint.
+
+It also made the next gaps concrete. Once a completion could be created, there
+was room to inspect the resulting generation and its usage instead of treating
+the response text as the only useful output.
+
+[^provider]: [The initial OpenRouter provider implementation](https://github.com/echohello-dev/terraform-provider-openrouter/pull/1).

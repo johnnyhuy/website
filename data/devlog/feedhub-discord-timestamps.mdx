@@ -1,0 +1,38 @@
+---
+title: Getting Feedhub's Discord Timestamps Accepted
+summary: |
+  Feedhub was passing an RSS date straight into a Discord embed and getting HTTP 400 responses. I switched the payload to an ISO8601 timestamp built from the feed's parsed date fields.
+date: '2026-07-31 05:04:47 +1000'
+tags:
+  - Feedhub
+  - RSS
+  - Discord
+draft: false
+icon: Bug
+---
+
+Feedhub was reading feed items, but Discord was rejecting the posts. The embed
+builder sent the RSS entry's published string directly as its timestamp, which
+could be an RFC822 date rather than the ISO8601 value Discord expected.[^fix]
+
+That made the retry behaviour unhelpful. The item would come around again on
+the next run with the same invalid payload.
+
+## Check the payload at the receiving end
+
+I compared the timestamp variants against a live webhook. The RFC822 value
+returned HTTP 400; the ISO8601 version returned 204. Leaving the timestamp out
+also returned 204.
+
+The fix used feedparser's parsed published date, or its parsed updated date as
+the fallback, and converted that to ISO8601 for the embed.
+
+The issue was not whether the source feed contained a sensible human-readable
+date. It was whether the value passed into the next system matched that system's
+contract.
+
+This was a small change in the feed-to-Discord path, but it explained why reading
+an item successfully could still produce a post that never appeared. Repeating
+the request could not repair a field that was invalid every time.
+
+[^fix]: [Feedhub's Discord timestamp correction and payload checks](https://github.com/echohello-dev/feedhub/pull/2).

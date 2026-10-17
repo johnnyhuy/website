@@ -1,0 +1,38 @@
+---
+title: Getting My Backstage Fork to 1.46
+summary: |
+  I worked through the public Backstage fork's move from 1.39 to 1.46, including the Node runtime, UI package changes and notification plugins. The generated upgrade diff still needed CI and test follow-through.
+date: '2025-12-22 11:11:58 +1100'
+tags:
+  - Backstage
+  - Dependency Upgrades
+  - CI/CD
+draft: false
+icon: Package
+---
+
+I brought my public Backstage fork from 1.39.0 to 1.46.0. The upgrade touched the
+app and backend together, rather than just changing the version in
+`backstage.json`.[^upgrade]
+
+The runtime moved to Node 22 in the Dockerfile. On the frontend, the change
+replaced `@backstage/canon` with `@backstage/ui` and wired in notifications and
+signals. The backend needed the corresponding plugins and the scaffolder
+notification module too.
+
+## Following the diff through the build
+
+I used Copilot for the upgrade work, then followed up on the failing CI and tests
+in the PR. Having a generated diff was useful, but it did not remove the need to
+check how the pieces fitted together.
+
+Native dependencies were part of that: the change included a newer
+`better-sqlite3` and an `isolated-vm` resolution alongside the Node requirements.
+The container, package manifests and application imports all had to describe a
+compatible setup.
+
+The upgrade merged after that follow-through. This was work on the public fork;
+the useful part was treating the official upgrade diff as a starting point for
+integration, not assuming a package bump covered the whole application.
+
+[^upgrade]: [The Backstage 1.39 to 1.46 upgrade and its CI follow-up](https://github.com/echohello-dev/backstage/pull/66).

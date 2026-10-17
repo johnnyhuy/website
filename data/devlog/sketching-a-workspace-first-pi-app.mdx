@@ -1,0 +1,37 @@
+---
+title: Sketching a Workspace-First Pi Desktop App
+summary: |
+  I wrote out a Pi desktop-app concept around the state of work: active repositories, worktrees, diffs and context recovery. It was a product hypothesis to prototype, not a claim that a new workbench was already built.
+date: '2026-04-18'
+tags:
+  - Pi
+  - Product Design
+  - Research
+draft: false
+icon: Workflow
+---
+
+I wrote out a desktop-app concept around Pi's small coding-agent runtime.[^pi]
+The motivation was the friction around switching workspaces and getting back up
+to speed, rather than adding another chat pane with a different skin.
+
+The main screen I wanted was closer to a workbench: which repositories and
+worktrees are active, what changed, what is stale or blocked, and which branch
+owns the conversation.
+
+## Recover the state of work
+
+The initial bets were a workspace overview, meaningful diff previews, a context
+recovery card and visible repository/task state. Provider configuration also
+needed to be easier to inspect than a hidden collection of settings.
+
+Performance was part of the question, not a result. I wanted to test whether long
+conversations, mounted terminals, file trees and large diffs could stay responsive
+without every background update disturbing the whole interface.
+
+This was scope-setting research. The next useful step was a small prototype
+around those workspace and recovery interactions, before expanding into broader
+multi-runtime ambitions. Writing down the product boundary gave that prototype
+something more specific to test than whether the app looked different.
+
+[^pi]: [Pi's coding-agent runtime](https://pi.dev/).

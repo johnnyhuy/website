@@ -1,0 +1,35 @@
+---
+title: Making Skillet's Skill Installer Portable
+summary: |
+  I added Skillet's installer with symlinks as the default and a copy fallback when links fail. Temporary paths, rename-based updates and conflict tests were part of the same change.
+date: '2026-02-21 09:56:54 +1100'
+tags:
+  - Skillet
+  - Developer Tools
+  - Testing
+draft: false
+icon: Package
+---
+
+I added the skill-installation path to Skillet. The default was a symlink, backed
+by canonical storage for each source, with an automatic directory-copy fallback
+when creating the link failed.[^installer]
+
+That gave the installer two outcomes it needed to report honestly: a linked
+installation and a copied installation. They can both put a skill in the target
+location, but they do not have the same relationship to the stored source.
+
+## Updating without half an install
+
+The change staged temporary paths and used renames for the storage and target
+updates. It also surfaced conflicts when an existing path could not safely be
+replaced, rather than trying to turn every failure into an overwrite.
+
+I added tests for the symlink path, the copy fallback, updates and conflicts.
+That kept the fallback in the behaviour being checked instead of leaving it as
+an untested branch that only another machine would discover.
+
+This was a practical installer slice, not just the CLI saying a skill had been
+added. The result had to describe what was actually on disk and how it got there.
+
+[^installer]: [Skillet's portable installer and tests](https://github.com/echohello-dev/skillet/pull/29).
