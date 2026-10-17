@@ -1,0 +1,38 @@
+---
+title: Proposing a Guard for OpenCode's Changelog Input
+summary: |
+  I opened an OpenCode PR after an empty commit message could prompt an AI error response that became release-note text. The proposed change checked inputs before summarisation and rejected empty results.
+date: '2026-01-31 23:52:04 +1100'
+tags:
+  - OpenCode
+  - Open Source
+  - Release Engineering
+draft: false
+icon: Bug
+---
+
+I sent a small upstream PR to OpenCode's changelog script. An empty commit message
+could reach the model, which would ask for the missing input. That response could
+then be treated as a changelog entry instead of a failed summarisation.[^proposal]
+
+The proposed fix handled the boundary before asking the model to do anything:
+
+- Trim commit messages and skip empty ones while collecting commits.
+- Reject an empty message if it still reaches the summarisation function.
+- Require a non-empty summary before accepting the result.
+
+## Keep missing input out of the model call
+
+The PR described a reproduction with Claude Sonnet 4.5. The important part was
+not a different prompt or model choice. There was no commit message to summarise,
+so the script needed to decide that before making the request.
+
+The result check was a second guard, not a guarantee that every possible model
+error would be detected. A non-empty response can still be wrong.
+
+This was a contribution I proposed, rather than a fix I could claim had shipped
+upstream. The PR was later closed without a merge. It remains a useful example
+of a narrow code change around an AI step: validate the ordinary program inputs
+instead of asking the model to compensate for them.
+
+[^proposal]: [The OpenCode changelog-input proposal](https://github.com/anomalyco/opencode/pull/11457).

@@ -1,0 +1,40 @@
+---
+title: Investigating Ghost Workspaces in OpenCode Desktop
+summary: |
+  I investigated real worktrees disappearing from OpenCode Desktop while stale workspace references remained. The useful finding was disagreement between disk, database records and desktop caches, with recovery still needing a restart check.
+date: '2026-03-29'
+tags:
+  - OpenCode
+  - Investigation
+  - Worktrees
+draft: false
+icon: Bug
+---
+
+I investigated an OpenCode Desktop state problem where real Git worktrees and the
+workspace list no longer agreed. Some real directories were missing from the UI,
+while old workspace references were still hanging around.
+
+I compared the worktrees on disk with project and session records, file-backed
+state and the desktop caches. The same repository could have duplicate project
+identities, and a cleaned-up database did not necessarily mean the running UI
+had let go of its older tabs.
+
+There were related upstream worktree reports, but that was context for the
+investigation rather than proof that every local symptom had one cause.[^issue]
+
+## A cleaner record is not the whole recovery
+
+I took backups before the targeted repair. For one repository, the persisted
+project and session records became consistent after deduplication, but cached
+desktop references still remained while the application was open.
+
+That limited what I could conclude. The records looked better; the missing check
+was whether Desktop would reload the right state after a restart and reopening
+the workspace.
+
+The useful outcome was a clearer way to inspect the problem: compare the stores
+against the actual worktrees, preserve the surviving evidence and do not mistake
+a successful database edit for a verified end-to-end recovery.
+
+[^issue]: [The related OpenCode Desktop worktree report](https://github.com/anomalyco/opencode/issues/19085).

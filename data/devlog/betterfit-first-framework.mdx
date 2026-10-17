@@ -1,0 +1,37 @@
+---
+title: Landing BetterFit's First Training Framework
+summary: |
+  I merged the first BetterFit Swift framework, giving workouts, plans, equipment swaps and recovery a shared model. The initial tracking and adaptation logic was a foundation to develop, not a validated training coach.
+date: '2025-12-24 16:08:53 +1100'
+tags:
+  - BetterFit
+  - Swift
+  - Prototyping
+draft: false
+icon: Package
+---
+
+I merged BetterFit's first Swift Package framework. It gave the strength-training
+idea a concrete shape: exercises, workouts, templates and training plans, with
+managers for plans, equipment swaps, recovery and social features.[^framework]
+
+That structure mattered before the later screen work. A workout needed to remain
+the same piece of data when it came from a template, had equipment swapped or
+was passed to the tracking service.
+
+## A starting point for the coach
+
+The first tracking service accepted motion data and used magnitude thresholds
+for repetitions and rest. The adaptation service applied rules based on workout
+completion and progression, including volume changes and plateau detection.
+
+Those were initial implementations to develop and test. The presence of an
+`AIAdaptationService` class did not make it a trained model, and a threshold-based
+rep detector was not proof of reliable watch tracking in a real workout.
+
+The useful milestone was getting the models and service boundaries into one
+framework. It made the next work more specific: improve the tracking, exercise
+the adaptation rules and build an app experience around data that already had a
+place to live.
+
+[^framework]: [BetterFit's initial Swift framework](https://github.com/echohello-dev/betterfit/pull/1).
