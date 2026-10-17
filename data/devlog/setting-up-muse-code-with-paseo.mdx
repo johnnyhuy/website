@@ -1,0 +1,82 @@
+---
+title: Setting Up Muse Code and Comparing Coding Plans
+summary: |
+  I got Meta's Muse Code CLI running locally and wired into Paseo, then compared its subscription terms with the other coding plans I run. The setup surfaced a login that would not persist, a Contributor mode that defaults on, and a quota meter that reports nothing.
+date: '2026-10-17'
+tags:
+  - Muse Code
+  - Paseo
+  - AI Tooling
+draft: false
+icon: Compass
+---
+
+Muse Code is Meta's coding CLI, and today I got it installed and connected to
+Paseo before deciding where it fits beside the coding plans I already run.[^muse]
+This is a setup and research pass. I have not compared coding quality against
+anything yet, and nothing here is a benchmark.
+
+The install is ordinary. The credential handling is where the surprises were.
+The first browser login reached Meta but the credential store failed inside the
+execution sandbox, and repeating the login with Keychain access succeeded. With
+no API key in the environment, the sessions use the account login, a live model
+check came back fine, and Paseo's native Muse provider detected the CLI and
+listed its models.[^paseo]
+
+## Three things to settle before trusting it with real code
+
+Contributor mode defaults on. It trades higher allowance for permission to
+train on prompts, code, files and responses, and the setting is not available on
+some account types.[^contrib] My smoke test ran with it off, but the account
+default is still on. That is worth checking before any private repository work,
+and it is a good example of a privacy default sitting behind a usage increase.
+
+Subscription credentials do not travel. The subscription covers the Muse Code
+CLI signed in to the vendor account; additional API keys are billed separately
+pay-as-you-go, and a key in the environment takes precedence over the browser
+login.[^auth] So the plan funds interactive work in its own harness. Calls from
+other tools are a different bill.
+
+The quota meter reports nothing. The usage endpoint returned an empty result,
+so remaining allowance is unknown from the API. Local session logs are the only
+usage signal available.
+
+## What the terms comparison changed
+
+I checked the published terms of the plans in my stack rather than assuming the
+pricing pages describe the same product. The billing units differ, but the use
+restrictions are the sharper distinction. One coding-tool token plan documents
+its quota as valid only inside supported programming tools, treating scripted or
+backend API use as a violation.[^mimo] Consumer Claude OAuth is documented for
+individual use, with third-party agent routing blocked since April 2026.
+ChatGPT plan usage is tolerated in preferred coding tools while programmatic
+workflows are directed to API keys. The practical rule I took away: interactive
+coding, including agent-harness work, is what these subscriptions are for, and
+unattended work belongs on pay-as-you-go keys.
+
+The usage shape from my first local session logs supports that. In under two
+hours the harness made a little over 300 model completions across dozens of
+subagent calls, and about 97 per cent of input tokens were cache reads. These
+are local log totals, not a quota meter reading, but the shape is the useful
+part: a plan priced in prompts per few hours would be exhausted almost
+immediately at this workload, and a multiplier-style allowance is the only fit.
+
+## Open question
+
+Whether Muse earns a permanent place beside the existing seats is unmeasured.
+The test I want is three representative tasks: a small fix on the fast model, a
+multi-file change on the main model, and one hard diagnosis on the top-tier
+model that only the premium plans include. That last one is the only way to
+tell whether the premium tiers earn their keep, and it has not run yet. For now
+this is an additional lane for interactive work, not a replacement for
+anything.
+
+[^muse]: [Muse Code](https://dev.meta.ai/lp/muse-code).
+
+[^paseo]: [Paseo's Muse Code integration](https://paseo.sh/docs/muse-code.md).
+
+[^contrib]: [What a Muse Code subscription includes](https://dev.meta.ai/help/subscriptions/what-is-a-muse-code-subscription).
+
+[^auth]: [Muse Code authentication](https://dev.meta.ai/docs/muse-code/auth).
+
+[^mimo]: [MiMo Token Plan subscription terms](https://mimo.mi.com/docs/tokenplan/subscription), with the Muse restrictions on the [subscription page](https://dev.meta.ai/docs/muse-code/subscriptions). The other plan comparisons come from [Claude pricing](https://claude.com/pricing) and [ChatGPT and Codex pricing](https://learn.chatgpt.com/docs/pricing).
