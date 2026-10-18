@@ -1,0 +1,67 @@
+---
+title: Wiring the MiMo Token Plan and Deciding Where Each Job Goes
+summary: |
+  I moved interactive coding onto a MiMo token plan and wired it into OpenCode, Pi and MiMo Code, then used the Artificial Analysis board to split my jobs across plans. The new Pro model sat level with Grok 4.7 on the intelligence index at about a sixth of the list rate, and the plan's credit rules made cache reuse the number that matters.
+date: '2026-09-27'
+tags:
+  - AI Tooling
+  - OpenCode
+  - Pi
+draft: false
+icon: TrendingUp
+---
+
+A week earlier the plan was MiniMax for the unattended pile, the top
+proprietary seats for hard judgement and MiMo as a second unattended option.
+After I burned through the MiniMax credits I moved interactive coding onto a
+MiMo token plan, wired it into OpenCode, Pi and MiMo Code, and sat down with
+the Artificial Analysis board to decide where each kind of job should
+run.[^aa] This is a routing and research pass. I have not benchmarked coding
+quality against anything.
+
+The wiring is ordinary apart from two details. Each plan key is scoped to one
+regional endpoint; pointing the other regions at my key returned 401. And the
+plan key cannot read the remaining credit pool at all, so the only usage signal
+I have is what the harness logs record locally.
+
+## What the board actually said
+
+My first comparison pull had one real question in it: Pro against the Flash
+variant I expected to run cheap sessions on. Flash was not on the board at all
+yet, so that comparison did not exist. Pro was there, and against the MiniMax
+model that had been doing my unattended work it gained about 17 points on the
+intelligence index at essentially the same blended list rate, while the
+MiniMax model was several times faster in the same pull.
+
+Against Grok 4.7 it was a statistical tie, 46.3 to 46.4, at about a sixth of
+Grok's blended list rate, and the weights are MIT licensed.[^aa][^weights]
+When I re-checked before writing this up, Flash finally had its own row. A
+board is a snapshot: the empty coding columns on these rows are unpublished,
+not zero.
+
+## Where each job goes
+
+The split I landed on: interactive coding, including agent-harness work, runs
+on the MiMo plan. Unattended cron and batch scripts stay on MiniMax. Hard
+judgement calls stay on the top seats. The plan's terms back that split; its
+quota covers the coding tools, not scripted API calls.[^plan]
+
+The credit rules changed how I think about the burn. Pro's published rates
+charge 2.5 credits for a cache-hit input token, 300 for a cache miss and 600
+for output, so a cache miss costs 120 times a cache hit on input alone.[^plan]
+The large majority of input tokens in my first local totals were cache reads,
+which is the cheap shape. A week of cold contexts would look completely
+different, and the logs are the only meter I have.
+
+## Open question
+
+Whether Pro earns the interactive seat on quality is untested. The board ties
+it with Grok 4.7 on an aggregate index, and my own workload is cache-heavy in
+a way the board does not measure. Flash, now scored, is the obvious
+cheap-session candidate, but it has not been in front of real work yet either.
+
+[^aa]: [Artificial Analysis model comparison](https://artificialanalysis.ai/models).
+
+[^weights]: [The MiMo-V2.6 release](https://mimo.mi.com/docs/en-US/news/latest/v2-6) and the [open-sourced weights on Hugging Face](https://huggingface.co/collections/XiaomiMiMo/mimo-v26).
+
+[^plan]: [MiMo Token Plan quota rules and credit rates](https://mimo.mi.com/docs/en-US/price/token-plan), with the supported tool list on the [AI tools overview](https://mimo.mi.com/docs/en-US/tokenplan/integration/tools-overview).
