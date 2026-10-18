@@ -1,0 +1,65 @@
+---
+title: My Self-Hosted Runners Had Been Dead for Six Months
+summary: |
+  Two stacked failures kept my self-hosted GitHub Actions runners from completing a deploy since April: jobs died at the toolchain setup step for two months, then a cluster migration removed the runners entirely. The workflow that would reinstall them runs on those same runners, so nothing ever self-healed.
+date: '2026-10-18'
+tags:
+  - GitHub Actions
+  - CI/CD
+  - Investigation
+draft: false
+icon: Workflow
+---
+
+The deploy workflows for my self-hosted runner stack had not completed
+successfully since April, and nothing in the setup told me. I went through the
+run history this weekend and found two separate outages stacked on top of each
+other.
+
+From January to April the scale set was healthy and deploys ran. The last
+success was 10 April. From 11 April to mid-June the runner still existed but
+every job died in the same place: checkout succeeded, then the `mise` setup
+step failed, on every run. From mid-June onwards there was no runner at all.
+Since then both workflows have been firing a job a day; each one sits queued
+for roughly a day, comes back cancelled, and reports no runner name. A little
+over 120 dead runs per workflow later, the pattern was impossible to miss once
+I looked.
+
+Mid-June is when I migrated the cluster from k3s to Talos. The old cluster went
+away with the old runner install on it, and I never reinstalled the runner
+controller on the new one. The org runner list is empty and the controller's
+custom resources are not in the cluster at all.
+
+The reason this never healed itself is a chicken-and-egg I built in on purpose:
+the deploy workflow that installs the runners runs on those same runners. With
+the runners gone, the one job that could bring them back has nothing to run on,
+so every daily attempt is structurally guaranteed to do nothing.
+
+A manual install would have failed too. The chart's node selector still asks
+for a label the workers no longer carry after the migration, so the controller
+and runner pods would sit Pending forever. The storage class it wants does
+still exist, so that one is not a blocker.
+
+I cannot pin the April failure on any specific change. That push bundled a
+bootstrap change and a secrets key rotation together, and the logs are long
+gone. GitHub keeps build logs for 90 days by default, and the API now answers
+410 for those April runs.[^logs] What is solid is the shape of it: a
+deterministic failure at a single step for two months while daily runs kept
+firing, and nobody triaged it because a cancelled run on the dashboard looked
+too quiet to be an outage.
+
+The fix itself is small and I have not executed any of it yet. Repoint the
+three node selectors at the label the workers actually carry, bootstrap the
+chart once from a workstation to break the cycle, and confirm the GitHub App
+credentials still register a listener. Then dispatch one deploy by hand and
+watch it end to end, because the April failure may well come back and this
+time I want the real error captured instead of aged out.
+
+What is still open is the quietness. My working answer is an alert on any job
+queued longer than an hour, plus a rethink of whether the runner deploy should
+depend on runners at all. Moving it onto hosted runners would widen the trust
+surface, since it would need cluster credentials from a GitHub-hosted machine,
+so I have not decided that one. Either way, six months of queued-then-cancelled
+runs should never have looked like a normal dashboard.
+
+[^logs]: https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts

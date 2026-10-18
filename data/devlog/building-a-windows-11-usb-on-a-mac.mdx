@@ -1,0 +1,36 @@
+---
+title: Building a Windows 11 Installer USB on a Mac
+summary: |
+  A computer of mine is due for a clean Windows 11 reinstall, and the only machine I had to build the installer USB on was a Mac. The ISO's install.wim is past FAT32's 4 GB file limit, so the fix is to split it into .swm chunks that Windows Setup reads natively.
+date: '2026-10-18'
+tags:
+  - Windows
+  - macOS
+  - Developer Tools
+draft: false
+icon: Wrench
+---
+
+One of my computers is due for a clean Windows 11 install this weekend, and the
+only machine I had to hand for building the installer USB was my Mac. That
+turned a copy-and-go job into a small puzzle.
+
+UEFI boot wants the stick formatted as FAT32, and FAT32 has a 4 GB per-file
+ceiling. The ISO's `sources/install.wim` is 7.6 GB. Microsoft's deployment docs
+describe this exact corner and the documented way out: split the image.[^split]
+
+Windows tooling for that is DISM, which the Mac does not have, so I used
+wimlib's split command instead. It writes the same `.swm` format: three chunks
+in my case, two just under 3.7 GB and a small remainder. The part I checked
+rather than assumed is what happens on the other end. Windows Setup consumes a
+split image directly when the `.swm` files sit in the media's `sources` folder
+under the `install.swm` / `install2.swm` naming, so nothing needs reassembling
+on the target machine.[^split]
+
+I verified the stick before ejecting it rather than trusting the copy step: all
+eleven editions the ISO ships are present in the split image, the UEFI boot
+files are in place, and no file on the volume is over the FAT32 limit. The
+reinstall itself has not run yet, so this is a built and checked installer,
+not a finished machine.
+
+[^split]: https://learn.microsoft.com/en-us/windows-hardware/manufacture/desktop/split-a-windows-image--wim--file-to-span-across-multiple-dvds
