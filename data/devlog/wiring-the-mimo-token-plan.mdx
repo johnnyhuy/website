@@ -46,12 +46,20 @@ on the MiMo plan. Unattended cron and batch scripts stay on MiniMax. Hard
 judgement calls stay on the top seats. The plan's terms back that split; its
 quota covers the coding tools, not scripted API calls.[^plan]
 
-The credit rules changed how I think about the burn. Pro's published rates
-charge 2.5 credits for a cache-hit input token, 300 for a cache miss and 600
-for output, so a cache miss costs 120 times a cache hit on input alone.[^plan]
-The large majority of input tokens in my first local totals were cache reads,
-which is the cheap shape. A week of cold contexts would look completely
-different, and the logs are the only meter I have.
+The credit rules changed how I think about the burn. These are Pro's published
+rates used in this comparison:[^plan]
+
+| Pro token category | Credits per token |
+| ------------------ | ----------------: |
+| Cache-hit input    |               2.5 |
+| Cache-miss input   |               300 |
+| Output             |               600 |
+
+A cache miss costs 120 times a cache hit on input alone. The large majority of
+input tokens in my first local totals were cache reads, which is the cheap
+shape. A week of cold contexts would look completely different, and the logs
+are the only meter I have. These rates explain the routing decision; they are
+not a live quota reading.
 
 ## Open question
 

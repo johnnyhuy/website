@@ -27,6 +27,17 @@ could download weights on first use, so local inference still needed a model
 setup path; it was not the same thing as an app with no installation or download
 requirements.
 
+```mermaid
+flowchart TD
+    accTitle: The initial local transcription path
+    accDescr: Desktop recording produces an audio file. The Python worker loads the Parakeet MLX model, transcribes the file and returns the result to the desktop.
+    A["Desktop recording"] --> B["Audio file"]
+    B --> C["Python worker: Parakeet MLX"]
+    C --> D["Transcription result in desktop"]
+```
+
+_Local transcription still required model setup, including a possible first-use weights download._
+
 I am keeping this milestone tied to the first commit. The PR later grew more
 model-management and cloud-provider features, and did not merge until September.
 Those later changes were not all present on this day.

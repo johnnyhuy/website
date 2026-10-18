@@ -31,6 +31,12 @@ Native dependencies were part of that: the change included a newer
 The container, package manifests and application imports all had to describe a
 compatible setup.
 
+| Boundary | Changes in this upgrade                                      |
+| -------- | ------------------------------------------------------------ |
+| Runtime  | Node 22 in the container, native dependency compatibility    |
+| Frontend | `@backstage/ui`, notifications and signals                   |
+| Backend  | Corresponding plugins and the scaffolder notification module |
+
 The upgrade merged after that follow-through. This was work on the public fork;
 the useful part was treating the official upgrade diff as a starting point for
 integration, not assuming a package bump covered the whole application.

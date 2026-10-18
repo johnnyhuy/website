@@ -36,6 +36,32 @@ other.[^perms] My overwrites allowed Send Messages for a role the bot does not
 have, so every reply came back 50013, missing permissions, while the reaction
 kept working because it needs a permission the bot does have.
 
+```mermaid
+---
+config:
+  sequence:
+    width: 70
+    actorMargin: 15
+    diagramMarginX: 4
+    mirrorActors: false
+    wrap: true
+---
+sequenceDiagram
+    accTitle: A reaction and a reply use different permissions
+    accDescr: Discord accepts the bot reaction and the model returns text, but Discord rejects the reply with missing permissions.
+    participant D as Discord
+    participant B as Bot
+    participant M as Model
+    D->>B: Mention
+    B->>D: Reaction:<br/>allowed
+    B->>M: Generate
+    M-->>B: 200:<br/>reply text
+    B->>D: Send reply
+    D-->>B: 50013:<br/>no permission
+```
+
+_The reaction showed activity, while the send response identified the delivery failure._
+
 That mismatch is the part worth remembering. An ack reaction proved the
 gateway received the mention and a reply was generated. It proved nothing about
 whether the bot could post. I spent the first stretch of debugging assuming

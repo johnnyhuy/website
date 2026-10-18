@@ -19,6 +19,32 @@ Streaming events came back through IPC into the timeline, including cards for
 bash, read, edit and write activity. That gave the renderer something real to
 present instead of a conversation-shaped mockup.
 
+```mermaid
+---
+config:
+  sequence:
+    width: 70
+    actorMargin: 15
+    diagramMarginX: 4
+    mirrorActors: false
+    wrap: true
+---
+sequenceDiagram
+    accTitle: Pidex session round trip
+    accDescr: The workbench sends resume and prompt operations through IPC to the main process, which communicates with Pi RPC and streams events back to the timeline.
+    participant W as UI
+    participant M as Main
+    participant P as Pi RPC
+    W->>M: Resume<br/>via IPC
+    M->>P: Start<br/>Pi RPC
+    W->>M: Prompt
+    M->>P: Prompt
+    P-->>M: Tool<br/>events
+    M-->>W: Cards<br/>via IPC
+```
+
+_The check exercised the session and tool-output round trip, beyond opening a window._
+
 ## Test the round trip
 
 The PR's Electron check expanded a workspace, resumed a session, sent a bash

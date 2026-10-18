@@ -51,6 +51,18 @@ no longer serve Release files, so the whole play fails at package setup and the
 upgrade logic never runs. Nothing in the k3s changes is wrong as far as I can
 tell, it just has not been exercised yet.
 
+```mermaid
+flowchart TD
+    accTitle: Where the upgrade deploy stopped
+    accDescr: The merged pin reached package setup, which failed on the old Ubuntu mirrors. The planned serial k3s restarts were never reached.
+    A["Merged pin: k3s 1.34.12"] --> B["apt package setup"]
+    B --> C["Mirror failure: play stops"]
+    C -.->|not reached| D["Serial controller upgrades"]
+    D -.-> E["Ready, etcd and API checks"]
+```
+
+_The merged upgrade logic was still unexercised. The cluster remained on 1.33.1._
+
 The sharper surprise was that the deploy run still went green. Every deploy
 step in that workflow is marked `continue-on-error`, so a failed step fails the
 step and not the job, and the run ends looking successful. The failure is only

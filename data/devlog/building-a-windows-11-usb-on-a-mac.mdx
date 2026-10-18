@@ -27,6 +27,17 @@ split image directly when the `.swm` files sit in the media's `sources` folder
 under the `install.swm` / `install2.swm` naming, so nothing needs reassembling
 on the target machine.[^split]
 
+```mermaid
+flowchart TD
+    accTitle: Splitting a Windows installer image on macOS
+    accDescr: Split install.wim with wimlib, put the resulting SWM parts in the FAT32 USB sources folder, and let Windows Setup read them directly.
+    A["ISO: install.wim, 7.6 GB"] --> B["wimlib split"]
+    B --> C["USB sources folder<br/>install.swm, install2.swm, install3.swm"]
+    C --> D["Windows Setup reads the parts"]
+```
+
+_The split changes the installer media layout. The reinstall itself was still ahead._
+
 I verified the stick before ejecting it rather than trusting the copy step: all
 eleven editions the ISO ships are present in the split image, the UEFI boot
 files are in place, and no file on the volume is over the FAT32 limit. The

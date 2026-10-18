@@ -29,6 +29,18 @@ I added tests for the symlink path, the copy fallback, updates and conflicts.
 That kept the fallback in the behaviour being checked instead of leaving it as
 an untested branch that only another machine would discover.
 
+```mermaid
+flowchart TD
+    accTitle: Skillet linked and copied installation paths
+    accDescr: Try linking the target to canonical storage. If the symlink fails, copy the directory and report which kind of installation was created.
+    A["Source storage"] --> B{"Link works?"}
+    B -->|yes| C["Linked install"]
+    B -->|no| D["Copy directory"]
+    D --> E["Copied install"]
+```
+
+_The fallback changes how the target relates to storage, so the reported result matters._
+
 This was a practical installer slice, not just the CLI saying a skill had been
 added. The result had to describe what was actually on disk and how it got there.
 

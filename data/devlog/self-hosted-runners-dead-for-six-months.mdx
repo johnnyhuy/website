@@ -35,6 +35,17 @@ the deploy workflow that installs the runners runs on those same runners. With
 the runners gone, the one job that could bring them back has nothing to run on,
 so every daily attempt is structurally guaranteed to do nothing.
 
+```mermaid
+flowchart TD
+    accTitle: The runner bootstrap dependency cycle
+    accDescr: The deploy needs a self-hosted runner, but installing that runner needs the same deploy. A proposed workstation bootstrap breaks the dependency.
+    A["Deploy workflow"] -->|needs| B["Self-hosted runner"]
+    B -->|installed by| A
+    C["Proposed bootstrap"] -.->|install once| B
+```
+
+_At this point the bootstrap was proposed. The deploy could not repair its own missing runner._
+
 A manual install would have failed too. The chart's node selector still asks
 for a label the workers no longer carry after the migration, so the controller
 and runner pods would sit Pending forever. The storage class it wants does
@@ -61,5 +72,7 @@ depend on runners at all. Moving it onto hosted runners would widen the trust
 surface, since it would need cluster credentials from a GitHub-hosted machine,
 so I have not decided that one. Either way, six months of queued-then-cancelled
 runs should never have looked like a normal dashboard.
+
+Follow-up: [restoring the runner stack](/devlog/restoring-the-runner-stack) exposed the next failures and records the later end-to-end deploy checks.
 
 [^logs]: https://docs.github.com/en/actions/how-tos/manage-workflow-runs/download-workflow-artifacts

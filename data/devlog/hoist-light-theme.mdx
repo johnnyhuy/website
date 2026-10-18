@@ -25,6 +25,12 @@ macOS instead of applying a dark tint regardless of the selected appearance.
 That was a different layer from the renderer CSS, so fixing only the web colours
 would have left the window looking wrong.
 
+| Layer               | What had to follow the appearance                        |
+| ------------------- | -------------------------------------------------------- |
+| Surfaces            | Warm paper, panels, text and borders                     |
+| Status and controls | Shared semantic tokens instead of dark-only colours      |
+| Native window       | System appearance instead of a permanent dark glass tint |
+
 ## Checking both appearances
 
 The change passed the build, typecheck, lint and tests. I also checked Watchtower
