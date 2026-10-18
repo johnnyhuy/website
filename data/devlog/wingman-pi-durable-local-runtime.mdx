@@ -1,0 +1,59 @@
+---
+title: Giving Wingman a Runtime That Can Resume
+summary: |
+  I wired Pi Durable into a local Wingman prototype while keeping retrieval in Python. Killing a process mid-generation and restarting a failed delivery made the boundary clearer: recovering the model turn and getting the answer into Slack are separate jobs. The tests pass locally; the change is unmerged and has not reached live Slack.
+date: '2026-10-19'
+tags:
+  - Wingman
+  - AI Agents
+  - Reliability
+draft: false
+icon: Bot
+---
+
+After the logging work, I asked whether [Wingman](https://github.com/echohello-dev/wingman)
+could move its agent runtime to Pi and use durable agents. I chose
+[Pi Durable](https://github.com/earendil-works/pi/tree/main/packages/durable),
+then built a local integration around its SQLite storage. The package is
+experimental, so this is a prototype rather than a finished migration.[^durable]
+
+Python still retrieves the relevant Slack threads and documents. The new Node
+runtime handles model turns and conversation history, with a persistent job
+queue around it. A stable request ID identifies a retry of the same question;
+the conversation ID identifies the history it belongs to. Those are different
+things. Reusing a request ID with a different question is rejected.
+
+The important boundary turned out to be after generation. A recovered model
+answer does not mean Slack received it. I persist the answer before attempting
+delivery, so a failed send can retry the saved answer without asking the model
+to generate it again. The intended Slack path looks like this:
+
+```mermaid
+flowchart TD
+    A["Persist admitted job"] --> B["Pi turn and conversation"]
+    B --> C["Persist answer for delivery"]
+    C --> D["Post final Slack reply"]
+    D -->|acknowledged| E["Mark job done"]
+    D -->|send failed| F["Persist retry state"]
+    F -->|retry saved answer| D
+```
+
+That still leaves an awkward case: Slack can accept a message and the
+acknowledgement can get lost. The sender uses a stable message ID, but I am
+still treating delivery as at least once. An exhausted delivery failure needs
+inspection before replaying it; blindly resubmitting could duplicate a reply.
+
+The useful local check was killing the runtime process during generation. The
+test reopened the same SQLite storage, submitted the same request ID and got a
+recovered answer. A separate test failed delivery, reopened the queue and sent
+the persisted answer without a second generation. These use a fake model
+provider and real SQLite, not live model or Slack calls.
+
+Five runtime tests and 26 focused backend tests passed locally, along with the
+container build and its runtime tests. The implementation remains uncommitted
+and unmerged, and I have not deployed it or exercised the live APIs. It also
+changes Slack to final replies instead of progress streams, and does not import
+the old PostgreSQL conversation history. Those are real migration decisions
+still to validate, not details that persistence solves for me.
+
+[^durable]: [Pi Durable's persistence, resumption and request-ID semantics](https://raw.githubusercontent.com/earendil-works/pi/main/packages/durable/README.md).
