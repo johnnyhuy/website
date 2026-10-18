@@ -23,6 +23,19 @@ seconds and let an empty or failed selection reach the any-iPhone fallback.
 That addressed the setup path rather than just increasing the timeout around
 the whole CI job.
 
+```mermaid
+flowchart TD
+    accTitle: Simulator selection after the cold-start fix
+    accDescr: Warm CoreSimulator, try device selection, and reach the any-iPhone fallback when selection fails or returns nothing.
+    A["Warm CoreSimulator"] --> B["Try selection: 60 seconds"]
+    B --> C{"Device selected?"}
+    C -->|yes| D["Launch app"]
+    C -->|no or failed| E["Any-iPhone fallback"]
+    E --> D
+```
+
+_The revised setup lets a failed selection reach the fallback before app launch._
+
 ## First launch has its own cost
 
 There was a second budget problem after selection. The app-launch poll allowed

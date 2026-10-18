@@ -19,6 +19,17 @@ The completion's response ID gives that lookup something concrete to follow.
 I also added `openrouter_credits` for account-level purchased and used credits,
 without mixing those totals up with one generation's usage.
 
+```mermaid
+flowchart TD
+    accTitle: Generation usage and account credits are separate lookups
+    accDescr: A completion response ID feeds the generation data source for request usage, while the credits data source reports account totals independently.
+    A["Completion"] -->|response ID| B["Generation lookup"]
+    B --> C["Request usage"]
+    D["Credits lookup"] --> E["Account totals"]
+```
+
+_A request audit follows its generation ID; account totals answer a different question._
+
 ## Zero still means something
 
 The same pass exposed more request parameters. That brought a subtle configuration

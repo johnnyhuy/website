@@ -31,6 +31,20 @@ the usual install directories (Bun, Homebrew, `~/.local/bin` and mise shims),
 and only then a walk of PATH. The spawned session also gets those directories
 added to its own PATH, and Windows builds look for `pi.cmd`, `pi.exe` and `pi`.
 
+```mermaid
+flowchart TD
+    accTitle: Pidex executable lookup order
+    accDescr: Try a valid absolute PIDEX_PI override, usual install directories, then PATH. Spawn the resolved executable or return an error to the window.
+    A{"PIDEX_PI?"} -->|yes| D["Spawn pi"]
+    A -->|no| B{"Install dirs?"}
+    B -->|yes| D
+    B -->|no| C{"PATH?"}
+    C -->|yes| D
+    C -->|no| E["Show error"]
+```
+
+_The resolver no longer depends on Finder inheriting a login shell environment._
+
 A missing binary now comes back to the window as an error the session creation
 returns, rather than an uncaught exception in the main process. A failed launch
 reads as a failed launch instead of a dead app, and the message says what to do:

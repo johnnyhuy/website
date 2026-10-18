@@ -32,6 +32,18 @@ EXPOSE 8080 8081 9443
 Both GoReleaser Docker entries now use it. The source-building Dockerfile stayed
 in place for the local `docker-build` task.
 
+```mermaid
+flowchart TD
+    accTitle: Separate source-build and release-packaging inputs
+    accDescr: The local Docker path receives a source checkout. The GoReleaser path receives an already-built binary and uses its own packaging Dockerfile.
+    A["Checkout"] --> B["Compile source"]
+    B --> C["Image"]
+    D["Built binary"] --> E["Copy binary"]
+    E --> C
+```
+
+_Two build contexts, with a Dockerfile that matches each input._
+
 ## Package the thing already built
 
 The final image kept its distroless base, non-root user, entrypoint and ports.

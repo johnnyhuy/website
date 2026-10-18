@@ -23,10 +23,12 @@ to happen twice.
 
 ## Four things to keep separate
 
-- The conversation and its configuration.
-- The execution state of unfinished work.
-- The files and environment the tools operate on.
-- External actions that may already have succeeded.
+| Layer                          | Recovery question                                |
+| ------------------------------ | ------------------------------------------------ |
+| Conversation and configuration | Can I reload the history and settings?           |
+| Unfinished execution           | Where does interrupted work resume?              |
+| Files and environment          | Does the checkout the tools need still exist?    |
+| External actions               | Did the request succeed before the process died? |
 
 The Cloudflare integrations helped make the distinction concrete. The OpenCode
 example replaces unsupported local file and shell tools rather than pretending
@@ -42,6 +44,8 @@ The prototype I would want next is deliberately small: one persistent
 conversation, one replay-safe read and one idempotent write, with crashes injected
 around the write and the result recording. That remains a proposed test, not a
 result from this research pass.
+
+Later, I explored that boundary in a [local Wingman runtime prototype](/devlog/wingman-pi-durable-local-runtime), including separate checks for generation recovery and delivery retries.
 
 [^discussion]: [The OpenCode and personal-agent section of Syntax Weekly](https://www.youtube.com/watch?v=Ov_KPnwuu0U&t=773s).
 

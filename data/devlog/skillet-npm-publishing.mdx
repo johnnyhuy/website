@@ -24,6 +24,17 @@ The useful addition was the reusable npm-publishing dry-run task. CI now exercis
 the package path, including packing the artifact and running its command, rather
 than stopping at whether the source built.
 
+```mermaid
+flowchart TD
+    accTitle: Test the packed CLI before publishing
+    accDescr: Build the bundle, pack the npm artifact, and run the packed command as part of the CI dry-run path.
+    A["Build CLI bundle"] --> B["Pack npm artifact"]
+    B --> C["Run packed command"]
+    C --> D["CI dry-run result"]
+```
+
+_The dry run checks the package users receive, rather than only the source build._
+
 That tests a different boundary. The executable can work in the repository while
 the package has the wrong files, entrypoint or command name. Aligning the docs
 with `npx sklt` only helps if the packed package actually provides that command.

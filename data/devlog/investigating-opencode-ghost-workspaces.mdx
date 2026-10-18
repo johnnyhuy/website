@@ -20,6 +20,15 @@ state and the desktop caches. The same repository could have duplicate project
 identities, and a cleaned-up database did not necessarily mean the running UI
 had let go of its older tabs.
 
+| Evidence to compare                  | What it can establish                              |
+| ------------------------------------ | -------------------------------------------------- |
+| Git worktrees on disk                | Which directories actually exist                   |
+| Project and session records          | Which identities the persisted records refer to    |
+| File-backed state and desktop caches | Which workspace references the UI may still retain |
+| Restart and reopen check             | Whether the repaired records reach the running UI  |
+
+_The last check remained open; consistent records alone were not a verified recovery._
+
 There were related upstream worktree reports, but that was context for the
 investigation rather than proof that every local symptom had one cause.[^issue]
 

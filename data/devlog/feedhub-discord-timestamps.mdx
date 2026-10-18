@@ -20,9 +20,15 @@ the next run with the same invalid payload.
 
 ## Check the payload at the receiving end
 
-I compared the timestamp variants against a live webhook. The RFC822 value
-returned HTTP 400; the ISO8601 version returned 204. Leaving the timestamp out
-also returned 204.
+I compared the timestamp variants against a live webhook:
+
+| Timestamp sent to the webhook | Observed response |
+| ----------------------------- | ----------------- |
+| RSS RFC822 date string        | HTTP 400          |
+| ISO8601 date string           | HTTP 204          |
+| Timestamp omitted             | HTTP 204          |
+
+_Omitting the timestamp was a control check; the fix kept it and converted the value._
 
 The fix used feedparser's parsed published date, or its parsed updated date as
 the fallback, and converted that to ISO8601 for the embed.
