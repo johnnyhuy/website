@@ -1,0 +1,44 @@
+---
+title: Keeping My Now Page Current on a Static Site
+summary: |
+  I added a Now page, then asked how to keep Tinkering and Writing current without maintaining two more lists. They now select published content during the build. The useful distinction was between rebuilding the page and changing the work it describes: an automated rebuild should not make an old update look new.
+date: '2026-10-19'
+tags:
+  - Next.js
+  - Static Sites
+  - Content
+draft: false
+icon: RefreshCw
+---
+
+I added a [Now page](/now) to this website, then asked whether Tinkering could
+follow my recent work and Writing could preview recently published posts. Keeping
+separate lists by hand would give me two more places to forget an update.
+
+Both sections now select from the site's existing content during the build.
+Tinkering takes the latest three devlogs; Writing takes the latest three blog
+posts, including their summaries and existing image previews. The filter happens
+before sorting and taking the first three:
+
+```ts
+posts.filter(({ draft, date }) => {
+  const due = Date.parse(date) <= buildTime
+  return draft !== true && due
+})
+```
+
+That second condition matters on a static site. A future-dated post stays out of
+these lists until a build runs after its date. The browser is serving exported
+HTML, so crossing midnight alone does not refresh the page.[^export]
+
+I also kept the Updated label tied to the latest date among the manual update
+and the selected content. Rebuilding the same material should not make it look
+as though I did new work. The manual section remains editable; the content lists
+reuse what I already publish.
+
+The [change is merged](https://github.com/johnnyhuy/website/pull/74). The production
+export checks covered list order, summaries, links and the new route. This does
+not turn publication dates into a live activity tracker: an edit that keeps its
+old content date will keep that date here too.
+
+[^export]: [Next.js static exports run Server Components during the build](https://nextjs.org/docs/app/guides/static-exports#server-components).

@@ -1,7 +1,7 @@
 ---
 title: Making BetterFit Easier to Use Between Sets
 summary: |
-  I built out BetterFit's watch workout flow around one frequent action: log the set without hunting through controls. Rest stays alongside the next set, undo reopens the previous one, and pausing freezes both workout time and the rest countdown. This is a local simulator prototype, with physical-watch checks still ahead.
+  I built out BetterFit's watch workout flow around one frequent action: log the set without hunting through controls. The small simulator then exposed clipped values and awkward wrapping. Inline Crown editing, separate title and rest rows, and native UI tests made the interaction more concrete. The change is merged, with physical-watch checks still ahead.
 date: '2026-10-19'
 tags:
   - BetterFit
@@ -19,19 +19,37 @@ on the 40 mm simulator made the amount of scrolling hard to ignore.
 I compared [Strong's focused set screen and Crown editing](https://help.strongapp.io/article/224-workout-on-apple-watch)
 with [Hevy's automatic rest timer](https://www.hevyapp.com/features/workout-rest-timer/).
 The change I wanted was a pinned Log Set action. Recording the displayed targets
-should take one tap; changing them can open an editor with the Crown and large
-plus/minus buttons. Pause, undo and rest preferences live in Actions.
+should take one tap. Tapping reps or weight now selects that value for inline
+Crown editing, without opening a sheet. Large plus/minus buttons remain available
+through Actions, alongside pause, undo and rest preferences.
 
-<Image
-  src="/images/devlog/watch-workout.webp"
-  alt="BetterFit watch simulator prototype showing Bench Press, bundled targets of eight reps and sixty pounds, and a pinned yellow Log Set button"
-  width={456}
-  height={504}
-  className="mx-auto h-auto max-w-full"
-/>
+<div className="grid gap-4 sm:grid-cols-2">
+  <Image
+    src="/images/devlog/watch-controls.webp"
+    alt="BetterFit simulator showing Bench Press above a separate set and rest row, eight reps and sixty pounds, and a pinned Log Set action"
+    width={324}
+    height={394}
+    className="mx-auto h-auto max-w-full"
+  />
+  <Image
+    src="/images/devlog/watch-large-text.webp"
+    alt="BetterFit simulator at the largest accessibility text size with stacked reps and weight controls above the pinned Log Set action"
+    width={324}
+    height={394}
+    className="mx-auto h-auto max-w-full"
+  />
+</div>
 
-_Local 40 mm watch simulator prototype with bundled workout targets, not a real
-workout record or a released watch app._
+_Native 40 mm simulator captures from the merged MVP, using bundled demo targets.
+The largest-text view is scrolled to the values; Log Set stays pinned. These are
+not real workout records or physical-watch captures._
+
+The first compact layout still clipped the value controls against the action
+bar. Giving the exercise name its own full-width row, keeping set and rest on
+the next row, and putting each unit beside its value made the small screen
+easier to fit. I added layout assertions for the entire value field and focus
+border, long exercise names, and the largest accessibility text size. A tappable
+control alone was not enough to prove its contents were visible.
 
 Rest starts automatically after logging, alongside the next set. It does not
 replace that set with a countdown screen that needs dismissing before I can
@@ -45,12 +63,14 @@ turns the primary action into Resume. Large Dynamic Type stacks the values,
 while the main action stays pinned. VoiceOver labels and adjustable actions
 provide alternatives to relying on colour or the Crown alone.
 
-The local run passed 95 existing tests plus ten session tests, the watchOS
-simulator build and strict lint on the seven focused files. The full repository
-lint still reports existing violations. I checked the small simulator and a
-large-text launch, but that is not a physical-watch usability test. Haptics and
+The Crown tests also check what happens after logging: focus must release, the
+next set must retain its own targets, and stray rotation must not edit them.
+The completed local run passed six native watch UI tests, 95 existing tests and
+ten session tests, plus the build and strict lint on all eleven changed Swift
+files. The full repository lint still reports existing violations. Haptics and
 Double Tap still need supported hardware.
 
-The changes remain local and unmerged. This MVP logs manually from three bundled
+The [watch MVP is merged](https://github.com/echohello-dev/betterfit/pull/27).
+This MVP logs manually from three bundled
 templates and saves completed workouts locally; it does not record HealthKit
 workouts or sync with the iPhone yet.
