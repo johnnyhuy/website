@@ -1,0 +1,56 @@
+---
+title: Wiring Pidex's Workbench Through to the Runtime
+summary: |
+  I implemented Pidex's Figma workbench screens, then added tests that exercise the desktop app through its Pi bridge. The useful boundary is what stays real: Electron, saved sessions and Git staging. A scripted Pi peer makes the UI repeatable without pretending that a passing test proves live provider behaviour.
+date: '2026-10-19T20:13:59+11:00'
+tags:
+  - Pidex
+  - Electron
+  - Testing
+draft: false
+icon: Terminal
+---
+
+I picked up the Figma workbench designs for [Pidex](https://github.com/echohello-dev/pidex)
+and implemented the new-session, conversation, changes, history and models/access
+screens. Then I asked for unit, component and end-to-end UI coverage. The useful
+part was making the screens exercise the desktop app's actual boundaries.
+
+<Image
+  src="/images/devlog/workbench-session.webp"
+  alt="Pidex workbench showing a test conversation streaming beside workspace changes and a Stop control"
+  width={1440}
+  height={900}
+/>
+
+_The implemented Electron workbench during a UI test. The conversation, model
+selection and workspace contents are fixtures; the response comes from a scripted
+Pi peer, not a live model._
+
+The Electron suite starts its own renderer on a free port and launches the app
+with temporary session storage, settings and a Git repository. A small executable
+stands in for Pi's RPC process. It returns models, streams a known response,
+handles Stop and can deliberately reject a prompt.[^tests]
+
+That leaves a useful split:
+
+| Boundary            | What the tests exercise                                      |
+| ------------------- | ------------------------------------------------------------ |
+| Desktop integration | Actual Electron main process, preload bridge and renderer    |
+| Local state         | Temporary session files, saved defaults and real Git staging |
+| Model runtime       | Scripted RPC responses, with no provider login or model call |
+
+For Changes, clicking Stage file has to put exactly `Composer.tsx` in the
+repository's Git index. A changed button label alone would miss that. For history,
+previewing a saved conversation leaves the runtime-state request count unchanged;
+Resume then opens the conversation. A rejected prompt must put the typed text
+back in the composer so it can be retried.
+
+The [change is merged](https://github.com/echohello-dev/pidex/pull/27). Local
+validation passed 51 unit tests and 22 component tests, and CI passed all ten
+Electron UI tests. Those cover the screens, resume/fork, streaming/stop, staging,
+settings and the minimum desktop window size. Live provider authentication and
+responses still need their own check. Runtime-policy editing and automatic
+worktree creation remain unavailable in the UI.
+
+[^tests]: [Pidex's Electron UI tests and their isolated workspace setup](https://github.com/echohello-dev/pidex/blob/c06101227b61d00e49f1fd3d061004ebf3f4360f/tests/e2e/app.test.ts), with the [scripted Pi RPC peer](https://github.com/echohello-dev/pidex/blob/c06101227b61d00e49f1fd3d061004ebf3f4360f/tests/fixtures/pi-rpc.cjs).
