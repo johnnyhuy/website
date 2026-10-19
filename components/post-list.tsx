@@ -7,6 +7,7 @@ import { resolvePostIcon } from '@/lib/post-icons'
 
 interface PostListProps {
   posts: CoreContent<Blog>[]
+  showSummary?: boolean
 }
 
 // More images in the post body -> more transparent the row thumbnail gets.
@@ -25,16 +26,13 @@ const PEEK_ROTATIONS = ['-rotate-[6deg]', 'rotate-[3deg]', '-rotate-[4deg]', 'ro
 // 56 leaves a ~16px overlap on each card; 72 would have them touching.
 const PEEK_STRIDE = 56
 
-export default function PostList({ posts }: PostListProps) {
+export default function PostList({ posts, showSummary = false }: PostListProps) {
   return (
     <ul className="divide-y border-y">
       {posts.map((post) => {
         const Icon = resolvePostIcon(post.icon)
-        const cards = (post.peekImages?.length
-          ? post.peekImages
-          : post.firstImage
-            ? [post.firstImage]
-            : []
+        const cards: string[] = (
+          post.peekImages?.length ? post.peekImages : post.firstImage ? [post.firstImage] : []
         ).slice(0, 4)
         const opacity = thumbnailOpacity(post.imageCount)
         // Total rightward extent = first card's width + stride * (n-1).
@@ -47,7 +45,7 @@ export default function PostList({ posts }: PostListProps) {
             {cards.length > 0 && (
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute right-0 top-1/2 z-0 flex h-[64px] -translate-y-1/2 items-center md:h-[72px]"
+                className="pointer-events-none absolute top-1/2 right-0 z-0 flex h-[64px] -translate-y-1/2 items-center md:h-[72px]"
                 style={{ width: `${peekWidth}px` }}
               >
                 {cards.map((src, i) => {
@@ -59,7 +57,7 @@ export default function PostList({ posts }: PostListProps) {
                         zIndex: cards.length - i,
                         right: `${i * PEEK_STRIDE}px`,
                       }}
-                      className={`absolute right-0 top-0 h-full w-[72px] origin-bottom overflow-hidden border border-[var(--color-border)] object-cover shadow-sm [mask-image:linear-gradient(to_top,black,transparent)] [-webkit-mask-image:linear-gradient(to_top,black,transparent)] md:w-[72px] ${rot}`}
+                      className={`absolute top-0 right-0 h-full w-[72px] origin-bottom overflow-hidden border border-[var(--color-border)] [mask-image:linear-gradient(to_top,black,transparent)] object-cover shadow-sm [-webkit-mask-image:linear-gradient(to_top,black,transparent)] md:w-[72px] ${rot}`}
                     >
                       <Image
                         src={src}
@@ -88,8 +86,15 @@ export default function PostList({ posts }: PostListProps) {
                 aria-hidden="true"
                 className="h-4 w-4 shrink-0 translate-y-0.5 text-gray-400 dark:text-gray-500"
               />
-              <span className="min-w-0 flex-1 truncate font-medium text-gray-900 group-hover:underline group-hover:decoration-yellow-500 group-hover:underline-offset-4 dark:text-gray-100">
-                {post.title}
+              <span className="min-w-0 flex-1">
+                <span className="block truncate font-medium text-gray-900 group-hover:underline group-hover:decoration-yellow-500 group-hover:underline-offset-4 dark:text-gray-100">
+                  {post.title}
+                </span>
+                {showSummary && post.summary && (
+                  <span className="mt-1 line-clamp-2 text-sm text-gray-500 dark:text-gray-400">
+                    {post.summary}
+                  </span>
+                )}
               </span>
               <span
                 aria-hidden="true"

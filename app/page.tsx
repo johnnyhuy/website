@@ -1,16 +1,20 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { allBlogs } from 'contentlayer/generated'
+import { allBlogs, allDevlogs } from 'contentlayer/generated'
 import type { Blog } from 'contentlayer/generated'
 import { CoreContent, allCoreContent, sortPosts } from 'pliny/utils/contentlayer.js'
 import { profile, experiences } from '@/data/siteData'
 import CloudPattern from '@/components/cloud-pattern'
 import PostList from '@/components/post-list'
+import DevlogList from '@/components/devlog-list'
+import { publishedOnly } from '@/lib/published'
 import Me from '@/data/images/me.jpg'
 
 const sortedPosts = sortPosts(allBlogs)
 const corePosts = allCoreContent(sortedPosts)
 const recentPosts: CoreContent<Blog>[] = corePosts.slice(0, 8)
+const devlogs = allCoreContent(sortPosts(publishedOnly(allDevlogs)))
+const recentDevlogs = devlogs.slice(0, 5)
 
 export default function Home() {
   const current = experiences[0]
@@ -21,7 +25,7 @@ export default function Home() {
       <section className="relative overflow-hidden border-b">
         <div
           aria-hidden="true"
-          className="absolute inset-x-0 top-0 h-40 opacity-25 [mask-image:linear-gradient(to_bottom,black,transparent)]"
+          className="absolute inset-x-0 top-0 h-40 [mask-image:linear-gradient(to_bottom,black,transparent)] opacity-25"
         >
           <CloudPattern className="absolute inset-0" animated />
         </div>
@@ -42,7 +46,12 @@ export default function Home() {
             <div className="flex gap-4">
               <dt className="mono-label w-12 shrink-0 pt-0.5">Now</dt>
               <dd className="text-gray-700 dark:text-gray-200">
-                {current.position} @ {current.company}
+                <Link
+                  href="/now"
+                  className="underline decoration-yellow-500 underline-offset-4 hover:text-gray-900 dark:hover:text-gray-100"
+                >
+                  {current.position} @ {current.company}
+                </Link>
               </dd>
             </div>
             <div className="flex gap-4">
@@ -63,6 +72,27 @@ export default function Home() {
             </div>
           </dl>
         </div>
+      </section>
+
+      {/* Devlog */}
+      <section className="border-b px-6 py-16">
+        <div className="mb-3 flex items-baseline justify-between">
+          <h2 className="mono-label">Devlog</h2>
+          <Link
+            href="/devlog"
+            className="mono-label underline decoration-yellow-500 underline-offset-4 hover:text-gray-900 dark:hover:text-gray-100"
+          >
+            all entries
+          </Link>
+        </div>
+        <p className="mb-8 text-sm text-gray-500 dark:text-gray-400">
+          Things I’m building, trying, and working out along the way.
+        </p>
+        {recentDevlogs.length > 0 ? (
+          <DevlogList entries={recentDevlogs} />
+        ) : (
+          <p className="text-sm text-gray-500 dark:text-gray-400">First entry coming soon.</p>
+        )}
       </section>
 
       {/* Writing */}
