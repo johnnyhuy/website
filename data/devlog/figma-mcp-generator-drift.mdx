@@ -1,0 +1,26 @@
+---
+title: 'Adding Figma exposed drift in my MCP config generator'
+summary: 'A sandboxed run of my MCP generator would have restored old auth settings, dropped a PATH override and copied a broken key value. I applied the Figma change separately.'
+date: '2026-10-19'
+tags: ['MCP', 'Developer Tools', 'Configuration']
+draft: false
+icon: Terminal
+---
+
+I was adding [Figma](https://www.figma.com/)'s desktop MCP server across my coding tools. I already had a generator for OpenCode, Pi, Codex and Grok, with one server list and a renderer for each config format. The desktop endpoint is `http://127.0.0.1:3845/mcp`, enabled from the Figma desktop app.[^1]
+
+Before running the generator against the live files, I ran it against copies under a temporary home directory and compared the output. It would have undone manual fixes made since the last sync.
+
+| Generated change       | What the comparison caught                                                            |
+| ---------------------- | ------------------------------------------------------------------------------------- |
+| Pi auth settings       | Put back the bare `"auth": "oauth"` field I had previously removed after a Pi upgrade |
+| Search credentials     | Turned a shell command substitution into the literal string `$(cat`                   |
+| Mobile MCP environment | Dropped its existing `PATH` override                                                  |
+
+The server inventory had drifted too. New entries were missing from the generator, and its Codex carry-forward logic could preserve an old server after a rename. I reconciled that inventory and added an explicit removal guard, but left the other generator defects open.
+
+I chose per-tool edits for the Figma addition. The resulting config files parsed, and Grok listed the entry. The desktop port still had no listener at the end of the setup, so I kept the remote entry until a real local handshake could be checked.
+
+The dry run needed a comparison against the working configs, not just a successful parse. Every file the generator produced could look tidy while quietly discarding the fixes that made the tools work.
+
+[^1]: [Figma's desktop MCP setup instructions](https://developers.figma.com/docs/figma-mcp-server/local-server-installation/) cover enabling the server, its local endpoint and checking the client connection.
