@@ -1,0 +1,28 @@
+---
+title: 'Plex was Ready while its relay could not find its user'
+summary: 'A TV connection problem led past the healthy pod to a missing UID entry. The account fix was checked live; the version upgrade still needed a confirmed rollout.'
+date: '2026-10-19'
+tags: ['Kubernetes', 'Containers', 'Debugging']
+draft: false
+icon: Wrench
+---
+
+My [Plex](https://www.plex.tv/) server stopped connecting properly from the TV. I started by checking whether the pod was crashing. Kubernetes showed it Running and Ready, with zero restarts, while the logs kept repeating `No user exists for uid 1000`.
+
+The main server could answer its identity endpoint. Plex Relay was failing separately, exiting with code 255. Running the relay executable directly reproduced the missing-user error. `whoami` could not resolve the container's numeric UID either.
+
+My chart ran the container as UID/GID 1000, but its account files had no matching user. LinuxServer documents the image's user/group settings and non-root operation; the mismatch was in my running configuration.[^1]
+
+I added an init container to prepare account-file overlays containing the missing user and group, then mounted those files into Plex. This kept the existing data ownership at 1000:1000.
+
+| Check                  | Before               | After the account fix                          |
+| ---------------------- | -------------------- | ---------------------------------------------- |
+| Pod status             | Running and Ready    | Running and Ready                              |
+| User lookup            | UID 1000 had no name | `whoami` returned `plex`                       |
+| Sampled relay failures | Repeated exit 255    | No exit-255 failures in the checked log sample |
+
+The later logs showed playback progressing, but also connection resets. That is enough to verify the user lookup changed, and too little to call sustained TV playback fixed.
+
+I also merged a Plex version bump. Its attempted rollout hit an unreachable Kubernetes API, so the live account-fix checks still describe the older image. Confirming the upgrade and a sustained playback session remain open. The useful extra health check here is whether the relay can resolve its own user, alongside the server's HTTP response.
+
+[^1]: [LinuxServer Plex image documentation](https://docs.linuxserver.io/images/docker-plex/), including user/group identifiers and non-root operation.
