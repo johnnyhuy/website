@@ -1,7 +1,7 @@
 ---
 title: Giving Wingman a Runtime That Can Resume
 summary: |
-  I wired Pi Durable into a local Wingman prototype while keeping retrieval in Python. Killing a process mid-generation and restarting a failed delivery made the boundary clearer: recovering the model turn and getting the answer into Slack are separate jobs. The tests pass locally; the change is unmerged and has not reached live Slack.
+  I wired Pi Durable into Wingman while keeping retrieval in Python. Killing a process mid-generation and restarting a failed delivery made the boundary clearer: recovering the model turn and getting the answer into Slack are separate jobs. The change is merged and live model smoke tests passed; live Slack delivery is still untested.
 date: '2026-10-19'
 tags:
   - Wingman
@@ -15,7 +15,8 @@ After the logging work, I asked whether [Wingman](https://github.com/echohello-d
 could move its agent runtime to Pi and use durable agents. I chose
 [Pi Durable](https://github.com/earendil-works/pi/tree/main/packages/durable),
 then built a local integration around its SQLite storage. The package is
-experimental, so this is a prototype rather than a finished migration.[^durable]
+experimental, and merging the integration does not establish that it is ready
+for production.[^durable]
 
 Python still retrieves the relevant Slack threads and documents. The new Node
 runtime handles model turns and conversation history, with a persistent job
@@ -49,11 +50,19 @@ recovered answer. A separate test failed delivery, reopened the queue and sent
 the persisted answer without a second generation. These use a fake model
 provider and real SQLite, not live model or Slack calls.
 
-Five runtime tests and 26 focused backend tests passed locally, along with the
-container build and its runtime tests. The implementation remains uncommitted
-and unmerged, and I have not deployed it or exercised the live APIs. It also
-changes Slack to final replies instead of progress streams, and does not import
-the old PostgreSQL conversation history. Those are real migration decisions
-still to validate, not details that persistence solves for me.
+I then exercised the local runtime against MiMo V2.6 Flash. It recovered a
+grounded answer after interruption, replayed the saved answer for the same
+request ID, and returned that answer through the Python client. Follow-up memory
+and conversation isolation passed the later complete runs. The first live
+follow-up assertion had failed, though, and I have not established why that
+first answer missed the remembered fact. A passing smoke test is a useful check,
+not a reliability guarantee.
+
+Six runtime tests and 26 focused backend tests passed locally, along with the
+container build. The [runtime migration is merged](https://github.com/echohello-dev/wingman/pull/14),
+and its CI checks passed. The live smoke test sent zero Slack messages; I have
+not deployed the runtime or verified real Slack delivery. Final replies replace
+progress streams, and the old PostgreSQL conversation history is not imported.
+Those migration decisions still need validation in actual use.
 
 [^durable]: [Pi Durable's persistence, resumption and request-ID semantics](https://raw.githubusercontent.com/earendil-works/pi/main/packages/durable/README.md).
