@@ -1,0 +1,49 @@
+---
+title: Teaching the S2000 Preview What a Wrong Screenshot Looks Like
+summary: |
+  I extended the AP1 dash checks beyond geometry. Reference measurements and deliberately damaged captures now catch errors that a refreshed screenshot baseline could accept.
+date: '2026-10-27T09:11:41+11:00'
+tags:
+  - S2000
+  - Testing
+  - Prototyping
+draft: false
+icon: Car
+---
+
+The [S2000 digital dash](https://github.com/johnnyhuy/s2000-digital-dash) preview
+already had a [geometry gate](/devlog/s2000-geometry-gate). That told me where the
+pixels were. It did not tell me whether the lettering, colour or bar behaviour
+matched the available references.
+
+![Rendered AP1 dash preview with squared tach numerals, separated overrun strokes, amber cells and a red simulated speed readout](/images/devlog/s2000-ap1-svg-preview.webp)
+
+_The actual React instrument SVG, rasterised with simulated telemetry. This is a bench preview, not a photograph of a fitted dash or a browser interaction test._
+
+I corrected the face in separate passes, then added an [acceptance check across
+six tracks](https://github.com/johnnyhuy/s2000-digital-dash/pull/77): graphics,
+colour, position, size, motion and font. Each needs something independent to
+compare against: named regions in the lit photograph, the supplied glyph plate,
+or the dimension lock. A newly captured image cannot be its own proof that the
+face is right.
+
+The useful tests deliberately break it. One erases a tach numeral and updates
+the capture's hash so it still looks fresh. The font check must reject it anyway.
+Others restore the former LCD colour or fill the thin overrun strokes into a
+solid region. They fail their corresponding checks.
+
+Motion needed a different test. Both renderers were progressively filling a
+fraction of the next tach cell, while the lock specified complete 200 rpm steps.
+The [replacement compares actual rendered pixels](https://github.com/johnnyhuy/s2000-digital-dash/pull/76):
+3,200 and 3,399.9 rpm must look identical; 3,400 must change. The same invariant
+is checked near zero and in the overrun range. A still screenshot would miss it.
+
+The full native gate and the five static SVG tracks passed. The implementation
+also passed 175 Python tests and 26 web tests, with the native acceptance and
+React render checks included in CI. That gives me a more useful reason to
+refresh a screenshot baseline: the reference checks passed first.
+
+The remaining boundary matters. A still photograph cannot establish factory
+response timing or calibrated display brightness. The traced alphabet is a
+reconstruction, and the SVG capture leaves browser CSS and interaction outside
+its checks. Physical fit is still separate work.
