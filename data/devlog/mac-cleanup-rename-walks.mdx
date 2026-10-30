@@ -1,0 +1,32 @@
+---
+title: Mac Cleanup Found Unguarded Rename Walks
+summary: |
+  A Python helper was still consuming a CPU core after 21 hours. Its filename resolver tracked visited names, but two reporting loops walked the same rename map without that protection.
+date: '2026-10-31'
+tags:
+  - Python
+  - Debugging
+draft: false
+icon: Bug
+---
+
+Cleaning up my Mac turned up a Python helper still using roughly a full CPU
+core after 21 hours. Its command line contained a script for following filenames
+through Git rename history.
+
+The resolver already tracked visited names in a [Python set](https://docs.python.org/3/library/stdtypes.html#set-types-set-frozenset).
+The reporting code then walked the same mapping again:
+
+| Walk                        | Cycle protection                   |
+| --------------------------- | ---------------------------------- |
+| Resolve the latest filename | Stops at a previously visited name |
+| Count rename hops           | No visited-name check              |
+| Print example chains        | No visited-name check              |
+
+The guard protected the resolver, not every later walk. If the mapping led back
+to an earlier name, either reporting loop could keep going indefinitely. Even
+code that only counts hops or prints examples needs a termination condition.
+
+I stopped the helper during cleanup. I haven't isolated which loop was stuck or
+patched the script. The follow-up is to share the guarded traversal across the
+reporting paths and check it with a cyclic input.
