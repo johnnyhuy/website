@@ -1,0 +1,41 @@
+---
+title: ReviewBench and the Bugs Outside the Golden Set
+summary: |
+  Researching AI review harnesses led me to ReviewBench's distinction between catching known issues and validating new ones. Those scores answer different questions.
+date: '2026-10-31T22:09:07+11:00'
+tags:
+  - AI
+  - Code Review
+  - Evaluation
+draft: false
+icon: BookOpen
+---
+
+I revisited whether a coding harness with a review extension could replace a
+dedicated AI review bot. The harder question is how to tell whether changing its
+instructions actually improves the review.
+
+[GitHub's ReviewBench explanation](https://github.blog/ai-and-ml/github-copilot/reviewbench-an-open-benchmark-for-ai-code-review/)
+separates two kinds of scoring:
+
+| Metric family | What it checks                                                     |
+| ------------- | ------------------------------------------------------------------ |
+| Grounded      | Findings against the existing golden set of known issues           |
+| Augmented     | Also judges unmatched findings, giving credit for valid new issues |
+
+An answer set can miss bugs too. A reviewer finding something outside it needs
+that finding checked before it gets counted as noise.
+
+There's a catch: augmented recall expands its denominator using each agent's
+discoveries. GitHub uses grounded recall for the headline comparison between
+systems, with augmented metrics as a diagnostic for each system. Comparing two
+augmented recall percentages as though they share an answer set would miss that
+distinction.
+
+My takeaway for a harness experiment is to keep known-issue coverage and valid
+new findings separate, and pin the dataset, judge and matcher versions. Saving
+review transcripts gives me material to evaluate; it doesn't establish accuracy
+by itself.
+
+This is still research. Whether a harness plus a review extension holds up
+against a dedicated reviewer on the same repeated evaluation remains open.
