@@ -1,0 +1,37 @@
+---
+title: 'Claude Code Review Checks Code Without Running It'
+summary: "Researching Claude's managed reviewer separated checking findings against code from running tests and blocking a merge."
+date: '2026-10-31T23:53:38+11:00'
+tags: ['AI', 'Code Review', 'Research']
+draft: false
+icon: Bug
+---
+
+I was researching whether Claude Code Review covered what I wanted from an AI
+reviewer, including running code to check its findings. The useful distinction was
+what Anthropic means by verification in the managed service.
+
+The [Code Review documentation](https://code.claude.com/docs/en/code-review#how-reviews-work)
+describes agents reading the diff and surrounding code, then checking candidate
+findings against that code. It explicitly says the service does this without
+building or running the code.
+
+| Question                     | Managed Code Review behaviour                                                        |
+| ---------------------------- | ------------------------------------------------------------------------------------ |
+| Does it check a finding?     | A verification step checks it against the code.                                      |
+| Does it execute the project? | It doesn't build or run the code.                                                    |
+| Do findings block a merge?   | It never approves or blocks the PR, and its check run doesn't conclude as a failure. |
+
+That last part matters if I want a review gate. GitHub's
+[required status checks](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches#require-status-checks-before-merging)
+accept successful, skipped or neutral results. Requiring a completed review check
+doesn't, by itself, make its findings merge blockers. Approvals, conversation
+resolution and test checks are separate requirements to configure.
+
+For my comparison, finding quality, execution evidence and merge enforcement need
+separate answers. A reviewer can produce useful comments without reproducing the
+bug or enforcing a decision about it.
+
+This was documentation research, not a local benchmark. Whether the managed
+reviewer's findings are good enough for my own PRs is still open. Running a test
+to reproduce a finding would be a separate experiment.
