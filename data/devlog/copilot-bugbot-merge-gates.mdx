@@ -1,0 +1,37 @@
+---
+title: 'Copilot Approvals and Bugbot Checks Gate Different Things'
+summary: 'Comparing Copilot and Bugbot separated an approval assessment, a counted approval and a check that actually fails on findings.'
+date: '2026-11-02T13:10:20+11:00'
+tags: ['AI', 'Code Review', 'Research']
+draft: false
+icon: Bug
+---
+
+I continued my code-review research with GitHub Copilot and Cursor Bugbot today.
+I wanted to know whether their reviews could act as a merge gate. The useful
+part was separating what the reviewer says from what GitHub enforces.
+
+GitHub's [Copilot approval documentation](https://docs.github.com/en/copilot/concepts/agent-capabilities/agent-powered-workflows-and-operations/code-review#copilot-approvals)
+says every review includes an assessment of whether the PR is ready to approve.
+That assessment alone doesn't count towards required approvals. Enabling Copilot
+approvals lets it submit an approving review that does count. New commits dismiss
+that approval, so the revised code needs a fresh review.
+
+[Bugbot's check statuses](https://cursor.com/docs/bugbot#ci-check-statuses) work
+differently. Findings default to a `neutral` result. Requiring the check alone doesn't make those findings block the merge.
+Where the organisation has fail-on-unresolved-issues behaviour available, enabling
+it makes unresolved findings produce a `failure`.
+
+| Review result                               | What it enforces                                   |
+| ------------------------------------------- | -------------------------------------------------- |
+| Copilot assessment only                     | Doesn't satisfy required approvals.                |
+| Copilot approving review, approvals enabled | Counts towards the required approval total.        |
+| Bugbot findings, default settings           | Neutral check; findings alone don't block.         |
+| Bugbot findings, fail-on-unresolved enabled | Failing check; blocks when that check is required. |
+
+For my comparison, "does code review" needs two follow-up questions: can it find
+the defect, and what happens to the merge when it does? The product settings
+answer the second. They don't establish the first.
+
+This comparison was documentation research, with no local benchmark. Finding
+quality and false positives on the same changes are still open.
