@@ -1,0 +1,35 @@
+---
+title: Mac Cleanup Found a Parser That Never Advanced
+summary: |
+  A busy Python scanner advanced its inner block cursor but left the outer line index unchanged. Stopping the process did not repair the script.
+date: '2026-11-03T00:01:37+11:00'
+tags: ['Python', 'Debugging', 'macOS']
+draft: false
+icon: Bug
+---
+
+Cleaning up my Mac turned up a Python text scanner using roughly a full CPU
+core. The process had been running for nearly three hours. Reading the script
+showed a progress bug in its block parser.
+
+The outer loop used `i` to select a line. An inner loop used `j` to find the end
+of a quoted block. The skip paths moved `i` forward, but the normal path never
+copied `j` back to `i`.
+
+| Path through the parser              | Outer index on the next iteration |
+| ------------------------------------ | --------------------------------- |
+| Skip an ordinary or empty quote line | `i + 1`                           |
+| Skip a block with no content         | `j`, after the block              |
+| Finish processing a non-empty block  | Unchanged                         |
+
+Advancing `j` made the inner scan finite. It did nothing for the outer
+[`while` condition](https://docs.python.org/3/reference/compound_stmts.html#the-while-statement),
+which still tested `i`. After a non-empty block, that path could keep processing
+the same input indefinitely. Every path back to the condition needs to make
+progress or deliberately exit.
+
+I stopped the helper. A later sample showed another process running the same
+script path, and that instance was stopped too. I haven't captured the running
+stack or patched the parser. The follow-up is to advance the outer cursor after
+processing a block and check both ordinary lines and non-empty blocks before
+running it again.
