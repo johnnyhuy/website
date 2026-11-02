@@ -1,0 +1,37 @@
+---
+title: Mac Cleanup Found Busy Trunk Crash Handlers
+summary: |
+  Trunk crash handlers were consuming substantial CPU. New idle handlers appeared after cleanup, so a process count alone was a poor recovery check.
+date: '2026-11-02T18:01:53+11:00'
+tags: ['macOS', 'Debugging', 'Developer Tools']
+draft: false
+icon: Wrench
+---
+
+Cleaning up my Mac turned up several `crashpad_handler` processes from
+[Trunk Code Quality](https://marketplace.visualstudio.com/items?itemName=trunk.io).
+Their executable paths pointed to Trunk CLI 1.22.10 for Apple Silicon. In one
+snapshot, nine of those handlers were each using roughly 64 to 77 percent CPU.
+All nine had a parent process ID, or PPID, of `1`.
+
+The cleanup reported stopping 16 crash handlers with PPID `1`. That count covered
+the cleanup selection, not just the nine busy Trunk processes. A follow-up about
+30 seconds later showed five new handlers, each at `0.0` percent CPU.
+
+| Observation | Before cleanup                             | Follow-up sample               |
+| ----------- | ------------------------------------------ | ------------------------------ |
+| CPU         | Nine Trunk handlers at roughly 64-77% each | Five new handlers at 0.0% each |
+| PPID        | 1 for the nine busy handlers               | 1 for all five new handlers    |
+
+Checking only whether that process name was still present would have made the
+cleanup look unsuccessful.
+The useful check was whether the busy instances had gone and what the replacements
+were doing.
+
+[Crashpad's handler documentation](https://chromium.googlesource.com/crashpad/crashpad/+/HEAD/handler/crashpad_handler.md)
+describes a macOS mode where `launchd` starts the handler. PPID `1` alone isn't a
+reason to stop one. The executable identity, CPU use and follow-up sample matter.
+
+I haven't isolated what made the Trunk handlers busy or what launched the five
+new ones. This was process cleanup, with no verified software fix. The open
+question is whether the same Trunk binary starts consuming CPU again.
