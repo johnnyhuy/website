@@ -36,6 +36,14 @@ durable state in git and GitHub and reconstructs it on the next run. It leaves
 the target-branch merge to a person. Those are useful design choices to compare,
 not guarantees I've tested.
 
+Digging into [Agent Orchestrator's architecture](https://github.com/OrchestratorInc/agent-orchestrator/blob/main/docs/architecture.md#mental-model)
+gave me another useful distinction. It persists facts about agent activity and
+pull requests, then computes display labels such as `working` or `ci_failed`
+when they are read. Observation updates the facts; the service derives the
+status. That separates what needs to survive a restart from what the interface
+can rebuild. It doesn't prove the observations are fresh, or that recovery works.
+I haven't tested either.
+
 My takeaway is to ask where task ownership and the next allowed transition live
 before adding workers. A worktree gives a worker somewhere to edit; it doesn't
 by itself decide who owns an issue. Where that shared ownership should live
