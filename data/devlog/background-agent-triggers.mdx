@@ -1,0 +1,39 @@
+---
+title: 'Do Background Coding Agents Need a Schedule?'
+summary: 'Researching background coding agents separated what starts the work from the evidence needed to review its pull request.'
+date: '2026-11-04'
+tags: ['AI', 'Automation', 'Research']
+draft: false
+icon: Workflow
+---
+
+I looked into whether running background coding agents means adding one schedule
+or several. I wanted a loop where an agent proposes a change through a pull
+request, with enough evidence to review it and comments to steer the next attempt.
+
+[LangChain's ambient-agent model](https://www.langchain.com/blog/introducing-ambient-agents)
+helped separate those questions. An agent can respond to events and still ask a
+person to review an action. Running in the background doesn't require handing
+over the merge decision.
+
+For repository work, this is how I'd choose the starting signal:
+
+| Work                                   | Trigger I'd start with        |
+| -------------------------------------- | ----------------------------- |
+| A bug or feature someone has requested | Assign the issue.             |
+| A failed CI run                        | React to the failure event.   |
+| Documentation or convention drift      | Run a narrow scheduled sweep. |
+
+[GitHub Agentic Workflows](https://github.github.com/gh-aw/) supports both schedules
+and events. That makes the schedule a choice about discovering work, rather than
+a requirement for every background agent.
+
+The review still needs its own evidence. [Cursor's computer-use examples](https://cursor.com/blog/agent-computer-use)
+show agents exercising software in isolated VMs and returning screenshots, video
+and logs with their pull requests. My takeaway is to match the proof to the claim:
+test results for logic, a recording for the UI path exercised, and a description
+of what remains unchecked. A recording of one path doesn't cover every edge case.
+
+This was research, with no worker fleet installed or recovery test run. My next
+question is how several workers can pick up an issue backlog without claiming
+the same task twice. More frequent wake-ups don't answer that ownership question.
