@@ -1,0 +1,43 @@
+---
+title: Giving Hoist Probe Parity Across Three Cloud Providers
+summary: |
+  Hoist's runProbe() answered "No probe implemented" for Bedrock, Vertex and Azure OpenAI. Wiring the three probes taught me that each provider stores its identity somewhere different, and that the app and CLI have to probe identically or the gap shows up as a probe that only works in one surface.
+date: '2026-11-08'
+tags:
+  - Hoist
+  - Cloud Providers
+  - CLI
+draft: false
+icon: Blocks
+---
+
+[Hoist](https://github.com/echohello-dev/hoist) installs AI coding tools,
+authenticates them via SSO and routes them through an enterprise gateway. Its
+key step offers a probe for each provider, but `runProbe()` returned "No probe
+implemented" for the ids `bedrock`, `vertex` and `azure-openai`. Adding them
+([PR #48](https://github.com/echohello-dev/hoist/pull/48),
+[closing #47](https://github.com/echohello-dev/hoist/issues/47)) was less
+about the three endpoints and more about where each provider keeps its
+identity:
+
+| Provider | Where its identity lives | What the probe does |
+| --- | --- | --- |
+| Bedrock | The AWS environment chain, no stored key required | Probes without a vault secret ([PR #50](https://github.com/echohello-dev/hoist/pull/50)) |
+| Vertex | Project and region stored in the vault beside the access token | A saved key validates through the Keys step ([PR #50](https://github.com/echohello-dev/hoist/pull/50), [closing #49](https://github.com/echohello-dev/hoist/issues/49)) |
+| Azure OpenAI | Endpoint resolved from `AZURE_OPENAI_ENDPOINT` | Probes through the environment endpoint ([PR #52](https://github.com/echohello-dev/hoist/pull/52), [closing #51](https://github.com/echohello-dev/hoist/issues/51)) |
+
+Parity matters as much as the probes themselves. The CLI now mirrors the app,
+so `hoist keys probe` works for all three providers instead of falling through
+to no probe ([PR #52](https://github.com/echohello-dev/hoist/pull/52)). The
+same reasoning drove the Codex wiring change: `OPENAI_API_KEY` is written into
+`~/.codex/auth.json` with a merged, atomic, 0600 write alongside the existing
+`config.toml` provider block, so a fresh shell does not need the environment
+variable set ([PR #45](https://github.com/echohello-dev/hoist/pull/45),
+[closing #16](https://github.com/echohello-dev/hoist/issues/16)).
+
+The lesson I am carrying: a probe layer has to model each provider's identity
+surface explicitly, and every surface that exposes the probe needs the same
+coverage per provider. Verification was the app and CLI CI gates
+(`mise run ci:app` and `mise run ci:cli`), covering typecheck, lint, the new
+unit cases and the build. The wider provider work stays tracked on the parent
+issue ([#15](https://github.com/echohello-dev/hoist/issues/15)).

@@ -1,0 +1,45 @@
+---
+title: The Backstage Guest Demo Has to Exist in the Catalog
+summary: |
+  Polishing my public Backstage showcase taught me that a guest demo baseline is only real when the catalog, the permission policy and the app config agree on the guest. The demo user now exists as user:default/guest inside the readers group the policy names, with read-only tests binding it, and one open fix removes duplicate catalog definitions.
+date: '2026-11-08'
+tags:
+  - Backstage
+  - Developer Portal
+  - Testing
+draft: false
+icon: Users
+---
+
+My public [Backstage showcase](https://github.com/echohello-dev/backstage)
+spent the weekend collecting polish: a plugin showcase page, deep links into
+the scaffolder. The quiet fix was in the auth story. A guest demo baseline is
+only real when the catalog, the permission policy and the app config agree on
+who the guest is
+([PR #111](https://github.com/echohello-dev/backstage/pull/111),
+[closing #110](https://github.com/echohello-dev/backstage/issues/110)).
+
+The guest user now actually exists in the catalog as `user:default/guest`, a
+member of `readers`, alongside the `readers`, `developers` and `admins` groups
+the permission policy names. The guest reference in `app-config.yaml` is
+explicit to match production, and the baseline is recorded in
+`docs/demo-baseline.md` with read-only tests that keep it honest. Before this
+change the guest existed in the demo story, not in the catalog.
+
+The showcase work around it is straightforward. The new `/showcase` page
+curates what the portal already ships: software templates, GitHub integration
+cards and answer engine cards, with search and category filters
+([PR #108](https://github.com/echohello-dev/backstage/pull/108),
+[closing #107](https://github.com/echohello-dev/backstage/issues/107)).
+Showcase template cards now deep-link to their own scaffolder pages through
+the real Template entity names instead of dropping visitors on the generic
+`/self-service` list
+([PR #113](https://github.com/echohello-dev/backstage/pull/113),
+[closing #112](https://github.com/echohello-dev/backstage/issues/112)).
+
+One fix is still open. The catalog defined the same groups and guest user
+twice across its example sources, and the open change makes `examples/` the
+single source for those definitions and deletes the duplicates
+([PR #115](https://github.com/echohello-dev/backstage/pull/115)). That is the
+generalisable half: demo and test baselines have to live in the same catalog
+the policy reads, and every catalog definition wants exactly one owner.

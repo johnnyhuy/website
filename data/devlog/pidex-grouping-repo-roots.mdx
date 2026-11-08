@@ -71,4 +71,16 @@ pushed. PR #33 is still open and later milestones remain in #5. The rule I am
 carrying into the rest of the slice: anything that outlives a root switch gets
 keyed or guarded by its root first.
 
+Update (8 November): the milestone merged overnight as
+[PR #33](https://github.com/echohello-dev/pidex/pull/33) and
+[PR #34](https://github.com/echohello-dev/pidex/pull/34), and issues
+[#3](https://github.com/echohello-dev/pidex/issues/3) and
+[#5](https://github.com/echohello-dev/pidex/issues/5) closed as completed. The
+merge folded in fixes in the same terms as the review: initially missing paths
+canonicalise when they become available while retaining their root IDs and
+original path aliases, an interrupted history load retries its saved archive
+and entry, settings cache only dirty drafts so a clean view follows saved
+defaults, and late mutation results are checked against their original
+navigation generation.
+
 [^pi]: [Pi's coding-agent runtime](https://pi.dev/).
